@@ -4,271 +4,108 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Grand Meridian — 5-Star Luxury Hotel, Bengaluru</title>
-    <meta name="description" content="Experience true luxury at The Grand Meridian. Premium rooms from ₹1,000/night with world-class amenities in Bengaluru.">
+    <meta name="description" content="Experience true luxury at The Grand Meridian. Premium rooms from ₹1,000/night.">
     <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-      :root {
-        --dark: #1a1a2e; --darker: #0f0f1e; --gold: #B8860B; --gold-light: #D4A843; --gold-glow: rgba(184,134,11,0.3); --bg: #f8f6f0; --card: #ffffff; --text: #222; --text-dim: #666; --text-muted: #999; --border: #e8e4dc; --success: #059669; --error: #DC2626; --blue: #2563EB; --pink: #DB2777; --purple: #7C3AED; --amber: #B45309;
-      }
-      html { scroll-behavior: smooth; }
-      body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+      :root { --dark: #1a1a2e; --gold: #B8860B; --bg: #f8f6f0; }
+      body { font-family: 'Inter', sans-serif; background: var(--bg); color: #222; }
       .playfair { font-family: 'Playfair Display', serif; }
-      button { cursor: pointer; border: none; font-family: inherit; }
-      input, select { font-family: inherit; }
-      img { display: block; }
-      .sr { opacity: 0; transform: translateY(28px); transition: 0.7s ease-out; }
+      .sr { opacity: 0; transform: translateY(20px); transition: 0.8s; }
       .sr.vis { opacity: 1; transform: translateY(0); }
-      .room3d-wrap { perspective: 800px; width: 100%; height: 210px; overflow: hidden; cursor: grab; user-select: none; position: relative; }
-      .room3d-cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s linear; }
-      .room3d-face { position: absolute; width:100%; height:100%; backface-visibility:hidden; display:flex; align-items:center; justify-content:center; }
-      .room3d-face img { width:100%; height:100%; object-fit:cover; position:absolute; }
-      .room3d-face--front { transform: rotateY(0deg) translateZ(150px); }
-      .room3d-face--right { transform: rotateY(90deg) translateZ(150px); }
-      .room3d-face--back  { transform: rotateY(180deg) translateZ(150px); }
-      .room3d-face--left  { transform: rotateY(-90deg) translateZ(150px); }
-      .room3d-face--top   { transform: rotateX(90deg) translateZ(105px); }
-      .room3d-face--bottom{ transform: rotateX(-90deg) translateZ(105px); }
-
-      /* Mobile */
       @media (max-width: 768px) {
-        .hamburger { display: block !important; background: none; border: none; }
-        .hamburger span { display: block; width: 22px; height: 2px; background: #fff; margin: 4px; }
         .desk-nav { display: none !important; }
-        .mob-menu { display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; bottom: 0; background: rgba(26,26,46,0.98); padding: 24px; z-index: 99; }
-        .mob-menu span { color: #fff; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .g-stats { grid-template-columns: 1fr 1fr !important; }
-        .g-rooms { grid-template-columns: 1fr !important; }
-        .room-row { flex-direction: column !important; }
-        .hero-inner { padding: 0 20px !important; }
-        .hero-title { font-size: 32px !important; }
+        .mob-menu { display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; bottom: 0; background: #1a1a2e; padding: 30px; z-index: 99; }
+        .mob-menu span { color: #fff; font-size: 20px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
       }
     </style>
 </head>
 <body>
     <div id="root"></div>
     <script type="text/babel">
-const { useState, useEffect, useRef, useCallback } = React;
+const { useState, useEffect, useRef } = React;
 const HOTEL = "The Grand Meridian";
-
 const ROOMS = [
-  { id:"economy", name:"Economy Room", price:1000, color:"#2563EB", lightBg:"#EFF6FF",
-    roomNos:["101","102","103","104","105","106","107","108","109","110"],
-    img:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&auto=format&fit=crop&q=80",
-    img2:"https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=900&auto=format&fit=crop&q=80",
-    img3:"https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=900&auto=format&fit=crop&q=80",
-    amenities:["Free WiFi","32\" Smart TV","Air Conditioning","Daily Housekeeping","Work Desk","Electronic Safe"],
-    meals:[], badge:null,
-    desc:"Comfortable and well-appointed rooms ideal for solo travelers. Modern furnishings with all essential amenities for a perfect stay." },
-  { id:"couple", name:"Couple Suite", price:2500, color:"#DB2777", lightBg:"#FDF2F8",
-    roomNos:["201","202","203","204","205","206","207","208","209","210"],
-    img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=900&auto=format&fit=crop&q=80",
-    img2:"https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&auto=format&fit=crop&q=80",
-    img3:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=900&auto=format&fit=crop&q=80",
-    amenities:["Free WiFi","King-size Bed","Private Jacuzzi","Complimentary Breakfast","Room Service 24/7","Champagne Welcome","City View"],
-    meals:["Complimentary Breakfast"], badge:"Most Popular",
-    desc:"Romantic suites designed for couples with plush king bed, private jacuzzi and stunning city views." },
-  { id:"premium", name:"Premium Room", price:5000, color:"#7C3AED", lightBg:"#F5F3FF",
-    roomNos:["301","302","303","304","305","306","307","308","309","310"],
-    img:"https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&auto=format&fit=crop&q=80",
-    img2:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&auto=format&fit=crop&q=80",
-    img3:"https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=900&auto=format&fit=crop&q=80",
-    amenities:["Free WiFi","King-size Bed","Executive Lounge","Complimentary Breakfast","Premium Mini Bar","Evening Turndown","Concierge","Bathrobe & Slippers"],
-    meals:["Complimentary Breakfast"], badge:"Premium",
-    desc:"Premium experience with exclusive lounge access, premium mini bar and personalized concierge." },
-  { id:"presidential", name:"Presidential Suite", price:8000, color:"#B45309", lightBg:"#FFFBEB",
-    roomNos:["401","402","403","404","405"],
-    img:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&auto=format&fit=crop&q=80",
-    img2:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=900&auto=format&fit=crop&q=80",
-    img3:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&auto=format&fit=crop&q=80",
-    amenities:["Free WiFi","Huge Private Balcony","Butler Service 24/7","All Meals Included","Private Pool Access","Spa Access","Airport Transfer","Premium Bar","Separate Living Room"],
-    meals:["Breakfast","Lunch","Dinner"], badge:"Luxury",
-    desc:"The pinnacle of luxury with a massive private balcony, panoramic views, dedicated butler, and all-inclusive dining." },
+  { id:"economy", name:"Economy Room", price:1000, color:"#2563EB", lightBg:"#EFF6FF", roomNos:["101","102"], img:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&auto=format&fit=crop&q=80", desc:"Modern furnishings with all essential amenities." },
+  { id:"couple", name:"Couple Suite", price:2500, color:"#DB2777", lightBg:"#FDF2F8", roomNos:["201","202"], img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=900&auto=format&fit=crop&q=80", desc:"Romantic suites with plush king bed and jacuzzi." },
+  { id:"premium", name:"Premium Room", price:5000, color:"#7C3AED", lightBg:"#F5F3FF", roomNos:["301","302"], img:"https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&auto=format&fit=crop&q=80", desc:"Exclusive lounge access and premium mini bar." },
+  { id:"presidential", name:"Presidential Suite", price:8000, color:"#B45309", lightBg:"#FFFBEB", roomNos:["401"], img:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&auto=format&fit=crop&q=80", desc:"Massive private balcony and panoramic views." },
 ];
 
-const fmtINR = n => "₹" + Number(n).toLocaleString("en-IN");
-const fmtDate = d => d ? new Date(d+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}) : "—";
-const calcNights = (ci,co) => { const d = Math.round((new Date(co)-new Date(ci))/864e5); return d > 0 ? d : 1; };
-const todayStr = () => new Date().toISOString().split("T")[0];
-const tomorrowStr = () => { const d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().split("T")[0]; };
-const overlap = (aIn,aOut,bIn,bOut) => aIn < bOut && aOut > bIn;
-
-function getBookedRoomNos(roomId, ci, co, bookings) {
-  return bookings.filter(b => b.roomId === roomId && b.status === "confirmed" && overlap(ci, co, b.checkIn, b.checkOut)).map(b => b.roomNo);
-}
-function getAvailRoomNo(roomId, ci, co, bookings) {
-  const room = ROOMS.find(r => r.id === roomId);
-  const busy = getBookedRoomNos(roomId, ci, co, bookings);
-  return room.roomNos.find(no => !busy.includes(no)) || null;
-}
-
-const S = {
-  btn: (bg, c="#fff") => ({ background:bg, color:c, border:"none", padding:"12px 26px", borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer", transition:"all .2s", display:"inline-flex", alignItems:"center", gap:8, justifyContent:"center" }),
-  outBtn: c => ({ background:"transparent", color:c, border:`1.5px solid ${c}`, padding:"11px 24px", borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer", transition:"all .2s" }),
-  input: { width:"100%", padding:"12px 16px", borderRadius:10, border:"1.5px solid #e0e0e0", fontSize:15, outline:"none", boxSizing:"border-box", background:"#fff", color:"#222", fontFamily:"inherit", transition:"border-color .2s" },
-  card: { background:"#fff", borderRadius:18, boxShadow:"0 2px 24px rgba(0,0,0,0.07)", overflow:"hidden" },
-  sec: { maxWidth:1200, margin:"0 auto", padding:"72px 24px" },
-  lbl: { fontSize:12, fontWeight:700, color:"#777", marginBottom:6, display:"block", textTransform:"uppercase", letterSpacing:"0.5px" },
+const MENU = {
+  Breakfast:[{n:"Masala Dosa",p:180},{n:"Idli Sambar",p:150},{n:"Aloo Paratha",p:190}],
+  Lunch:[{n:"Veg Thali",p:250},{n:"Chicken Biryani",p:380}],
+  Dinner:[{n:"Butter Chicken",p:420},{n:"Dal Makhani",p:320}],
 };
-
+const AMENITY_DATA = [
+  { icon:"🏊", title:"Swimming Pool", img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d", desc:"Olympic size heated pool.", tag:"Complimentary", hours:"6 AM - 10 PM" },
+  { icon:"💆", title:"Spa & Wellness", img:"https://images.unsplash.com/photo-1544161515-4ab6ce6db874", desc:"Traditional Ayurvedic treatments.", tag:"Advance booking", hours:"9 AM - 9 PM" },
+];
+const fmtINR = n => "₹" + Number(n).toLocaleString("en-IN");
 function useScrollReveal() {
   const ref = useRef(null);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) e.target.classList.add('vis'); }, { threshold: 0.12 });
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) e.target.classList.add('vis'); }, { threshold: 0.1 });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
   return ref;
 }
 
-function Toast({ msg, type }) {
-  const bg = type === "error" ? "#DC2626" : "#059669";
-  return (
-    <div className="toast-enter" style={{ position:"fixed", top:24, right:24, zIndex:9999, background:bg, color:"#fff", padding:"14px 24px", borderRadius:12, fontWeight:600, boxShadow:"0 6px 30px rgba(0,0,0,0.25)", maxWidth:360, fontSize:15, display:"flex", alignItems:"center", gap:10 }}>
-      <span style={{fontSize:18}}>{type === "error" ? "⚠" : "✓"}</span> {msg}
+function Navbar({ setPage }) {
+  return <nav style={{background:"#101020",padding:"15px 30px",display:"flex",justifyContent:"space-between",alignItems:"center",color:"#fff"}}>
+    <span style={{fontWeight:900,fontSize:20}}>{HOTEL}</span>
+    <div style={{display:"flex",gap:20,fontSize:14,fontWeight:600}}>
+      <span onClick={()=>setPage("landing")} style={{cursor:"pointer"}}>Home</span>
+      <span onClick={()=>setPage("rooms")} style={{cursor:"pointer"}}>Rooms</span>
     </div>
-  );
+  </nav>;
 }
-
-function RoomCard({ room, onBook, currentUser, setPage, bookings, delay="" }) {
-  const [hov, setHov] = useState(false);
-  const [view3d, setView3d] = useState(false);
-  const ref = useScrollReveal();
-  const is101Booked = room.id === "economy" && bookings.some(b => b.roomNo === "101" && b.status === "confirmed");
-
-  return (
-    <div ref={ref} className={`sr ${delay}`} style={{ ...S.card, transition:"transform .25s, box-shadow .25s", transform: hov ? "translateY(-8px)" : "none", boxShadow: hov ? `0 12px 40px rgba(0,0,0,0.13)` : "0 2px 24px rgba(0,0,0,0.07)" }}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
-      <div style={{ position:"relative" }}>
-        <div style={{ position:"absolute", top:10, left:10, zIndex:10, display:"flex", gap:0, borderRadius:8, overflow:"hidden", border:"1px solid rgba(255,255,255,0.3)" }}>
-          <button onClick={() => setView3d(false)} style={{ padding:"4px 12px", fontSize:10, fontWeight:700, border:"none", background: !view3d ? room.color : "rgba(0,0,0,0.5)", color:"#fff", cursor:"pointer" }}>📷 Photo</button>
-          <button onClick={() => setView3d(true)} style={{ padding:"4px 12px", fontSize:10, fontWeight:700, border:"none", background: view3d ? room.color : "rgba(0,0,0,0.5)", color:"#fff", cursor:"pointer" }}>🖥 3D</button>
-        </div>
-        {view3d ? (
-          <Room3DViewer room={room} />
-        ) : (
-          <div style={{ position:"relative", height:210, overflow:"hidden" }}>
-            <img src={room.img} alt={room.name} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform .4s", transform: hov ? "scale(1.05)" : "scale(1)" }} />
-            {room.badge && <div style={{ position:"absolute", top:12, right:12, background:room.color, color:"#fff", fontSize:10, fontWeight:800, padding:"4px 12px", borderRadius:20, boxShadow:"0 2px 10px rgba(0,0,0,0.2)", textTransform:"uppercase", letterSpacing:"0.5px" }}>{room.badge}</div>}
-            <div style={{ position:"absolute", bottom:0, left:0, right:0, height:80, background:"linear-gradient(transparent,rgba(0,0,0,0.6))" }} />
-          </div>
-        )}
-      </div>
-      <div style={{ padding:"20px 22px 24px" }}>
-        <h3 className="playfair" style={{ margin:"0 0 8px", fontSize:19, color:"#1a1a2e", fontWeight:800 }}>{room.name}</h3>
-        <p style={{ margin:"0 0 14px", fontSize:13, color:"#666", lineHeight:1.6 }}>{room.desc.slice(0,100)}…</p>
-        <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:14 }}>
-          {room.amenities.slice(0,4).map(a => <span key={a} style={{ background:room.lightBg, color:room.color, fontSize:10, padding:"3px 8px", borderRadius:6, fontWeight:600 }}>{a}</span>)}
-        </div>
-        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", paddingTop:14, borderTop:"1px solid #f0f0f0" }}>
-          <div><div style={{ fontSize:24, fontWeight:800, color:room.color }}>{fmtINR(room.price)}</div><div style={{ fontSize:11, color:"#999" }}>per night</div></div>
-          <button onClick={currentUser ? onBook : () => setPage("login")} className="shimmer" style={{ ...S.btn(room.color), padding:"10px 20px", fontSize:13, borderRadius:8 }}>Book Now →</button>
-        </div>
-      </div>
+function LandingPage({ setPage }) {
+  return <div>
+    <div style={{height:500,background:"#1a1a2e",display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center",color:"#fff",textAlign:"center",padding:20}}>
+      <h1 className="playfair" style={{fontSize:48,marginBottom:20}}>Experience True Luxury</h1>
+      <button onClick={()=>setPage("rooms")} style={{padding:"16px 40px",background:"#B8860B",color:"#fff",border:"none",borderRadius:8,fontWeight:700,fontSize:18,cursor:"pointer"}}>Browse Rooms</button>
     </div>
-  );
-}
-
-function LandingPage(props) {
-  const { setPage, handleBook, currentUser, bookings } = props;
-  const heroRef = useScrollReveal();
-  return (
-    <div>
-      <div className="hero-wrap" style={{ position:"relative", height:620, overflow:"hidden" }}>
-        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&auto=format&fit=crop&q=80" alt="Hotel" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-        <div style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,rgba(26,26,46,0.9) 0%,rgba(26,26,46,0.4) 100%)" }} />
-        <div ref={heroRef} className="sr vis hero-inner" style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", justifyContent:"center", padding:"0 64px", maxWidth:1200 }}>
-          <h1 className="playfair" style={{ color:"#fff", fontSize:52, fontWeight:900, margin:"0 0 18px", lineHeight:1.12, maxWidth:600 }}>Experience True<br/>Luxury & Comfort</h1>
-          <p style={{ color:"rgba(255,255,255,0.8)", fontSize:17, maxWidth:500, margin:"0 0 36px", lineHeight:1.65 }}>From ₹1,000/night — World-class amenities and stunning views.</p>
-          <div style={{ display:"flex", gap:16 }}>
-            <button onClick={() => setPage("rooms")} className="shimmer" style={{ ...S.btn("linear-gradient(135deg, #B8860B, #D4A843)"), fontSize:16, padding:"16px 36px", borderRadius:12 }}>Browse Rooms</button>
-          </div>
-        </div>
-      </div>
-      <div className="sec-mob" style={S.sec}>
-        <div className="g-rooms" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(270px,1fr))", gap:28 }}>
-          {ROOMS.map((room, i) => <RoomCard key={room.id} room={room} onBook={() => handleBook(room)} currentUser={currentUser} setPage={setPage} bookings={bookings} delay={`sr-d${i+1}`} />)}
-        </div>
-      </div>
-      <Footer />
-    </div>
-  );
-}
-
-function RoomsPage({ setPage, handleBook, currentUser, bookings }) {
-  const [ci, setCi] = useState(todayStr());
-  const [co, setCo] = useState(tomorrowStr());
-  return (
-    <div>
-      <div style={{ background:"#1a1a2e", padding:"52px 24px 36px" }}>
-        <h1 className="playfair" style={{ color:"#fff", fontSize:38, fontWeight:900 }}>Rooms</h1>
-      </div>
-      <div style={{ ...S.sec }}>
-        {ROOMS.map(room => (
-          <div key={room.id} style={{ ...S.card, marginBottom:30, display:"flex", flexWrap:"wrap" }}>
-            <img src={room.img} style={{ width:300, height:200, objectFit:"cover" }} />
-             <div style={{ padding:20, flex:1 }}>
-              <h2 className="playfair">{room.name}</h2>
-              <p>{room.desc}</p>
-              <div style={{ fontSize:24, fontWeight:800, color:room.color }}>{fmtINR(room.price)}</div>
-              <button onClick={() => handleBook(room)} style={{ ...S.btn(room.color) }}>Book Now</button>
+    <div style={{padding:60,maxWidth:1000,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(300px,1fr))",gap:40}}>
+      {ROOMS.map(r => (
+        <div key={r.id} style={{background:"#fff",borderRadius:16,overflow:"hidden",boxShadow:"0 4px 20px rgba(0,0,0,0.08)"}}>
+          <img src={r.img} style={{width:"100%",height:220,objectFit:"cover"}} />
+          <div style={{padding:24}}>
+            <h3 className="playfair" style={{fontSize:22,marginBottom:10}}>{r.name}</h3>
+            <p style={{color:"#666",fontSize:15,marginBottom:20}}>{r.desc}</p>
+            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <span style={{fontSize:24,fontWeight:800,color:"#B8860B"}}>{fmtINR(r.price)}</span>
+              <button onClick={()=>setPage("rooms")} style={{padding:"10px 20px",background:"#1a1a2e",color:"#fff",borderRadius:8}}>Details</button>
             </div>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
-  );
+  </div>;
 }
-
-function LoginPage({ handleLogin, setPage }) {
-  const [email, setEmail] = useState("");
-  const submit = () => handleLogin({ email, name:"Guest" });
-  return (
-    <div style={{ padding:60, textAlign:"center" }}>
-      <h2 className="playfair">Login</h2>
-      <input value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" style={S.input} />
-      <button onClick={submit} style={{ ...S.btn("#1a1a2e"), marginTop:20 }}>Sign In</button>
-    </div>
-  );
+function RoomsPage() {
+  return <div style={{padding:60,textAlign:"center"}}>
+    <h2 className="playfair" style={{fontSize:32}}>Our Rooms</h2>
+    <p style={{color:"#888"}}>Real-time booking coming soon.</p>
+  </div>;
 }
-
-function Footer() {
-  return (
-    <div style={{ background:"#0f0f1e", padding:40, textAlign:"center", color:"#555" }}>
-      <p>© 2026 The Grand Meridian</p>
-    </div>
-  );
-}
-
 function App() {
   const [page, setPage] = useState("landing");
-  const [currentUser, setCurrentUser] = useState(null);
-  const [bookings, setBookings] = useState(SEED_BOOKINGS);
-  const [selectedRoom, setSelectedRoom] = useState(null);
-
-  const nav = p => { setPage(p); window.scrollTo(0,0); };
-  const handleLogin = u => { setCurrentUser(u); nav("landing"); };
-  const handleLogout = () => { setCurrentUser(null); nav("landing"); };
-  const handleBook = r => { setSelectedRoom(r); if(!currentUser) nav("login"); else nav("rooms"); };
-
-  const props = { page, setPage:nav, currentUser, bookings, handleLogin, handleLogout, handleBook };
-
-  return (
-    <div style={{ minHeight:"100vh", background:"var(--bg)" }}>
-      <Navbar {...props} />
-      {page === "landing" && <LandingPage {...props} />}
-      {page === "login" && <LoginPage {...props} />}
-      {page === "rooms" && <RoomsPage {...props} />}
-      <Footer />
-    </div>
-  );
+  return <div>
+    <Navbar setPage={setPage} />
+    {page === "landing" && <LandingPage setPage={setPage} />}
+    {page === "rooms" && <RoomsPage />}
+    <footer style={{background:"#0f0f12",color:"#444",padding:40,textAlign:"center",fontSize:12}}>
+      © 2026 THE GRAND MERIDIAN HOTEL
+    </footer>
+  </div>;
 }
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 </script>
