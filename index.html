@@ -12,49 +12,180 @@
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
       :root {
-        --dark: #1a1a2e; --darker: #0f0f1e; --gold: #B8860B; --gold-light: #D4A843; --gold-glow: rgba(184,134,11,0.3); --bg: #f8f6f0; --card: #ffffff; --text: #222; --text-dim: #666; --text-muted: #999; --border: #e8e4dc; --success: #059669; --error: #DC2626; --blue: #2563EB; --pink: #DB2777; --purple: #7C3AED; --amber: #B45309;
+        --dark: #1a1a2e;
+        --darker: #0f0f1e;
+        --gold: #B8860B;
+        --gold-light: #D4A843;
+        --gold-glow: rgba(184,134,11,0.3);
+        --bg: #f8f6f0;
+        --card: #ffffff;
+        --text: #222;
+        --text-dim: #666;
+        --text-muted: #999;
+        --border: #e8e4dc;
+        --success: #059669;
+        --error: #DC2626;
+        --blue: #2563EB;
+        --pink: #DB2777;
+        --purple: #7C3AED;
+        --amber: #B45309;
       }
       html { scroll-behavior: smooth; }
-      body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+      body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
       .playfair { font-family: 'Playfair Display', serif; }
       button { cursor: pointer; border: none; font-family: inherit; }
       input, select { font-family: inherit; }
       img { display: block; }
-      .sr { opacity: 0; transform: translateY(28px); transition: 0.7s ease-out; }
-      .sr.vis { opacity: 1; transform: translateY(0); }
-      .room3d-wrap { perspective: 800px; width: 100%; height: 210px; overflow: hidden; cursor: grab; user-select: none; position: relative; }
-      .room3d-cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s linear; }
-      .room3d-face { position: absolute; width:100%; height:100%; backface-visibility:hidden; display:flex; align-items:center; justify-content:center; }
-      .room3d-face img { width:100%; height:100%; object-fit:cover; position:absolute; }
-      .room3d-face--front { transform: rotateY(0deg) translateZ(150px); }
-      .room3d-face--right { transform: rotateY(90deg) translateZ(150px); }
-      .room3d-face--back  { transform: rotateY(180deg) translateZ(150px); }
-      .room3d-face--left  { transform: rotateY(-90deg) translateZ(150px); }
-      .room3d-face--top   { transform: rotateX(90deg) translateZ(105px); }
-      .room3d-face--bottom{ transform: rotateX(-90deg) translateZ(105px); }
 
-      /* Mobile */
+      /* Scroll Reveal */
+      .sr { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1); }
+      .sr.vis { opacity: 1; transform: translateY(0); }
+      .sr-d1 { transition-delay: 0.1s; }
+      .sr-d2 { transition-delay: 0.2s; }
+      .sr-d3 { transition-delay: 0.3s; }
+      .sr-d4 { transition-delay: 0.4s; }
+
+      /* 3D Room Viewer */
+      .room3d-wrap { perspective: 800px; width: 100%; height: 210px; overflow: hidden; cursor: grab; user-select: none; }
+      .room3d-wrap:active { cursor: grabbing; }
+      .room3d-cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s linear; }
+      .room3d-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; padding: 16px; text-align: center; border-radius: 0; }
+      .room3d-face img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+      .room3d-face .room3d-label { position: relative; z-index: 2; background: rgba(0,0,0,0.55); padding: 6px 14px; border-radius: 6px; font-size: 11px; }
+      .room3d-face--front  { transform: rotateY(0deg) translateZ(150px); }
+      .room3d-face--right  { transform: rotateY(90deg) translateZ(150px); }
+      .room3d-face--back   { transform: rotateY(180deg) translateZ(150px); }
+      .room3d-face--left   { transform: rotateY(-90deg) translateZ(150px); }
+      .room3d-face--top    { transform: rotateX(90deg) translateZ(105px); }
+      .room3d-face--bottom { transform: rotateX(-90deg) translateZ(105px); }
+
+      /* Toast */
+      .toast-enter { animation: toastIn 0.4s ease; }
+      @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar { width: 7px; }
+      ::-webkit-scrollbar-track { background: var(--bg); }
+      ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+      /* Shimmer on hover */
+      .shimmer { position: relative; overflow: hidden; }
+      .shimmer::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transition: left 0.5s; }
+      .shimmer:hover::after { left: 100%; }
+
+      /* Progress bar for loyalty */
+      .loyalty-bar { height: 8px; background: #e5e5e5; border-radius: 99px; overflow: hidden; }
+      .loyalty-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 99px; transition: width 1s ease; }
+
+      /* Hamburger */
+      .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+      .hamburger span { display: block; width: 22px; height: 2px; background: #fff; margin: 5px 0; border-radius: 2px; transition: all 0.3s; }
+      .mob-menu { display: none; }
+
+      /* ═══════ RESPONSIVE ═══════ */
       @media (max-width: 768px) {
-        .hamburger { display: block !important; background: none; border: none; }
-        .hamburger span { display: block; width: 22px; height: 2px; background: #fff; margin: 4px; }
+        .hamburger { display: block; }
         .desk-nav { display: none !important; }
-        .mob-menu { display: flex; flex-direction: column; position: fixed; top: 60px; left: 0; right: 0; bottom: 0; background: rgba(26,26,46,0.98); padding: 24px; z-index: 99; }
-        .mob-menu span { color: #fff; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .g-stats { grid-template-columns: 1fr 1fr !important; }
+        .mob-menu {
+          display: flex; flex-direction: column; gap: 0;
+          position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
+          background: rgba(26,26,46,0.98); backdrop-filter: blur(16px);
+          padding: 24px; z-index: 99; overflow-y: auto;
+        }
+        .mob-menu a, .mob-menu span {
+          display: block; color: #ccc; font-size: 18px; font-weight: 600;
+          padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+          cursor: pointer; text-decoration: none;
+        }
+        .mob-menu .mob-btn {
+          margin-top: 16px; padding: 14px; text-align: center;
+          border-radius: 10px; font-weight: 700; font-size: 16px;
+        }
+
+        /* Grid overrides */
+        .g-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
         .g-rooms { grid-template-columns: 1fr !important; }
+        .g-loyalty { grid-template-columns: 1fr !important; }
+        .g-features { grid-template-columns: repeat(2, 1fr) !important; }
+        .g-amenities { grid-template-columns: 1fr !important; }
+        .g-menu-items { grid-template-columns: 1fr !important; }
+        .g-2col { grid-template-columns: 1fr !important; }
+        .g-dash { grid-template-columns: 1fr !important; }
+        .g-pay-methods { grid-template-columns: 1fr !important; }
+        .g-dash-stats { grid-template-columns: repeat(2, 1fr) !important; }
+
+        /* Room page horizontal card → stacked */
         .room-row { flex-direction: column !important; }
+        .room-row-img { flex: unset !important; width: 100% !important; min-height: 200px !important; max-height: 220px !important; }
+        .room-row-body { padding: 20px 16px !important; }
+        .room-row-header { flex-direction: column !important; }
+        .room-row-price { text-align: left !important; margin-top: 8px; }
+
+        /* Hero */
+        .hero-wrap { height: auto !important; min-height: 480px !important; }
         .hero-inner { padding: 0 20px !important; }
         .hero-title { font-size: 32px !important; }
+        .hero-sub { font-size: 14px !important; }
+        .hero-btns { flex-direction: column !important; gap: 10px !important; }
+        .hero-btns button { width: 100%; }
+
+        /* Section padding */
+        .sec-mob { padding: 40px 16px !important; }
+        .sec-heading { font-size: 26px !important; }
+
+        /* Page headers */
+        .page-header h1 { font-size: 26px !important; }
+
+        /* Booking / Payment sidebar → stack below */
+        .book-grid { grid-template-columns: 1fr !important; }
+        .pay-grid { grid-template-columns: 1fr !important; }
+
+        /* Date picker bar */
+        .date-bar { flex-direction: column !important; gap: 10px !important; }
+        .date-bar input { width: 100% !important; }
+
+        /* Menu category tabs scroll */
+        .menu-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap !important; padding-bottom: 8px; }
+        .menu-tabs button { white-space: nowrap; flex-shrink: 0; }
+
+        /* Toast */
+        .toast-enter { left: 12px; right: 12px; max-width: unset !important; }
+
+        /* Footer */
+        .footer-text { font-size: 11px !important; }
+
+        /* Auth pages */
+        .auth-card { padding: 28px 20px !important; }
+
+        /* Navbar height */
+        .nav-inner { height: 60px !important; padding: 0 16px !important; }
+        .nav-logo-text { font-size: 16px !important; }
+        .nav-logo-icon { width: 34px !important; height: 34px !important; font-size: 14px !important; }
+      }
+
+      @media (max-width: 480px) {
+        .g-features { grid-template-columns: 1fr !important; }
+        .g-loyalty-cards { grid-template-columns: 1fr !important; }
+        .g-dash-stats { grid-template-columns: 1fr !important; }
+        .hero-title { font-size: 28px !important; }
+        .room-avail-grid { gap: 4px !important; }
+        .room-avail-grid > div { width: 38px !important; height: 28px !important; font-size: 11px !important; }
       }
     </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel">
+<div id="root"></div>
+
+<script type="text/babel">
 const { useState, useEffect, useRef, useCallback } = React;
+
+// ═══════════════════════════════════════
+//  CONSTANTS & DATA
+// ═══════════════════════════════════════
 const HOTEL = "The Grand Meridian";
 
-const ROOMS = [
+const DEFAULT_ROOMS = [
   { id:"economy", name:"Economy Room", price:1000, color:"#2563EB", lightBg:"#EFF6FF",
     roomNos:["101","102","103","104","105","106","107","108","109","110"],
     img:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&auto=format&fit=crop&q=80",
@@ -88,73 +219,1497 @@ const ROOMS = [
     meals:["Breakfast","Lunch","Dinner"], badge:"Luxury",
     desc:"The pinnacle of luxury with a massive private balcony, panoramic views, dedicated butler, and all-inclusive dining." },
 ];
+// Live reference — will be updated by App state
+let ROOMS = DEFAULT_ROOMS;
 
+const SEED_BOOKINGS = [
+  { id:"s1", roomId:"economy", roomNo:"101", checkIn:"2026-04-10", checkOut:"2026-04-20", userId:"_s", guestName:"Ravi Kumar", total:10000, payMethod:"hotel", status:"confirmed" },
+  { id:"s2", roomId:"economy", roomNo:"102", checkIn:"2026-04-12", checkOut:"2026-04-17", userId:"_s", guestName:"Deepak Jain", total:5000, payMethod:"online", status:"confirmed" },
+  { id:"s3", roomId:"couple", roomNo:"201", checkIn:"2026-04-11", checkOut:"2026-04-15", userId:"_s", guestName:"Priya Sharma", total:10000, payMethod:"online", status:"confirmed" },
+  { id:"s4", roomId:"presidential", roomNo:"401", checkIn:"2026-04-15", checkOut:"2026-04-18", userId:"_s", guestName:"Arjun Mehta", total:24000, payMethod:"online", status:"confirmed" },
+  { id:"s5", roomId:"premium", roomNo:"301", checkIn:"2026-04-12", checkOut:"2026-04-16", userId:"_s", guestName:"Sneha Iyer", total:20000, payMethod:"online", status:"confirmed" },
+  { id:"s6", roomId:"couple", roomNo:"203", checkIn:"2026-04-14", checkOut:"2026-04-19", userId:"_s", guestName:"Anjali Rao", total:12500, payMethod:"hotel", status:"confirmed" },
+];
+
+const MENU = {
+  Breakfast:[
+    {n:"Continental Breakfast",p:350},{n:"Full English Breakfast",p:450},{n:"Masala Dosa & Sambar",p:180},
+    {n:"Idli Sambar (4 pcs)",p:150},{n:"Fresh Fruit Bowl",p:200},{n:"Pancakes with Maple Syrup",p:280},
+    {n:"Poha with Sev",p:120},{n:"Upma with Chutney",p:110},{n:"Aloo Paratha Set",p:190},
+    {n:"Egg Benedict",p:320},{n:"French Toast",p:250},{n:"Waffles with Berries",p:300},
+    {n:"Croissant & Butter",p:160},{n:"Muesli Bowl",p:220},{n:"Smoothie Bowl",p:280},
+    {n:"Bread Omelette",p:130},{n:"Puri Bhaji",p:170},{n:"Chole Bhature",p:200},
+    {n:"Cornflakes with Milk",p:100},{n:"Sabudana Khichdi",p:140},{n:"Mixed Sprouts Salad",p:160},
+  ],
+  Lunch:[
+    {n:"Butter Chicken with Naan",p:420},{n:"Dal Makhani & Jeera Rice",p:320},{n:"Grilled Salmon Fillet",p:680},
+    {n:"Caesar Salad",p:280},{n:"Club Sandwich",p:350},{n:"Pasta Arrabbiata",p:380},
+    {n:"Veg Thali",p:250},{n:"Non-Veg Thali",p:350},{n:"Biryani (Veg)",p:300},
+    {n:"Chicken Biryani",p:380},{n:"Mutton Biryani",p:450},{n:"Fish Curry with Rice",p:400},
+    {n:"Paneer Tikka Wrap",p:280},{n:"Chicken Shawarma",p:320},{n:"Mushroom Risotto",p:420},
+    {n:"Tom Yum Soup",p:280},{n:"Sweet Corn Soup",p:180},{n:"Greek Salad",p:260},
+    {n:"Rajma Chawal",p:220},{n:"Kadhi Chawal",p:200},{n:"Prawn Curry",p:520},
+  ],
+  Dinner:[
+    {n:"Tandoori Mixed Platter",p:850},{n:"Lamb Rogan Josh",p:680},{n:"Grilled Lobster",p:1200},
+    {n:"Mushroom Risotto",p:480},{n:"BBQ Pork Ribs",p:780},{n:"Paneer Tikka Masala",p:420},
+    {n:"Butter Garlic Prawns",p:680},{n:"Chicken Stroganoff",p:520},{n:"Lamb Chops",p:920},
+    {n:"Fish & Chips",p:380},{n:"Spaghetti Carbonara",p:420},{n:"Steak au Poivre",p:1100},
+    {n:"Palak Paneer",p:320},{n:"Malai Kofta",p:340},{n:"Chicken Korma",p:440},
+    {n:"Duck Confit",p:980},{n:"Seafood Paella",p:880},{n:"Vegetable Lasagna",p:380},
+    {n:"Thai Green Curry",p:420},{n:"Naan Bread Basket",p:120},{n:"Garlic Rice",p:160},
+  ],
+  Beverages:[
+    {n:"Fresh Seasonal Juice",p:180},{n:"Masala Chai",p:80},{n:"Cappuccino / Latte",p:220},
+    {n:"Signature Mocktail",p:250},{n:"Sparkling Water",p:60},{n:"Soft Drinks",p:100},
+    {n:"Green Tea",p:120},{n:"Hot Chocolate",p:200},{n:"Mango Lassi",p:150},
+    {n:"Buttermilk",p:80},{n:"Filter Coffee",p:120},{n:"Espresso Shot",p:160},
+    {n:"Milkshake (Chocolate)",p:200},{n:"Milkshake (Strawberry)",p:200},{n:"Cold Coffee",p:180},
+    {n:"Iced Tea (Peach)",p:160},{n:"Lemonade",p:100},{n:"Coconut Water",p:80},
+    {n:"Virgin Mojito",p:220},{n:"Blue Lagoon",p:250},{n:"Pina Colada",p:280},
+  ],
+  Snacks:[
+    {n:"French Fries",p:180},{n:"Onion Rings",p:160},{n:"Chicken Wings (6)",p:320},
+    {n:"Veg Spring Rolls",p:200},{n:"Samosa (2 pcs)",p:80},{n:"Paneer Tikka",p:280},
+    {n:"Nachos with Salsa",p:250},{n:"Bruschetta",p:220},{n:"Garlic Bread",p:160},
+    {n:"Fish Fingers",p:300},{n:"Cheese Balls",p:200},{n:"Momos (Steamed)",p:180},
+    {n:"Chicken Nuggets",p:260},{n:"Pav Bhaji",p:180},{n:"Dahi Puri",p:120},
+    {n:"Bhel Puri",p:100},{n:"Vada Pav",p:80},{n:"Hakka Noodles",p:220},
+    {n:"Fried Rice",p:200},{n:"Manchurian (Dry)",p:240},{n:"Potato Wedges",p:180},
+  ],
+  Desserts:[
+    {n:"Gulab Jamun (2 pcs)",p:120},{n:"Rasmalai",p:150},{n:"Chocolate Brownie",p:220},
+    {n:"Ice Cream Sundae",p:250},{n:"Tiramisu",p:320},{n:"Crème Brûlée",p:350},
+    {n:"Mango Kulfi",p:130},{n:"Gajar Ka Halwa",p:160},{n:"Jalebi",p:100},
+    {n:"Cheesecake Slice",p:300},{n:"Panna Cotta",p:280},{n:"Apple Pie",p:260},
+    {n:"Kheer",p:140},{n:"Rabri",p:150},{n:"Fruit Trifle",p:220},
+    {n:"Chocolate Lava Cake",p:320},{n:"Banana Split",p:280},{n:"Falooda",p:180},
+    {n:"Shahi Tukda",p:170},{n:"Rasgulla (2 pcs)",p:100},{n:"Mysore Pak",p:120},
+  ],
+};
+
+const AMENITY_DATA = [
+  { icon:"🏊", title:"Swimming Pool", img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&auto=format&fit=crop&q=80", desc:"Olympic-size heated pool with dedicated lanes, loungers, and a separate splash zone for kids. Open 6 AM – 10 PM daily.", tag:"Complimentary · Premium & Presidential", hours:"6 AM – 10 PM" },
+  { icon:"🏋️", title:"Fitness Center", img:"https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=80", desc:"State-of-the-art gym with Technogym equipment, treadmills, free weights, and on-request personal trainers.", tag:"Open 24/7 · All guests", hours:"24 Hours" },
+  { icon:"💆", title:"Spa & Wellness", img:"https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&auto=format&fit=crop&q=80", desc:"Award-winning spa offering traditional Ayurvedic treatments, deep tissue massages, and luxury beauty therapies.", tag:"Advance booking recommended", hours:"9 AM – 9 PM" },
+  { icon:"🍽️", title:"The Meridian Table", img:"https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&auto=format&fit=crop&q=80", desc:"Our signature multi-cuisine restaurant serving exquisite North Indian, South Indian, and international cuisine.", tag:"Open to all", hours:"7 AM – 11 PM" },
+];
+
+// ═══════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════
 const fmtINR = n => "₹" + Number(n).toLocaleString("en-IN");
+const fmtDate = d => d ? new Date(d+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}) : "—";
+const calcNights = (ci,co) => { const d = Math.round((new Date(co)-new Date(ci))/864e5); return d > 0 ? d : 1; };
+const todayStr = () => new Date().toISOString().split("T")[0];
+const tomorrowStr = () => { const d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().split("T")[0]; };
+const overlap = (aIn,aOut,bIn,bOut) => aIn < bOut && aOut > bIn;
 
+function getBookedRoomNos(roomId, ci, co, bookings) {
+  return bookings.filter(b => b.roomId === roomId && b.status === "confirmed" && overlap(ci, co, b.checkIn, b.checkOut)).map(b => b.roomNo);
+}
+function getAvailRoomNo(roomId, ci, co, bookings) {
+  const room = ROOMS.find(r => r.id === roomId);
+  const busy = getBookedRoomNos(roomId, ci, co, bookings);
+  return room.roomNos.find(no => !busy.includes(no)) || null;
+}
+
+// ═══════════════════════════════════════
+//  STYLES
+// ═══════════════════════════════════════
 const S = {
   btn: (bg, c="#fff") => ({ background:bg, color:c, border:"none", padding:"12px 26px", borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer", transition:"all .2s", display:"inline-flex", alignItems:"center", gap:8, justifyContent:"center" }),
   outBtn: c => ({ background:"transparent", color:c, border:`1.5px solid ${c}`, padding:"11px 24px", borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer", transition:"all .2s" }),
   input: { width:"100%", padding:"12px 16px", borderRadius:10, border:"1.5px solid #e0e0e0", fontSize:15, outline:"none", boxSizing:"border-box", background:"#fff", color:"#222", fontFamily:"inherit", transition:"border-color .2s" },
   card: { background:"#fff", borderRadius:18, boxShadow:"0 2px 24px rgba(0,0,0,0.07)", overflow:"hidden" },
   sec: { maxWidth:1200, margin:"0 auto", padding:"72px 24px" },
+  lbl: { fontSize:12, fontWeight:700, color:"#777", marginBottom:6, display:"block", textTransform:"uppercase", letterSpacing:"0.5px" },
 };
 
-function Navbar({ setPage, currentUser, handleLogout }) {
-  const [isOpen, setIsOpen] = useState(false);
+// ═══════════════════════════════════════
+//  HOOKS
+// ═══════════════════════════════════════
+function useScrollReveal() {
+  const ref = useRef(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) e.target.classList.add('vis'); }, { threshold: 0.12 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return ref;
+}
+
+// ═══════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════
+function Toast({ msg, type }) {
+  const bg = type === "error" ? "#DC2626" : "#059669";
   return (
-    <nav style={{ background: "var(--darker)", padding: "18px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff", position: "sticky", top: 0, zIndex: 1000 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-        <div style={{ width: 32, height: 32, background: "var(--gold)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 18 }}>⭐</div>
-        <span className="playfair" style={{ fontWeight: 800, fontSize: 20 }}>{HOTEL}</span>
+    <div className="toast-enter" style={{ position:"fixed", top:24, right:24, zIndex:9999, background:bg, color:"#fff", padding:"14px 24px", borderRadius:12, fontWeight:600, boxShadow:"0 6px 30px rgba(0,0,0,0.25)", maxWidth:360, fontSize:15, display:"flex", alignItems:"center", gap:10 }}>
+      <span style={{fontSize:18}}>{type === "error" ? "⚠" : "✓"}</span> {msg}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  3D ROOM VIEWER
+// ═══════════════════════════════════════
+function Room3DViewer({ room }) {
+  const [rotY, setRotY] = useState(-20);
+  const [rotX, setRotX] = useState(10);
+  const dragging = useRef(false);
+  const lastPos = useRef({ x:0, y:0 });
+
+  const onDown = e => {
+    dragging.current = true;
+    const pt = e.touches ? e.touches[0] : e;
+    lastPos.current = { x: pt.clientX, y: pt.clientY };
+  };
+  const onMove = e => {
+    if (!dragging.current) return;
+    const pt = e.touches ? e.touches[0] : e;
+    const dx = pt.clientX - lastPos.current.x;
+    const dy = pt.clientY - lastPos.current.y;
+    setRotY(prev => prev + dx * 0.6);
+    setRotX(prev => Math.max(-30, Math.min(30, prev - dy * 0.4)));
+    lastPos.current = { x: pt.clientX, y: pt.clientY };
+  };
+  const onUp = () => { dragging.current = false; };
+
+  useEffect(() => {
+    window.addEventListener('mouseup', onUp);
+    window.addEventListener('touchend', onUp);
+    return () => { window.removeEventListener('mouseup', onUp); window.removeEventListener('touchend', onUp); };
+  }, []);
+
+  const faces = [
+    { cls: "room3d-face--front", label: "Bedroom View", img: room.img },
+    { cls: "room3d-face--right", label: "Bathroom", img: room.img2 },
+    { cls: "room3d-face--back", label: "Window View", img: room.img3 },
+    { cls: "room3d-face--left", label: "Entrance", img: room.img },
+    { cls: "room3d-face--top", label: "Ceiling", img: null },
+    { cls: "room3d-face--bottom", label: "Floor Plan", img: null },
+  ];
+
+  return (
+    <div className="room3d-wrap" onMouseDown={onDown} onMouseMove={onMove} onTouchStart={onDown} onTouchMove={onMove} style={{ background: room.lightBg }}>
+      <div className="room3d-cube" style={{ transform: `rotateX(${rotX}deg) rotateY(${rotY}deg)` }}>
+        {faces.map((f, i) => (
+          <div key={i} className={`room3d-face ${f.cls}`} style={{ background: f.img ? 'transparent' : room.color }}>
+            {f.img && <img src={f.img} alt={f.label} />}
+            <span className="room3d-label">{f.label}</span>
+          </div>
+        ))}
       </div>
-      <div className="desk-nav" style={{ display: "flex", gap: 32, fontSize: 14, fontWeight: 600 }}>
-        <span onClick={() => setPage("landing")} style={{ cursor: "pointer" }}>Home</span>
-        <span onClick={() => setPage("rooms")} style={{ cursor: "pointer" }}>Rooms</span>
+      <div style={{ position:"absolute", bottom:8, left:0, right:0, textAlign:"center", fontSize:10, color:"#999", fontWeight:600, pointerEvents:"none" }}>
+        ↔ Drag to rotate 360°
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-        <div className="desk-nav">
-          <button onClick={() => setPage("login")} style={S.btn("var(--gold)")}>Login</button>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  NAVBAR
+// ═══════════════════════════════════════
+function Navbar({ page, setPage, currentUser, handleLogout, points }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobOpen, setMobOpen] = useState(false);
+  useEffect(() => {
+    const fn = () => setScrolled(window.scrollY > 30);
+    window.addEventListener("scroll", fn);
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
+  const go = p => { setPage(p); setMobOpen(false); };
+
+  const links = [["Home","landing"],["Rooms","rooms"],["Amenities","amenities"]];
+  return (
+    <nav style={{ position:"sticky", top:0, zIndex:100, background: scrolled ? "rgba(26,26,46,0.97)" : "#1a1a2e", boxShadow: scrolled ? "0 2px 20px rgba(0,0,0,0.4)" : "none", transition:"all .3s", backdropFilter:"blur(12px)" }}>
+      <div className="nav-inner" style={{ maxWidth:1200, margin:"0 auto", padding:"0 24px", display:"flex", alignItems:"center", justifyContent:"space-between", height:68 }}>
+        <div onClick={() => go("landing")} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}>
+          <div className="nav-logo-icon" style={{ background:"linear-gradient(135deg, #B8860B, #D4A843)", width:40, height:40, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, boxShadow:"0 2px 12px rgba(184,134,11,0.3)" }}>⭐</div>
+          <span className="playfair nav-logo-text" style={{ color:"#fff", fontWeight:800, fontSize:20, letterSpacing:".2px" }}>{HOTEL}</span>
         </div>
-        <button className="hamburger" onClick={() => setIsOpen(!isOpen)} style={{ display: "none" }}>
-          <span></span><span></span><span></span>
+
+        {/* Desktop Nav */}
+        <div className="desk-nav" style={{ display:"flex", alignItems:"center", gap:24, flexWrap:"wrap" }}>
+          {links.map(([l,p]) =>
+            <span key={p} onClick={() => go(p)} style={{ color: page===p ? "#B8860B" : "#bbb", cursor:"pointer", fontWeight: page===p ? 700 : 500, fontSize:14, transition:"color .2s", borderBottom: page===p ? "2px solid #B8860B" : "2px solid transparent", paddingBottom:4 }}>{l}</span>
+          )}
+          {currentUser ? (
+            <div style={{ display:"flex", alignItems:"center", gap:12, marginLeft:8 }}>
+              <span onClick={() => go("dashboard")} style={{ color: page==="dashboard" ? "#B8860B" : "#bbb", cursor:"pointer", fontSize:14, fontWeight: page==="dashboard" ? 700 : 500 }}>My Bookings</span>
+              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                <div style={{ position:"relative" }}>
+                  <div onClick={() => go("dashboard")} style={{ background:"linear-gradient(135deg, #B8860B, #D4A843)", width:38, height:38, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:800, fontSize:15, cursor:"pointer", boxShadow:"0 2px 10px rgba(184,134,11,0.3)" }}>
+                    {currentUser.name[0].toUpperCase()}
+                  </div>
+                  {points >= 3000 && <div style={{ position:"absolute", top:-2, right:-2, width:10, height:10, background:"#059669", borderRadius:"50%", border:"2px solid #1a1a2e" }} />}
+                </div>
+                <div style={{ display:"flex", flexDirection:"column", lineHeight:1.2 }}>
+                  <span style={{ color:"#fff", fontSize:12, fontWeight:600 }}>{currentUser.name.split(" ")[0]}</span>
+                  <span style={{ color:"#B8860B", fontSize:10, fontWeight:800 }}>{points} PTS</span>
+                </div>
+                <button onClick={handleLogout} style={{ ...S.outBtn("#666"), padding:"5px 12px", fontSize:12 }}>Logout</button>
+              </div>
+            </div>
+          ) : (
+            <div style={{ display:"flex", alignItems:"center", gap:12, marginLeft:8 }}>
+              <span onClick={() => go("login")} style={{ color:"#bbb", cursor:"pointer", fontSize:14 }}>Login</span>
+              <button onClick={() => go("signup")} style={{ ...S.btn("linear-gradient(135deg, #B8860B, #D4A843)", "#fff"), padding:"8px 20px", fontSize:13, borderRadius:8 }}>Sign Up</button>
+            </div>
+          )}
+        </div>
+
+        {/* Hamburger */}
+        <button className="hamburger" onClick={() => setMobOpen(!mobOpen)} aria-label="Menu">
+          <span style={{ transform: mobOpen ? "rotate(45deg) translate(5px,5px)" : "none" }} />
+          <span style={{ opacity: mobOpen ? 0 : 1 }} />
+          <span style={{ transform: mobOpen ? "rotate(-45deg) translate(5px,-5px)" : "none" }} />
         </button>
       </div>
-      {isOpen && (
+
+      {/* Mobile Menu */}
+      {mobOpen && (
         <div className="mob-menu">
-          <span onClick={() => { setPage("landing"); setIsOpen(false); }}>Home</span>
-          <span onClick={() => { setPage("rooms"); setIsOpen(false); }}>Rooms</span>
-          <span onClick={() => { setPage("login"); setIsOpen(false); }}>Login</span>
+          {links.map(([l,p]) => <span key={p} onClick={() => go(p)} style={{ color: page===p ? "#B8860B" : "#ccc" }}>{l}</span>)}
+          {currentUser ? (
+            <React.Fragment>
+              <span onClick={() => go("dashboard")} style={{ color: page==="dashboard" ? "#B8860B" : "#ccc" }}>📋 My Bookings</span>
+              <div style={{ padding:"16px 0", borderBottom:"1px solid rgba(255,255,255,0.06)", display:"flex", alignItems:"center", gap:12 }}>
+                <div style={{ background:"linear-gradient(135deg, #B8860B, #D4A843)", width:40, height:40, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:800, fontSize:16 }}>{currentUser.name[0].toUpperCase()}</div>
+                <div><div style={{color:"#fff", fontWeight:700}}>{currentUser.name}</div><div style={{color:"#B8860B", fontSize:12, fontWeight:800}}>⭐ {points} Points</div></div>
+              </div>
+              <button onClick={() => { handleLogout(); setMobOpen(false); }} className="mob-btn" style={{ background:"rgba(255,255,255,0.08)", color:"#fff", border:"none", cursor:"pointer", marginTop:16, padding:14, borderRadius:10, fontWeight:700, fontSize:16 }}>Logout</button>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <span onClick={() => go("login")}>Login</span>
+              <button onClick={() => go("signup")} className="mob-btn" style={{ background:"linear-gradient(135deg, #B8860B, #D4A843)", color:"#fff", border:"none", cursor:"pointer" }}>Sign Up Free</button>
+            </React.Fragment>
+          )}
         </div>
       )}
     </nav>
   );
 }
 
-function LandingPage({ setPage }) {
+// ═══════════════════════════════════════
+//  ROOM CARD (with 3D toggle)
+// ═══════════════════════════════════════
+function RoomCard({ room, onBook, currentUser, setPage, bookings, delay="" }) {
+  const [hov, setHov] = useState(false);
+  const [view3d, setView3d] = useState(false);
+  const ref = useScrollReveal();
+  const is101Booked = room.id === "economy" && bookings.some(b => b.roomNo === "101" && b.status === "confirmed");
+
   return (
-    <div>
-      <div style={{ position:"relative", height:500, overflow:"hidden", background:"var(--dark)", display:"flex", alignItems:"center", justifyContent:"center", textAlign:"center", color:"#fff", padding:20 }}>
-        <div className="hero-inner">
-          <h1 className="playfair hero-title" style={{ fontSize:48, marginBottom:24 }}>Experience True Luxury & Comfort</h1>
-          <button onClick={() => setPage("rooms")} style={{ ...S.btn("var(--gold)"), padding:"16px 40px", fontSize:18 }}>Browse Rooms</button>
+    <div ref={ref} className={`sr ${delay}`} style={{ ...S.card, transition:"transform .25s, box-shadow .25s", transform: hov ? "translateY(-8px)" : "none", boxShadow: hov ? `0 12px 40px rgba(0,0,0,0.13)` : "0 2px 24px rgba(0,0,0,0.07)" }}
+      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
+
+      {/* Photo / 3D Toggle */}
+      <div style={{ position:"relative" }}>
+        <div style={{ position:"absolute", top:10, left:10, zIndex:10, display:"flex", gap:0, borderRadius:8, overflow:"hidden", border:"1px solid rgba(255,255,255,0.3)" }}>
+          <button onClick={() => setView3d(false)} style={{ padding:"4px 12px", fontSize:10, fontWeight:700, border:"none", background: !view3d ? room.color : "rgba(0,0,0,0.5)", color:"#fff", cursor:"pointer" }}>📷 Photo</button>
+          <button onClick={() => setView3d(true)} style={{ padding:"4px 12px", fontSize:10, fontWeight:700, border:"none", background: view3d ? room.color : "rgba(0,0,0,0.5)", color:"#fff", cursor:"pointer" }}>🖥 3D</button>
+        </div>
+        {view3d ? (
+          <Room3DViewer room={room} />
+        ) : (
+          <div style={{ position:"relative", height:210, overflow:"hidden" }}>
+            <img src={room.img} alt={room.name} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform .4s", transform: hov ? "scale(1.05)" : "scale(1)" }} />
+            {room.badge && <div style={{ position:"absolute", top:12, right:12, background:room.color, color:"#fff", fontSize:10, fontWeight:800, padding:"4px 12px", borderRadius:20, boxShadow:"0 2px 10px rgba(0,0,0,0.2)", textTransform:"uppercase", letterSpacing:"0.5px" }}>{room.badge}</div>}
+            <div style={{ position:"absolute", bottom:0, left:0, right:0, height:80, background:"linear-gradient(transparent,rgba(0,0,0,0.6))" }} />
+          </div>
+        )}
+      </div>
+
+      <div style={{ padding:"20px 22px 24px" }}>
+        <h3 className="playfair" style={{ margin:"0 0 8px", fontSize:19, color:"#1a1a2e", fontWeight:800 }}>{room.name}</h3>
+        <p style={{ margin:"0 0 14px", fontSize:13, color:"#666", lineHeight:1.6 }}>{room.desc.slice(0,100)}…</p>
+        {room.meals.length > 0 && <div style={{ marginBottom:12 }}>{room.meals.map(m => <span key={m} style={{ background:"#F0FDF4", color:"#166534", fontSize:10, fontWeight:800, padding:"3px 9px", borderRadius:6, marginRight:6 }}>✓ {m}</span>)}</div>}
+        <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:14 }}>
+          {room.amenities.slice(0,4).map(a => <span key={a} style={{ background:room.lightBg, color:room.color, fontSize:10, padding:"3px 8px", borderRadius:6, fontWeight:600 }}>{a}</span>)}
+        </div>
+        {is101Booked && (
+          <div style={{ background:"#FEF2F2", border:"1px solid #FECACA", borderRadius:8, padding:"8px 12px", marginBottom:12, fontSize:12, color:"#DC2626", fontWeight:700, display:"flex", alignItems:"center", gap:6 }}>
+            🔒 Room 101 is currently booked
+          </div>
+        )}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", paddingTop:14, borderTop:"1px solid #f0f0f0" }}>
+          <div><div style={{ fontSize:24, fontWeight:800, color:room.color }}>{fmtINR(room.price)}</div><div style={{ fontSize:11, color:"#999" }}>per night</div></div>
+          <button onClick={currentUser ? onBook : () => setPage("login")} className="shimmer" style={{ ...S.btn(room.color), padding:"10px 20px", fontSize:13, borderRadius:8 }}>Book Now →</button>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  LANDING PAGE
+// ═══════════════════════════════════════
+function LandingPage(props) {
+  const { setPage, handleBook, currentUser, bookings } = props;
+  const heroRef = useScrollReveal();
+  const statsRef = useScrollReveal();
+
+  return (
+    <div>
+      {/* Hero */}
+      <div className="hero-wrap" style={{ position:"relative", height:620, overflow:"hidden" }}>
+        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&auto=format&fit=crop&q=80" alt="Hotel" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
+        <div style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,rgba(26,26,46,0.9) 0%,rgba(26,26,46,0.4) 100%)" }} />
+        <div ref={heroRef} className="sr vis hero-inner" style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", justifyContent:"center", padding:"0 64px", maxWidth:1200 }}>
+          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:4, textTransform:"uppercase", marginBottom:16, display:"flex", alignItems:"center", gap:10 }}>
+            <span style={{ width:40, height:1, background:"#B8860B", display:"inline-block" }} />
+            ★ 5-Star Luxury Hotel · Bengaluru
+          </div>
+          <h1 className="playfair hero-title" style={{ color:"#fff", fontSize:52, fontWeight:900, margin:"0 0 18px", lineHeight:1.12, maxWidth:600 }}>Experience True<br/>Luxury & Comfort</h1>
+          <p className="hero-sub" style={{ color:"rgba(255,255,255,0.8)", fontSize:17, maxWidth:500, margin:"0 0 36px", lineHeight:1.65 }}>From ₹1,000/night — World-class amenities, stunning views, and unforgettable Indian hospitality.</p>
+          <div className="hero-btns" style={{ display:"flex", gap:16 }}>
+            <button onClick={() => setPage("rooms")} className="shimmer" style={{ ...S.btn("linear-gradient(135deg, #B8860B, #D4A843)"), fontSize:16, padding:"16px 36px", borderRadius:12 }}>Browse Rooms</button>
+            <button onClick={() => setPage("amenities")} style={{ ...S.outBtn("#fff"), fontSize:16, padding:"15px 34px", borderRadius:12 }}>View Amenities</button>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div ref={statsRef} className="sr" style={{ background:"#1a1a2e", padding:"26px 24px" }}>
+        <div className="g-stats" style={{ maxWidth:1100, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:24 }}>
+          {[["500+","Happy Guests"],["4","Room Categories"],["24/7","Concierge Service"],["★ 4.9","Guest Rating"]].map(([v,l]) =>
+            <div key={l} style={{ textAlign:"center" }}>
+              <div style={{ color:"#B8860B", fontSize:28, fontWeight:800 }}>{v}</div>
+              <div style={{ color:"#888", fontSize:12, marginTop:4, fontWeight:500 }}>{l}</div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Room Cards */}
       <div className="sec-mob" style={S.sec}>
-        <div className="g-rooms" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32 }}>
-          {ROOMS.map(r => (
-            <div key={r.id} style={S.card}>
-              <img src={r.img} style={{ width: "100%", height: 200, objectFit: "cover" }} />
-              <div style={{ padding: 24 }}>
-                <h3 className="playfair">{r.name}</h3>
-                <p style={{ color: "#666", fontSize: 14, margin: "12px 0" }}>{r.desc}</p>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: 22, fontWeight: 800, color: "var(--gold)" }}>{fmtINR(r.price)}</span>
-                  <button onClick={() => setPage("rooms")} style={S.btn("var(--dark)")}>Details</button>
+        <div style={{ textAlign:"center", marginBottom:52 }}>
+          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:12 }}>Our Accommodations</div>
+          <h2 className="playfair sec-heading" style={{ fontSize:38, fontWeight:900, color:"#1a1a2e", margin:0 }}>Choose Your Perfect Room</h2>
+          <p style={{ color:"#666", fontSize:15, marginTop:10 }}>All prices in INR · Taxes included · 3D viewer available</p>
+        </div>
+        <div className="g-rooms" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(270px,1fr))", gap:28 }}>
+          {ROOMS.map((room, i) => <RoomCard key={room.id} room={room} onBook={() => handleBook(room)} currentUser={currentUser} setPage={setPage} bookings={bookings} delay={`sr-d${i+1}`} />)}
+        </div>
+      </div>
+
+      {/* Loyalty Section */}
+      <div style={{ background:"#1a1a2e", padding:"72px 24px" }}>
+        <div className="g-loyalty" style={{ maxWidth:1100, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1fr", gap:48, alignItems:"center" }}>
+          <div>
+            <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:12 }}>Loyalty Rewards</div>
+            <h2 className="playfair" style={{ color:"#fff", fontSize:34, fontWeight:900, margin:"0 0 18px" }}>Earn Points.<br/><span style={{color:"#B8860B"}}>Get 50% Off.</span></h2>
+            <p style={{ color:"#888", fontSize:15, lineHeight:1.8, marginBottom:28 }}>Every ₹10 spent earns you 1 loyalty point. Collect 3,000 points and unlock a 50% discount coupon for any room — valid for one booking.</p>
+            <div className="g-loyalty-cards" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+              <div style={{ background:"rgba(255,255,255,0.05)", borderRadius:12, padding:"18px 16px", display:"flex", alignItems:"center", gap:12 }}>
+                <span style={{ fontSize:24 }}>⭐</span>
+                <div><div style={{color:"#fff", fontWeight:700, fontSize:14}}>1 Point</div><div style={{color:"#888", fontSize:11}}>per ₹10 spent</div></div>
+              </div>
+              <div style={{ background:"rgba(255,255,255,0.05)", borderRadius:12, padding:"18px 16px", display:"flex", alignItems:"center", gap:12 }}>
+                <span style={{ fontSize:24 }}>🎫</span>
+                <div><div style={{color:"#fff", fontWeight:700, fontSize:14}}>50% OFF</div><div style={{color:"#888", fontSize:11}}>at 3,000 points</div></div>
+              </div>
+            </div>
+          </div>
+          <div style={{ textAlign:"center" }}>
+            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&auto=format&fit=crop&q=80" alt="Loyalty" style={{ borderRadius:20, width:"100%", maxWidth:420, boxShadow:"0 8px 40px rgba(0,0,0,0.4)" }} />
+          </div>
+        </div>
+      </div>
+
+      {/* Features */}
+      <div style={{ ...S.sec, paddingTop:48, paddingBottom:48 }}>
+        <div style={{ textAlign:"center", marginBottom:44 }}>
+          <h2 className="playfair" style={{ color:"#1a1a2e", fontSize:32, fontWeight:900 }}>Why Choose {HOTEL}?</h2>
+        </div>
+        <div className="g-features" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:28 }}>
+          {[{i:"🏊",t:"Pool & Spa",d:"Olympic pool & award-winning spa"},{i:"🍽️",t:"Fine Dining",d:"Multi-cuisine open all day"},{i:"🏋️",t:"Modern Gym",d:"24/7 state-of-the-art gym"},{i:"🔒",t:"24/7 Security",d:"Your safety our top priority"},{i:"🚗",t:"Valet Parking",d:"Complimentary for all guests"},{i:"✈️",t:"Airport Transfer",d:"For premium bookings"}].map(({i,t,d}) =>
+            <div key={t} style={{ textAlign:"center", padding:"24px 12px", background:"#fff", borderRadius:16, boxShadow:"0 2px 16px rgba(0,0,0,0.04)", transition:"transform .2s" }}>
+              <div style={{ fontSize:36, marginBottom:14 }}>{i}</div>
+              <div style={{ fontWeight:800, fontSize:15, marginBottom:6, color:"#1a1a2e" }}>{t}</div>
+              <div style={{ color:"#888", fontSize:13, lineHeight:1.5 }}>{d}</div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div style={{ background:"linear-gradient(135deg, #f0ede6, #e8e2d6)", padding:"56px 24px" }}>
+        <div style={{ maxWidth:700, margin:"0 auto", textAlign:"center" }}>
+          <h2 className="playfair" style={{ fontSize:30, fontWeight:900, color:"#1a1a2e", marginBottom:14 }}>Ready for an Unforgettable Stay?</h2>
+          <p style={{ color:"#666", fontSize:16, marginBottom:28 }}>Book directly with us for the best rates — guaranteed.</p>
+          <button onClick={() => setPage("rooms")} className="shimmer" style={{ ...S.btn("#1a1a2e"), fontSize:16, padding:"16px 44px", borderRadius:12 }}>Book Your Room Now</button>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <Footer />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  ROOMS PAGE
+// ═══════════════════════════════════════
+function RoomsPage({ setPage, handleBook, currentUser, bookings }) {
+  const [ci, setCi] = useState(todayStr());
+  const [co, setCo] = useState(tomorrowStr());
+
+  return (
+    <div>
+      <div style={{ background:"#1a1a2e", padding:"52px 24px 36px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <h1 className="playfair" style={{ color:"#fff", fontSize:38, fontWeight:900, margin:"0 0 8px" }}>All Room Categories</h1>
+          <p style={{ color:"#888", fontSize:15 }}>Select dates to check real-time availability</p>
+        </div>
+      </div>
+      <div style={{ background:"#fff", borderBottom:"1px solid #eee", padding:"20px 24px", position:"sticky", top:68, zIndex:50, boxShadow:"0 2px 10px rgba(0,0,0,0.05)" }}>
+        <div className="date-bar" style={{ maxWidth:1100, margin:"0 auto", display:"flex", gap:18, flexWrap:"wrap", alignItems:"flex-end" }}>
+          <div><label style={S.lbl}>Check-in</label><input type="date" value={ci} min={todayStr()} onChange={e => setCi(e.target.value)} style={{ ...S.input, width:180 }} /></div>
+          <div><label style={S.lbl}>Check-out</label><input type="date" value={co} min={ci||todayStr()} onChange={e => setCo(e.target.value)} style={{ ...S.input, width:180 }} /></div>
+          {ci && co && <div style={{ color:"#555", fontSize:14, paddingBottom:12, fontWeight:500 }}>📅 {calcNights(ci,co)} night(s) · {fmtDate(ci)} → {fmtDate(co)}</div>}
+        </div>
+      </div>
+      <div style={{ ...S.sec, paddingTop:36 }}>
+        {ROOMS.map(room => {
+          const bookedNos = ci && co ? getBookedRoomNos(room.id, ci, co, bookings) : [];
+          const avail = ci && co ? getAvailRoomNo(room.id, ci, co, bookings) : null;
+          const checked = ci && co;
+          const n = calcNights(ci, co);
+
+          return (
+            <div key={room.id} className="room-row" style={{ ...S.card, marginBottom:36, display:"flex", flexWrap:"wrap" }}>
+              <div className="room-row-img" style={{ flex:"0 0 380px", minWidth:260, position:"relative", minHeight:280 }}>
+                <img src={room.img} alt={room.name} style={{ width:"100%", height:"100%", objectFit:"cover", minHeight:280 }} />
+                {room.badge && <div style={{ position:"absolute", top:16, left:16, background:room.color, color:"#fff", fontSize:11, fontWeight:800, padding:"5px 14px", borderRadius:20, textTransform:"uppercase" }}>{room.badge}</div>}
+                {checked && <div style={{ position:"absolute", bottom:16, left:16, background: avail ? "#059669" : "#DC2626", color:"#fff", fontSize:12, fontWeight:700, padding:"6px 14px", borderRadius:8 }}>{avail ? `✓ Rooms Available` : "✗ Fully Booked"}</div>}
+              </div>
+              <div className="room-row-body" style={{ flex:1, padding:"30px 34px", minWidth:280 }}>
+                <div className="room-row-header" style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:12, marginBottom:12 }}>
+                  <div>
+                    <h2 className="playfair" style={{ margin:"0 0 10px", fontSize:28, color:"#1a1a2e", fontWeight:800 }}>{room.name}</h2>
+                    <p style={{ margin:"0 0 16px", color:"#666", lineHeight:1.65, maxWidth:480, fontSize:14 }}>{room.desc}</p>
+                  </div>
+                  <div className="room-row-price" style={{ textAlign:"right" }}>
+                    <div style={{ fontSize:32, fontWeight:800, color:room.color }}>{fmtINR(room.price)}</div>
+                    <div style={{ fontSize:12, color:"#999" }}>per night · taxes incl.</div>
+                    {checked && <div style={{ fontSize:14, fontWeight:700, color:room.color, marginTop:6 }}>Total: {fmtINR(room.price * n)}</div>}
+                  </div>
+                </div>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginBottom:16 }}>
+                  {room.amenities.map(a => <span key={a} style={{ background:room.lightBg, color:room.color, fontSize:11, fontWeight:600, padding:"4px 10px", borderRadius:6 }}>✓ {a}</span>)}
+                </div>
+                {room.meals.length > 0 && <div style={{ marginBottom:16 }}>{room.meals.map(m => <span key={m} style={{ background:"#F0FDF4", color:"#166534", fontSize:11, fontWeight:800, padding:"5px 12px", borderRadius:6, marginRight:8 }}>🍳 {m} Included</span>)}</div>}
+
+                {/* Room Number Availability Grid */}
+                <div style={{ marginBottom:16 }}>
+                  <div style={{ fontSize:11, fontWeight:700, color:"#999", marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>Room Availability</div>
+                  <div className="room-avail-grid" style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
+                    {room.roomNos.map(no => {
+                      const isBooked = bookedNos.includes(no);
+                      return (
+                        <div key={no} style={{ width:44, height:32, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, background: isBooked ? "#FEE2E2" : "#F0FDF4", color: isBooked ? "#DC2626" : "#166534", border: `1px solid ${isBooked ? "#FECACA" : "#BBF7D0"}` }}>
+                          {no}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div style={{ display:"flex", gap:14, marginTop:8, fontSize:10, color:"#999" }}>
+                    <span>🟢 Available</span><span>🔴 Booked</span>
+                  </div>
+                </div>
+
+                <div style={{ display:"flex", alignItems:"center", gap:14, flexWrap:"wrap" }}>
+                  {checked ? (
+                    avail ? <button onClick={currentUser ? () => handleBook(room) : () => setPage("login")} className="shimmer" style={{...S.btn(room.color)}}>Book Now →</button> :
+                    <div style={{ color:"#DC2626", fontWeight:700, fontSize:14 }}>✗ No rooms available for selected dates</div>
+                  ) : (
+                    <button onClick={currentUser ? () => handleBook(room) : () => setPage("login")} className="shimmer" style={{...S.btn(room.color)}}>Book Now →</button>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  BOOKING PAGE
+// ═══════════════════════════════════════
+function BookingPage({ selectedRoom, setPage, setPendingBooking, bookings, currentUser }) {
+  const [ci, setCi] = useState(todayStr());
+  const [co, setCo] = useState(tomorrowStr());
+  const [msg, setMsg] = useState("");
+  if (!selectedRoom) { setPage("rooms"); return null; }
+  const r = selectedRoom;
+  const n = calcNights(ci, co);
+  const total = r.price * n;
+  const avail = ci && co ? getAvailRoomNo(r.id, ci, co, bookings) : null;
+
+  function proceed() {
+    if (!ci || !co) { setMsg("Please select dates."); return; }
+    if (new Date(co) <= new Date(ci)) { setMsg("Check-out must be after check-in."); return; }
+    if (!avail) { setMsg("No rooms available. Try different dates."); return; }
+    setPendingBooking({ roomId:r.id, roomNo:avail, checkIn:ci, checkOut:co, total, nights:n });
+    setPage("payment");
+  }
+
+  return (
+    <div style={{ background:"var(--bg)", minHeight:"80vh", padding:"44px 24px" }}>
+      <div style={{ maxWidth:960, margin:"0 auto" }}>
+        <span onClick={() => setPage("rooms")} style={{ color:"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>← Back to Rooms</span>
+        <h1 className="playfair" style={{ margin:"10px 0 0", fontSize:32, color:"#1a1a2e", fontWeight:900 }}>Book {r.name}</h1>
+        <div className="book-grid" style={{ display:"grid", gridTemplateColumns:"1fr 340px", gap:28, marginTop:24 }}>
+          <div>
+            <div style={{ ...S.card, padding:28, marginBottom:22 }}>
+              <img src={r.img} alt={r.name} style={{ width:"100%", height:220, objectFit:"cover", borderRadius:12, marginBottom:20 }} />
+              <h2 className="playfair" style={{ margin:"0 0 8px", color:"#1a1a2e", fontSize:24, fontWeight:800 }}>{r.name}</h2>
+              <p style={{ color:"#666", fontSize:14, margin:"0 0 16px", lineHeight:1.6 }}>{r.desc}</p>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginBottom:16 }}>
+                {r.amenities.map(a => <span key={a} style={{ background:r.lightBg, color:r.color, fontSize:11, padding:"3px 9px", borderRadius:6, fontWeight:600 }}>✓ {a}</span>)}
+              </div>
+              {r.meals.length > 0 && <div style={{ background:"#F0FDF4", padding:"10px 14px", borderRadius:8, color:"#166534", fontSize:13, fontWeight:700 }}>🍳 Includes: {r.meals.join(", ")}</div>}
+            </div>
+            <div style={{ ...S.card, padding:24 }}>
+              <h3 style={{ margin:"0 0 20px", color:"#1a1a2e", fontSize:18, fontWeight:800 }}>Select Your Dates</h3>
+              <div className="g-2col" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:18 }}>
+                <div><label style={S.lbl}>Check-in Date</label><input type="date" value={ci} min={todayStr()} onChange={e => setCi(e.target.value)} style={S.input} /></div>
+                <div><label style={S.lbl}>Check-out Date</label><input type="date" value={co} min={ci||todayStr()} onChange={e => setCo(e.target.value)} style={S.input} /></div>
+              </div>
+              {msg && <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:14, fontWeight:600 }}>{msg}</div>}
+              {ci && co && (
+                <div style={{ background: avail ? "#F0FDF4" : "#FEF2F2", color: avail ? "#166534" : "#DC2626", padding:"14px 18px", borderRadius:10, fontWeight:700, fontSize:15, display:"flex", alignItems:"center", gap:8 }}>
+                  {avail ? `✓ Room #${avail} is available! (Auto-assigned lowest available)` : "✗ No rooms available — try different dates."}
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <div style={{ ...S.card, padding:24, marginBottom:18 }}>
+              <h3 style={{ margin:"0 0 18px", color:"#1a1a2e", fontSize:17, fontWeight:800 }}>Booking Summary</h3>
+              {[["Room Type",r.name],["Assigned Room", avail ? `#${avail}` : "—"],["Check-in",fmtDate(ci)],["Check-out",fmtDate(co)],["Duration",`${n} night(s)`],["Rate / night",fmtINR(r.price)]].map(([k,v]) =>
+                <div key={k} style={{ display:"flex", justifyContent:"space-between", marginBottom:11, fontSize:14 }}>
+                  <span style={{ color:"#888" }}>{k}</span><span style={{ fontWeight:600 }}>{v}</span>
+                </div>
+              )}
+              {r.meals.length > 0 && <div style={{ background:"#F0FDF4", color:"#166534", fontSize:11, padding:"7px 12px", borderRadius:6, marginBottom:12, fontWeight:700 }}>Includes: {r.meals.join(", ")}</div>}
+              <div style={{ borderTop:"1px solid #eee", paddingTop:14, display:"flex", justifyContent:"space-between", fontSize:22, fontWeight:800, color:"#1a1a2e" }}>
+                <span>Total</span><span style={{ color:r.color }}>{fmtINR(total)}</span>
+              </div>
+            </div>
+            <div style={{ ...S.card, padding:18, marginBottom:18, fontSize:14, color:"#555" }}>
+              <div style={{ fontWeight:800, color:"#1a1a2e", marginBottom:10, fontSize:15 }}>Guest Details</div>
+              <div style={{ marginBottom:6 }}>👤 {currentUser?.name}</div>
+              <div style={{ marginBottom:6 }}>✉️ {currentUser?.email}</div>
+              <div>📞 {currentUser?.contact}</div>
+            </div>
+            <button onClick={proceed} className="shimmer" style={{ ...S.btn(r.color), width:"100%", padding:"15px", fontSize:16, borderRadius:12 }}>Proceed to Payment →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  PAYMENT PAGE
+// ═══════════════════════════════════════
+function PaymentPage({ pendingBooking, selectedRoom, handleConfirmBooking, setPage, points }) {
+  const [method, setMethod] = useState("");
+  const [cn, setCn] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [exp, setExp] = useState("");
+  const [name, setName] = useState("");
+  const [upi, setUpi] = useState("");
+  const [tab, setTab] = useState("card");
+  const [proc, setProc] = useState(false);
+  const [useCoupon, setUseCoupon] = useState(false);
+
+  if (!pendingBooking || !selectedRoom) return null;
+  const r = selectedRoom;
+  const canUseCoupon = points >= 3000;
+  const discountAmt = useCoupon && canUseCoupon ? Math.floor(pendingBooking.total / 2) : 0;
+  const finalTotal = pendingBooking.total - discountAmt;
+
+  function pay() {
+    if (!method) return;
+    if (method === "online") {
+      if (tab === "card" && (!cn || !cvv || !exp || !name)) return;
+      if (tab === "upi" && !upi) return;
+    }
+    setProc(true);
+    setTimeout(() => { handleConfirmBooking(method, useCoupon && canUseCoupon); setProc(false); }, 1800);
+  }
+
+  return (
+    <div style={{ background:"var(--bg)", minHeight:"80vh", padding:"44px 24px" }}>
+      <div style={{ maxWidth:840, margin:"0 auto" }}>
+        <span onClick={() => setPage("book")} style={{ color:"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>← Back to Booking</span>
+        <h1 className="playfair" style={{ margin:"10px 0 28px", fontSize:32, color:"#1a1a2e", fontWeight:900 }}>Secure Payment</h1>
+        <div className="pay-grid" style={{ display:"grid", gridTemplateColumns:"1fr 320px", gap:28 }}>
+          <div>
+            {/* Payment Methods */}
+            <div style={{ ...S.card, padding:26, marginBottom:18 }}>
+              <h3 style={{ margin:"0 0 18px", color:"#1a1a2e", fontSize:17, fontWeight:800 }}>Payment Method</h3>
+              <div className="g-pay-methods" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:24 }}>
+                {[["online","Pay Online","💳","Card / UPI"],["hotel","Pay at Hotel","🏨","Cash or Card"]].map(([v,l,ic,sub]) =>
+                  <div key={v} onClick={() => setMethod(v)} style={{ border:`2px solid ${method===v ? r.color : "#e5e5e5"}`, borderRadius:14, padding:"18px 14px", cursor:"pointer", background: method===v ? r.lightBg : "#fafafa", transition:"all .2s", textAlign:"center" }}>
+                    <div style={{ fontSize:28, marginBottom:8 }}>{ic}</div>
+                    <div style={{ fontWeight:700, color: method===v ? r.color : "#333", fontSize:15 }}>{l}</div>
+                    <div style={{ fontSize:11, color:"#999", marginTop:4 }}>{sub}</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Loyalty Coupon */}
+              {canUseCoupon && (
+                <div onClick={() => setUseCoupon(!useCoupon)} style={{ border:`2px solid ${useCoupon ? "#059669" : "#e5e5e5"}`, borderRadius:14, padding:"16px 18px", cursor:"pointer", background: useCoupon ? "#F0FDF4" : "#fafafa", transition:"all .2s", marginBottom:24, display:"flex", alignItems:"center", gap:14 }}>
+                  <div style={{ width:24, height:24, borderRadius:6, border:`2px solid ${useCoupon ? "#059669" : "#ccc"}`, background: useCoupon ? "#059669" : "transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                    {useCoupon && <span style={{color:"#fff", fontWeight:800, fontSize:14}}>✓</span>}
+                  </div>
+                  <div style={{ flex:1 }}>
+                    <div style={{ fontWeight:700, color: useCoupon ? "#059669" : "#333", fontSize:14 }}>🎫 Apply 50% Loyalty Discount</div>
+                    <div style={{ fontSize:12, color:"#888", marginTop:2 }}>Use 3,000 points for {fmtINR(Math.floor(pendingBooking.total/2))} off (one-time use)</div>
+                  </div>
+                  <div style={{ fontWeight:800, fontSize:18, color:"#059669" }}>-{fmtINR(Math.floor(pendingBooking.total/2))}</div>
+                </div>
+              )}
+
+              {method === "online" && (
+                <div>
+                  <div style={{ display:"flex", gap:0, marginBottom:22, borderRadius:10, overflow:"hidden", border:"1px solid #e5e5e5" }}>
+                    {[["card","💳 Card"],["upi","📱 UPI"]].map(([t,l]) =>
+                      <button key={t} onClick={() => setTab(t)} style={{ flex:1, padding:"10px", border:"none", background: tab===t ? "#1a1a2e" : "#fff", color: tab===t ? "#fff" : "#333", fontWeight:700, cursor:"pointer", fontSize:14 }}>{l}</button>
+                    )}
+                  </div>
+                  {tab === "card" && (
+                    <div>
+                      <div style={{marginBottom:14}}><label style={S.lbl}>Cardholder Name</label><input value={name} onChange={e => setName(e.target.value)} placeholder="As on card" style={S.input} /></div>
+                      <div style={{marginBottom:14}}><label style={S.lbl}>Card Number</label><input value={cn} onChange={e => setCn(e.target.value.replace(/\D/g,"").slice(0,16))} placeholder="1234 5678 9012 3456" style={S.input} /></div>
+                      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
+                        <div><label style={S.lbl}>Expiry (MM/YY)</label><input value={exp} onChange={e => setExp(e.target.value)} placeholder="12/28" style={S.input} /></div>
+                        <div><label style={S.lbl}>CVV</label><input value={cvv} onChange={e => setCvv(e.target.value.replace(/\D/g,"").slice(0,3))} placeholder="•••" type="password" style={S.input} /></div>
+                      </div>
+                    </div>
+                  )}
+                  {tab === "upi" && (
+                    <div><label style={S.lbl}>UPI ID</label><input value={upi} onChange={e => setUpi(e.target.value)} placeholder="yourname@upi" style={S.input} /></div>
+                  )}
+                  <div style={{ background:"#F0FDF4", border:"1px solid #BBF7D0", borderRadius:10, padding:"12px 16px", fontSize:13, color:"#166534", marginTop:16, display:"flex", alignItems:"center", gap:8 }}>
+                    🔒 256-bit SSL encrypted · PCI DSS compliant
+                  </div>
+                </div>
+              )}
+              {method === "hotel" && (
+                <div style={{ background:"#FFF7ED", border:"1px solid #FED7AA", borderRadius:12, padding:20, fontSize:14 }}>
+                  <div style={{ fontWeight:800, color:"#C2410C", marginBottom:12, fontSize:16 }}>Pay at Check-in</div>
+                  <div style={{ color:"#7C2D12", lineHeight:2.1 }}>
+                    ✓ Full payment at hotel check-in<br/>
+                    ✓ Cash, Card, UPI accepted<br/>
+                    ✓ Arrive by 2:00 PM on check-in<br/>
+                    ⚠ Booking released if no arrival by 6 PM
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <div style={{ ...S.card, padding:24 }}>
+              <h3 style={{ margin:"0 0 16px", color:"#1a1a2e", fontSize:17, fontWeight:800 }}>Order Summary</h3>
+              <img src={r.img} alt="" style={{ width:"100%", height:130, objectFit:"cover", borderRadius:10, marginBottom:16 }} />
+              <div style={{ fontSize:16, fontWeight:800, color:"#1a1a2e", marginBottom:14 }}>{r.name}</div>
+              {[["Room No",`#${pendingBooking.roomNo}`],["Check-in",fmtDate(pendingBooking.checkIn)],["Check-out",fmtDate(pendingBooking.checkOut)],["Nights",pendingBooking.nights],["Rate",fmtINR(r.price)+"/night"]].map(([k,v]) =>
+                <div key={k} style={{ display:"flex", justifyContent:"space-between", fontSize:13, marginBottom:9 }}>
+                  <span style={{ color:"#888" }}>{k}</span><span style={{ fontWeight:600 }}>{v}</span>
+                </div>
+              )}
+              {r.meals.length > 0 && <div style={{ background:"#F0FDF4", color:"#166534", fontSize:11, padding:"7px 10px", borderRadius:6, marginBottom:10, fontWeight:700 }}>🍳 {r.meals.join(" + ")} included</div>}
+
+              {useCoupon && canUseCoupon && (
+                <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, marginBottom:9, color:"#059669", fontWeight:700 }}>
+                  <span>🎫 Loyalty Discount</span><span>-{fmtINR(discountAmt)}</span>
+                </div>
+              )}
+
+              <div style={{ borderTop:"1px solid #eee", paddingTop:14, marginTop:6 }}>
+                {useCoupon && canUseCoupon && (
+                  <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, marginBottom:6, color:"#999", textDecoration:"line-through" }}>
+                    <span>Original</span><span>{fmtINR(pendingBooking.total)}</span>
+                  </div>
+                )}
+                <div style={{ display:"flex", justifyContent:"space-between", fontSize:20, fontWeight:800 }}>
+                  <span>Total</span><span style={{ color:r.color }}>{fmtINR(finalTotal)}</span>
+                </div>
+              </div>
+
+              <button onClick={pay} disabled={!method || proc} className="shimmer" style={{ ...S.btn(method ? r.color : "#ccc"), width:"100%", padding:"14px", fontSize:15, marginTop:18, borderRadius:12, opacity: proc ? 0.7 : 1, cursor: method ? "pointer" : "not-allowed" }}>
+                {proc ? "Processing…" : method === "hotel" ? "Confirm Booking" : `Pay ${fmtINR(finalTotal)}`}
+              </button>
+              {!method && <p style={{ textAlign:"center", color:"#bbb", fontSize:12, marginTop:8 }}>Select a payment method above</p>}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  DASHBOARD
+// ═══════════════════════════════════════
+function DashboardPage({ currentUser, bookings, setPage, points }) {
+  if (!currentUser) { setPage("login"); return null; }
+  const my = bookings.filter(b => b.userId === currentUser.id);
+  const td = todayStr();
+  const upcoming = my.filter(b => b.checkOut >= td);
+  const past = my.filter(b => b.checkOut < td);
+  const is101Booked = bookings.some(b => b.roomNo === "101" && b.status === "confirmed");
+  const ptsPercent = Math.min(100, (points / 3000) * 100);
+
+  return (
+    <div style={{ background:"var(--bg)", minHeight:"80vh" }}>
+      <div style={{ background:"#1a1a2e", padding:"44px 24px 40px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ display:"flex", alignItems:"center", gap:18, marginBottom:28 }}>
+            <div style={{ background:"linear-gradient(135deg, #B8860B, #D4A843)", width:60, height:60, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:900, fontSize:24, boxShadow:"0 4px 20px rgba(184,134,11,0.3)" }}>
+              {currentUser.name[0].toUpperCase()}
+            </div>
+            <div>
+              <div style={{ color:"#B8860B", fontSize:11, fontWeight:800, letterSpacing:2, textTransform:"uppercase" }}>Welcome back</div>
+              <h1 className="playfair" style={{ color:"#fff", fontSize:30, fontWeight:900, margin:0 }}>{currentUser.name}</h1>
+            </div>
+          </div>
+          <div className="g-dash-stats" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16 }}>
+            {[["Total Bookings",my.length,"📋"],["Upcoming",upcoming.length,"📅"],["Completed",past.length,"✓"],["Points",`${points}`,`⭐`]].map(([l,v,i]) =>
+              <div key={l} style={{ background:"rgba(255,255,255,0.06)", borderRadius:14, padding:"18px 20px", border:"1px solid rgba(255,255,255,0.06)" }}>
+                <div style={{ color:"#B8860B", fontSize:26, fontWeight:800, display:"flex", alignItems:"center", gap:8 }}><span style={{fontSize:16}}>{i}</span>{v}</div>
+                <div style={{ color:"#888", fontSize:12, marginTop:4, fontWeight:500 }}>{l}</div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth:1100, margin:"0 auto", padding:"36px 24px" }}>
+        <div className="g-dash" style={{ display:"grid", gridTemplateColumns:"1fr 340px", gap:28 }}>
+          <div>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
+              <h2 className="playfair" style={{ margin:0, fontSize:24, color:"#1a1a2e", fontWeight:800 }}>My Bookings</h2>
+              <button onClick={() => setPage("rooms")} style={{...S.btn("#1a1a2e"), borderRadius:8, padding:"9px 18px", fontSize:13}}>+ New Booking</button>
+            </div>
+            {my.length === 0 ? (
+              <div style={{ ...S.card, padding:56, textAlign:"center" }}>
+                <div style={{ fontSize:56, marginBottom:18 }}>🏨</div>
+                <h3 style={{ color:"#1a1a2e", marginBottom:8, fontWeight:800 }}>No bookings yet</h3>
+                <p style={{ color:"#888", marginBottom:22 }}>Your booking history will appear here</p>
+                <button onClick={() => setPage("rooms")} style={{...S.btn("#B8860B"), borderRadius:8}}>Browse Rooms</button>
+              </div>
+            ) : (
+              <div>
+                {upcoming.length > 0 && (
+                  <div>
+                    <div style={{ fontSize:13, fontWeight:800, color:"#059669", marginBottom:14 }}><span style={{ background:"#DCFCE7", padding:"3px 12px", borderRadius:20 }}>Upcoming · {upcoming.length}</span></div>
+                    {upcoming.map(b => <BookingRow key={b.id} b={b} />)}
+                  </div>
+                )}
+                {past.length > 0 && (
+                  <div>
+                    <div style={{ fontSize:13, fontWeight:800, color:"#888", marginTop:28, marginBottom:14 }}><span style={{ background:"#F3F4F6", padding:"3px 12px", borderRadius:20 }}>Past Stays · {past.length}</span></div>
+                    {past.map(b => <BookingRow key={b.id} b={b} faded />)}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <div>
+            {/* Loyalty */}
+            <div style={{ ...S.card, padding:24, marginBottom:20 }}>
+              <h3 style={{ margin:"0 0 18px", color:"#1a1a2e", fontWeight:800, fontSize:17 }}>Loyalty Rewards</h3>
+              <div style={{ marginBottom:18 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, fontWeight:700, color:"#888", marginBottom:8 }}>
+                  <span>Progress to 50% Discount</span><span>{Math.round(ptsPercent)}%</span>
+                </div>
+                <div className="loyalty-bar"><div className="loyalty-fill" style={{ width: `${ptsPercent}%` }} /></div>
+                <div style={{ fontSize:12, color:"#888", marginTop:8 }}>{points} / 3,000 points</div>
+              </div>
+              {points >= 3000 ? (
+                <div style={{ background:"#F0FDF4", border:"1px solid #BBF7D0", borderRadius:10, padding:"14px 16px", display:"flex", alignItems:"center", gap:12 }}>
+                  <span style={{fontSize:28}}>🎫</span>
+                  <div>
+                    <div style={{ fontWeight:800, color:"#059669", fontSize:14 }}>50% Discount Ready!</div>
+                    <div style={{ fontSize:11, color:"#166534" }}>Apply on your next booking (1 room only)</div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ fontSize:13, color:"#888" }}>Earn {3000 - points} more points for a 50% coupon</div>
+              )}
+            </div>
+
+            {/* Room 101 Status */}
+            <div style={{ ...S.card, padding:24, marginBottom:20 }}>
+              <h3 style={{ margin:"0 0 14px", color:"#1a1a2e", fontWeight:800, fontSize:17 }}>Room 101 Status</h3>
+              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                <div style={{ width:12, height:12, borderRadius:"50%", background: is101Booked ? "#DC2626" : "#059669", boxShadow: is101Booked ? "0 0 8px rgba(220,38,38,0.4)" : "0 0 8px rgba(5,150,105,0.4)" }} />
+                <div>
+                  <div style={{ fontWeight:700, fontSize:14, color: is101Booked ? "#DC2626" : "#059669" }}>
+                    {is101Booked ? "Currently Booked" : "Available"}
+                  </div>
+                  <div style={{ fontSize:12, color:"#999" }}>
+                    {is101Booked ? "Room 101 is occupied by another guest" : "Room 101 is open for booking"}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Profile */}
+            <div style={{ ...S.card, padding:24 }}>
+              <h3 style={{ margin:"0 0 18px", color:"#1a1a2e", fontWeight:800, fontSize:17 }}>Profile</h3>
+              <div style={{ display:"grid", gap:12, fontSize:14 }}>
+                {[["Name",currentUser.name],["Email",currentUser.email],["Contact",currentUser.contact],["Status", points >= 3000 ? "🥇 Gold Member" : my.length >= 3 ? "🥈 Silver Member" : "🥉 Bronze Member"]].map(([k,v]) =>
+                  <div key={k} style={{ background:"#f8f6f0", padding:"13px 16px", borderRadius:10 }}>
+                    <div style={{ color:"#999", fontSize:11, marginBottom:3, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.5px" }}>{k}</div>
+                    <div style={{ fontWeight:700, color:"#1a1a2e" }}>{v}</div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BookingRow({ b, faded }) {
+  const room = ROOMS.find(r => r.id === b.roomId);
+  if (!room) return null;
+  const isUp = b.checkOut >= todayStr();
+  return (
+    <div style={{ ...S.card, padding:"18px 22px", marginBottom:12, display:"flex", alignItems:"center", gap:16, opacity: faded ? 0.6 : 1, flexWrap:"wrap", transition:"transform .15s" }}>
+      <img src={room.img} alt="" style={{ width:88, height:68, objectFit:"cover", borderRadius:10, flexShrink:0 }} />
+      <div style={{ flex:1, minWidth:180 }}>
+        <div style={{ fontWeight:800, color:"#1a1a2e", fontSize:16 }}>{room.name}</div>
+        <div style={{ color:"#555", fontSize:13, marginTop:4 }}>Room <strong style={{ color:room.color, fontSize:14 }}>#${b.roomNo}</strong> · {fmtDate(b.checkIn)} → {fmtDate(b.checkOut)}</div>
+        <div style={{ color:"#999", fontSize:11, marginTop:4 }}>{calcNights(b.checkIn, b.checkOut)} night(s) · {b.guestName}</div>
+      </div>
+      <div style={{ textAlign:"right" }}>
+        <div style={{ fontWeight:800, fontSize:18, color:room.color }}>{fmtINR(b.total)}</div>
+        <div style={{ display:"flex", gap:6, marginTop:8, justifyContent:"flex-end", flexWrap:"wrap" }}>
+          <span style={{ background: isUp ? "#F0FDF4" : "#F9FAFB", color: isUp ? "#166534" : "#6B7280", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>{isUp ? "Upcoming" : "Completed"}</span>
+          <span style={{ background: b.payMethod==="online" ? "#EFF6FF" : "#FFFBEB", color: b.payMethod==="online" ? "#1D4ED8" : "#92400E", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>{b.payMethod==="online" ? "Paid" : "At Hotel"}</span>
+          {b.discounted && <span style={{ background:"#F0FDF4", color:"#059669", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>50% OFF</span>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  OWNER DASHBOARD
+// ═══════════════════════════════════════
+const OWNER_EMAIL = "algoreetham@gmail.com";
+const OWNER_PASSWORD = "123456789";
+
+function OwnerDashboard({ bookings, users, setPage, handleOwnerLogout, rooms, updateRooms, showToast }) {
+  const [tab, setTab] = useState("overview");
+  const [searchQ, setSearchQ] = useState("");
+  const [editingRoom, setEditingRoom] = useState(null);
+  const [editForm, setEditForm] = useState({});
+  const [newRoomNo, setNewRoomNo] = useState("");
+  const [newAmenity, setNewAmenity] = useState("");
+  const td = todayStr();
+
+  // Stats
+  const totalBookings = bookings.length;
+  const activeBookings = bookings.filter(b => b.checkIn <= td && b.checkOut >= td && b.status === "confirmed");
+  const upcomingBookings = bookings.filter(b => b.checkIn > td && b.status === "confirmed");
+  const pastBookings = bookings.filter(b => b.checkOut < td);
+  const totalRevenue = bookings.reduce((s, b) => s + (b.total || 0), 0);
+  const onlineRevenue = bookings.filter(b => b.payMethod === "online").reduce((s, b) => s + (b.total || 0), 0);
+  const hotelRevenue = bookings.filter(b => b.payMethod === "hotel").reduce((s, b) => s + (b.total || 0), 0);
+
+  // Room occupancy
+  const roomOccupancy = ROOMS.map(room => {
+    const bookedNos = room.roomNos.filter(no => 
+      bookings.some(b => b.roomId === room.id && b.roomNo === no && b.status === "confirmed" && b.checkIn <= td && b.checkOut >= td)
+    );
+    return { ...room, bookedNos, available: room.roomNos.length - bookedNos.length, total: room.roomNos.length };
+  });
+
+  const totalRooms = ROOMS.reduce((s, r) => s + r.roomNos.length, 0);
+  const occupiedRooms = roomOccupancy.reduce((s, r) => s + r.bookedNos.length, 0);
+  const occupancyRate = totalRooms > 0 ? Math.round((occupiedRooms / totalRooms) * 100) : 0;
+
+  // Filter bookings by search
+  const filteredBookings = bookings.filter(b => {
+    if (!searchQ) return true;
+    const q = searchQ.toLowerCase();
+    return (b.guestName || "").toLowerCase().includes(q) || 
+           (b.roomNo || "").includes(q) ||
+           (b.roomId || "").toLowerCase().includes(q);
+  }).sort((a, b) => new Date(b.checkIn) - new Date(a.checkIn));
+
+  // Get unique customers
+  const customerMap = {};
+  bookings.forEach(b => {
+    if (b.userId === "_s") {
+      if (!customerMap[b.guestName]) customerMap[b.guestName] = { name: b.guestName, email: "—", contact: "—", bookingCount: 0, totalSpent: 0, isSeed: true };
+      customerMap[b.guestName].bookingCount++;
+      customerMap[b.guestName].totalSpent += b.total || 0;
+    } else {
+      const user = users.find(u => u.id === b.userId);
+      const key = b.userId;
+      if (!customerMap[key]) customerMap[key] = { name: user?.name || b.guestName, email: user?.email || "—", contact: user?.contact || "—", bookingCount: 0, totalSpent: 0 };
+      customerMap[key].bookingCount++;
+      customerMap[key].totalSpent += b.total || 0;
+    }
+  });
+  const customers = Object.values(customerMap).sort((a, b) => b.totalSpent - a.totalSpent);
+
+  const tabs = [["overview", "📊 Overview"], ["bookings", "📋 All Bookings"], ["rooms", "🏨 Rooms"], ["customers", "👥 Customers"]];
+
+  return (
+    <div style={{ background:"var(--bg)", minHeight:"100vh" }}>
+      {/* Owner Header */}
+      <div style={{ background:"linear-gradient(135deg, #0f0f1e, #1a1a2e)", padding:"36px 24px 28px" }}>
+        <div style={{ maxWidth:1200, margin:"0 auto" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:16 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:16 }}>
+              <div style={{ background:"linear-gradient(135deg, #DC2626, #EF4444)", width:52, height:52, borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", fontSize:22, color:"#fff", fontWeight:900, boxShadow:"0 4px 20px rgba(220,38,38,0.3)" }}>👑</div>
+              <div>
+                <div style={{ color:"#EF4444", fontSize:10, fontWeight:800, letterSpacing:3, textTransform:"uppercase" }}>Owner Panel</div>
+                <h1 className="playfair" style={{ color:"#fff", fontSize:28, fontWeight:900, margin:0 }}>{HOTEL} — Admin</h1>
+              </div>
+            </div>
+            <div style={{ display:"flex", gap:12, alignItems:"center" }}>
+              <span onClick={() => setPage("landing")} style={{ color:"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>← View Site</span>
+              <button onClick={handleOwnerLogout} style={{ ...S.outBtn("#EF4444"), padding:"8px 18px", fontSize:12 }}>Logout</button>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div style={{ display:"flex", gap:6, marginTop:24, flexWrap:"wrap" }}>
+            {tabs.map(([k, l]) =>
+              <button key={k} onClick={() => setTab(k)} style={{ padding:"9px 20px", borderRadius:8, border:"none", background: tab === k ? "rgba(239,68,68,0.15)" : "rgba(255,255,255,0.05)", color: tab === k ? "#EF4444" : "#888", fontWeight:700, fontSize:13, cursor:"pointer", transition:"all .2s", borderBottom: tab === k ? "2px solid #EF4444" : "2px solid transparent" }}>{l}</button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ maxWidth:1200, margin:"0 auto", padding:"28px 24px" }}>
+
+        {/* ─── OVERVIEW TAB ─── */}
+        {tab === "overview" && (
+          <div>
+            {/* Stats Cards */}
+            <div className="g-dash-stats" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16, marginBottom:28 }}>
+              {[["Total Bookings", totalBookings, "📋", "#2563EB", "#EFF6FF"],
+                ["Active Now", activeBookings.length, "🔥", "#DC2626", "#FEF2F2"],
+                ["Occupancy Rate", `${occupancyRate}%`, "📊", "#7C3AED", "#F5F3FF"],
+                ["Total Revenue", fmtINR(totalRevenue), "💰", "#059669", "#F0FDF4"]
+              ].map(([label, val, icon, color, bg]) =>
+                <div key={label} style={{ ...S.card, padding:"22px 20px", borderLeft:`4px solid ${color}` }}>
+                  <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
+                    <span style={{ fontSize:20 }}>{icon}</span>
+                    <span style={{ fontSize:12, fontWeight:700, color:"#999", textTransform:"uppercase", letterSpacing:"0.5px" }}>{label}</span>
+                  </div>
+                  <div style={{ fontSize:26, fontWeight:900, color }}>{val}</div>
+                </div>
+              )}
+            </div>
+
+            {/* Revenue Breakdown + Room Overview */}
+            <div className="g-dash" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:24, marginBottom:28 }}>
+              {/* Revenue */}
+              <div style={{ ...S.card, padding:24 }}>
+                <h3 style={{ margin:"0 0 20px", color:"#1a1a2e", fontWeight:800, fontSize:17 }}>💰 Revenue Breakdown</h3>
+                <div style={{ display:"grid", gap:14 }}>
+                  <div style={{ background:"#F0FDF4", borderRadius:12, padding:"16px 18px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div><div style={{ fontWeight:700, color:"#166534", fontSize:14 }}>Online Payments</div><div style={{ fontSize:12, color:"#059669" }}>{bookings.filter(b => b.payMethod === "online").length} bookings</div></div>
+                    <div style={{ fontSize:22, fontWeight:800, color:"#059669" }}>{fmtINR(onlineRevenue)}</div>
+                  </div>
+                  <div style={{ background:"#FFFBEB", borderRadius:12, padding:"16px 18px", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div><div style={{ fontWeight:700, color:"#92400E", fontSize:14 }}>Pay at Hotel</div><div style={{ fontSize:12, color:"#B45309" }}>{bookings.filter(b => b.payMethod === "hotel").length} bookings</div></div>
+                    <div style={{ fontSize:22, fontWeight:800, color:"#B45309" }}>{fmtINR(hotelRevenue)}</div>
+                  </div>
+                  <div style={{ borderTop:"2px solid #eee", paddingTop:14, display:"flex", justifyContent:"space-between" }}>
+                    <span style={{ fontWeight:800, color:"#1a1a2e", fontSize:16 }}>Total Revenue</span>
+                    <span style={{ fontWeight:900, color:"#1a1a2e", fontSize:22 }}>{fmtINR(totalRevenue)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Room Occupancy Summary */}
+              <div style={{ ...S.card, padding:24 }}>
+                <h3 style={{ margin:"0 0 20px", color:"#1a1a2e", fontWeight:800, fontSize:17 }}>🏨 Room Occupancy (Today)</h3>
+                <div style={{ display:"grid", gap:12 }}>
+                  {roomOccupancy.map(r => (
+                    <div key={r.id} style={{ display:"flex", alignItems:"center", gap:14 }}>
+                      <div style={{ width:10, height:10, borderRadius:"50%", background: r.bookedNos.length > 0 ? r.color : "#ddd", flexShrink:0 }} />
+                      <div style={{ flex:1 }}>
+                        <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
+                          <span style={{ fontWeight:700, fontSize:13, color:"#1a1a2e" }}>{r.name}</span>
+                          <span style={{ fontSize:12, fontWeight:700, color: r.available > 0 ? "#059669" : "#DC2626" }}>{r.bookedNos.length}/{r.total} occupied</span>
+                        </div>
+                        <div style={{ height:6, background:"#f0f0f0", borderRadius:99, overflow:"hidden" }}>
+                          <div style={{ height:"100%", width:`${(r.bookedNos.length/r.total)*100}%`, background:r.color, borderRadius:99, transition:"width .8s ease" }} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <div style={{ borderTop:"1px solid #eee", paddingTop:12, display:"flex", justifyContent:"space-between", fontSize:14, fontWeight:700 }}>
+                    <span>Total</span>
+                    <span style={{ color: occupancyRate > 70 ? "#DC2626" : "#059669" }}>{occupiedRooms}/{totalRooms} rooms occupied ({occupancyRate}%)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Recent Bookings Preview */}
+            <div style={{ ...S.card, padding:24 }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18 }}>
+                <h3 style={{ margin:0, color:"#1a1a2e", fontWeight:800, fontSize:17 }}>📋 Recent Bookings</h3>
+                <button onClick={() => setTab("bookings")} style={{ ...S.outBtn("#2563EB"), padding:"6px 14px", fontSize:12 }}>View All →</button>
+              </div>
+              <div style={{ overflowX:"auto" }}>
+                <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
+                  <thead>
+                    <tr style={{ background:"#f8f6f0" }}>
+                      {["Guest","Room","#","Check-in","Check-out","Amount","Payment","Status"].map(h =>
+                        <th key={h} style={{ padding:"10px 12px", textAlign:"left", fontWeight:700, color:"#999", fontSize:11, textTransform:"uppercase", letterSpacing:"0.5px", borderBottom:"1px solid #eee" }}>{h}</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bookings.slice(-8).reverse().map(b => {
+                      const room = ROOMS.find(r => r.id === b.roomId);
+                      const isActive = b.checkIn <= td && b.checkOut >= td;
+                      return (
+                        <tr key={b.id} style={{ borderBottom:"1px solid #f5f5f5" }}>
+                          <td style={{ padding:"12px", fontWeight:600 }}>{b.guestName}</td>
+                          <td style={{ padding:"12px", color: room?.color, fontWeight:700 }}>{room?.name}</td>
+                          <td style={{ padding:"12px", fontWeight:700 }}>#{b.roomNo}</td>
+                          <td style={{ padding:"12px" }}>{fmtDate(b.checkIn)}</td>
+                          <td style={{ padding:"12px" }}>{fmtDate(b.checkOut)}</td>
+                          <td style={{ padding:"12px", fontWeight:800, color:"#059669" }}>{fmtINR(b.total)}</td>
+                          <td style={{ padding:"12px" }}><span style={{ background: b.payMethod==="online" ? "#EFF6FF" : "#FFFBEB", color: b.payMethod==="online" ? "#1D4ED8" : "#92400E", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>{b.payMethod==="online" ? "Online" : "At Hotel"}</span></td>
+                          <td style={{ padding:"12px" }}><span style={{ background: isActive ? "#FEF2F2" : b.checkOut < td ? "#F9FAFB" : "#F0FDF4", color: isActive ? "#DC2626" : b.checkOut < td ? "#6B7280" : "#166534", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>{isActive ? "Active" : b.checkOut < td ? "Completed" : "Upcoming"}</span></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─── ALL BOOKINGS TAB ─── */}
+        {tab === "bookings" && (
+          <div>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:20, flexWrap:"wrap", gap:12 }}>
+              <h2 style={{ margin:0, color:"#1a1a2e", fontWeight:800, fontSize:22 }}>All Bookings ({bookings.length})</h2>
+              <div style={{ position:"relative" }}>
+                <input value={searchQ} onChange={e => setSearchQ(e.target.value)} placeholder="Search by guest, room..." style={{ ...S.input, width:280, paddingLeft:36 }} />
+                <span style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#bbb" }}>🔍</span>
+              </div>
+            </div>
+
+            {/* Booking Stats */}
+            <div style={{ display:"flex", gap:12, marginBottom:20, flexWrap:"wrap" }}>
+              {[["All", filteredBookings.length, "#1a1a2e"], ["Active", activeBookings.length, "#DC2626"], ["Upcoming", upcomingBookings.length, "#059669"], ["Completed", pastBookings.length, "#6B7280"]].map(([l, v, c]) =>
+                <span key={l} style={{ background:"#fff", border:"1px solid #eee", borderRadius:8, padding:"8px 16px", fontSize:13, fontWeight:700, color:c }}>{l}: {v}</span>
+              )}
+            </div>
+
+            <div style={{ ...S.card, overflow:"hidden" }}>
+              <div style={{ overflowX:"auto" }}>
+                <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
+                  <thead>
+                    <tr style={{ background:"#1a1a2e" }}>
+                      {["#","Guest Name","Room Type","Room #","Check-in","Check-out","Nights","Amount","Payment","Status"].map(h =>
+                        <th key={h} style={{ padding:"12px 14px", textAlign:"left", fontWeight:700, color:"#B8860B", fontSize:11, textTransform:"uppercase", letterSpacing:"0.5px" }}>{h}</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredBookings.map((b, i) => {
+                      const room = ROOMS.find(r => r.id === b.roomId);
+                      const isActive = b.checkIn <= td && b.checkOut >= td && b.status === "confirmed";
+                      const nights = calcNights(b.checkIn, b.checkOut);
+                      return (
+                        <tr key={b.id} style={{ borderBottom:"1px solid #f0f0f0", background: isActive ? "#FEF2F2" : i%2===0 ? "#fff" : "#fafaf8" }}>
+                          <td style={{ padding:"14px", fontWeight:600, color:"#999" }}>{i+1}</td>
+                          <td style={{ padding:"14px", fontWeight:700, color:"#1a1a2e" }}>{b.guestName}</td>
+                          <td style={{ padding:"14px" }}><span style={{ background: room?.lightBg, color: room?.color, fontSize:11, padding:"4px 10px", borderRadius:6, fontWeight:700 }}>{room?.name}</span></td>
+                          <td style={{ padding:"14px", fontWeight:800, color: room?.color }}>#{b.roomNo}</td>
+                          <td style={{ padding:"14px" }}>{fmtDate(b.checkIn)}</td>
+                          <td style={{ padding:"14px" }}>{fmtDate(b.checkOut)}</td>
+                          <td style={{ padding:"14px", fontWeight:600 }}>{nights}</td>
+                          <td style={{ padding:"14px", fontWeight:800, color:"#059669" }}>{fmtINR(b.total)}{b.discounted && <span style={{fontSize:9, color:"#B45309", marginLeft:4}}>50%OFF</span>}</td>
+                          <td style={{ padding:"14px" }}><span style={{ background: b.payMethod==="online" ? "#EFF6FF" : "#FFFBEB", color: b.payMethod==="online" ? "#1D4ED8" : "#92400E", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>{b.payMethod==="online" ? "💳 Online" : "🏨 Hotel"}</span></td>
+                          <td style={{ padding:"14px" }}><span style={{ background: isActive ? "#FEF2F2" : b.checkOut < td ? "#F9FAFB" : "#F0FDF4", color: isActive ? "#DC2626" : b.checkOut < td ? "#6B7280" : "#166534", fontSize:10, padding:"4px 12px", borderRadius:20, fontWeight:800 }}>{isActive ? "🔥 Active" : b.checkOut < td ? "✓ Done" : "📅 Upcoming"}</span></td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              {filteredBookings.length === 0 && <div style={{ padding:40, textAlign:"center", color:"#bbb" }}>No bookings match your search</div>}
+            </div>
+          </div>
+        )}
+
+        {/* ─── ROOMS TAB ─── */}
+        {tab === "rooms" && (
+          <div>
+            <h2 style={{ margin:"0 0 24px", color:"#1a1a2e", fontWeight:800, fontSize:22 }}>Room Management — {fmtDate(td)}</h2>
+
+            {/* EDIT MODAL */}
+            {editingRoom && (
+              <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }} onClick={() => setEditingRoom(null)}>
+                <div onClick={e => e.stopPropagation()} style={{ background:"#fff", borderRadius:20, width:"100%", maxWidth:640, maxHeight:"90vh", overflowY:"auto", padding:32, boxShadow:"0 20px 60px rgba(0,0,0,0.3)" }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
+                    <h3 className="playfair" style={{ margin:0, fontSize:24, color: editForm.color, fontWeight:900 }}>✏️ Edit {editForm.name}</h3>
+                    <button onClick={() => setEditingRoom(null)} style={{ background:"#f5f5f5", border:"none", borderRadius:8, width:36, height:36, fontSize:18, cursor:"pointer", fontWeight:700 }}>✕</button>
+                  </div>
+
+                  {/* Name & Price */}
+                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:18 }}>
+                    <div>
+                      <label style={S.lbl}>Room Name</label>
+                      <input value={editForm.name || ""} onChange={e => setEditForm({...editForm, name: e.target.value})} style={S.input} />
+                    </div>
+                    <div>
+                      <label style={S.lbl}>Price per Night (₹)</label>
+                      <input type="number" value={editForm.price || 0} onChange={e => setEditForm({...editForm, price: parseInt(e.target.value) || 0})} style={S.input} />
+                    </div>
+                  </div>
+
+                  {/* Badge */}
+                  <div style={{ marginBottom:18 }}>
+                    <label style={S.lbl}>Badge Label (leave blank for none)</label>
+                    <input value={editForm.badge || ""} onChange={e => setEditForm({...editForm, badge: e.target.value || null})} placeholder="e.g. Most Popular, Premium, Luxury" style={S.input} />
+                  </div>
+
+                  {/* Description */}
+                  <div style={{ marginBottom:18 }}>
+                    <label style={S.lbl}>Description</label>
+                    <textarea value={editForm.desc || ""} onChange={e => setEditForm({...editForm, desc: e.target.value})} rows={3} style={{ ...S.input, resize:"vertical" }} />
+                  </div>
+
+                  {/* Room Numbers */}
+                  <div style={{ marginBottom:18 }}>
+                    <label style={S.lbl}>Room Numbers ({(editForm.roomNos || []).length} rooms)</label>
+                    <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:10 }}>
+                      {(editForm.roomNos || []).map(no => {
+                        const isBooked = bookings.some(b => b.roomId === editForm.id && b.roomNo === no && b.status === "confirmed" && b.checkOut >= td);
+                        return (
+                          <div key={no} style={{ display:"flex", alignItems:"center", gap:4, background: isBooked ? "#FEF2F2" : "#F0FDF4", border:`1px solid ${isBooked ? "#FECACA" : "#BBF7D0"}`, borderRadius:8, padding:"5px 10px" }}>
+                            <span style={{ fontWeight:700, fontSize:13, color: isBooked ? "#DC2626" : "#166534" }}>#${no}</span>
+                            {!isBooked && <button onClick={() => setEditForm({...editForm, roomNos: editForm.roomNos.filter(n => n !== no)})} style={{ background:"none", border:"none", color:"#DC2626", fontWeight:900, fontSize:14, cursor:"pointer", padding:"0 2px" }}>×</button>}
+                            {isBooked && <span style={{ fontSize:9, color:"#DC2626" }}>booked</span>}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div style={{ display:"flex", gap:8 }}>
+                      <input value={newRoomNo} onChange={e => setNewRoomNo(e.target.value)} placeholder="New room #" style={{ ...S.input, width:140 }} onKeyDown={e => {
+                        if (e.key === "Enter" && newRoomNo.trim()) {
+                          if (!editForm.roomNos.includes(newRoomNo.trim())) {
+                            setEditForm({...editForm, roomNos: [...editForm.roomNos, newRoomNo.trim()]});
+                          }
+                          setNewRoomNo("");
+                        }
+                      }} />
+                      <button onClick={() => { if (newRoomNo.trim() && !editForm.roomNos.includes(newRoomNo.trim())) { setEditForm({...editForm, roomNos: [...editForm.roomNos, newRoomNo.trim()]}); setNewRoomNo(""); }}} style={{ ...S.btn(editForm.color || "#333"), padding:"10px 18px", fontSize:13 }}>+ Add</button>
+                    </div>
+                  </div>
+
+                  {/* Amenities */}
+                  <div style={{ marginBottom:18 }}>
+                    <label style={S.lbl}>Amenities ({(editForm.amenities || []).length})</label>
+                    <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:10 }}>
+                      {(editForm.amenities || []).map(a => (
+                        <span key={a} style={{ background: editForm.lightBg || "#f5f5f5", color: editForm.color || "#333", fontSize:11, padding:"4px 10px", borderRadius:6, fontWeight:600, display:"flex", alignItems:"center", gap:4 }}>
+                          {a}
+                          <button onClick={() => setEditForm({...editForm, amenities: editForm.amenities.filter(x => x !== a)})} style={{ background:"none", border:"none", color:"#DC2626", fontWeight:900, fontSize:12, cursor:"pointer", padding:0 }}>×</button>
+                        </span>
+                      ))}
+                    </div>
+                    <div style={{ display:"flex", gap:8 }}>
+                      <input value={newAmenity} onChange={e => setNewAmenity(e.target.value)} placeholder="New amenity" style={{ ...S.input, flex:1 }} onKeyDown={e => {
+                        if (e.key === "Enter" && newAmenity.trim()) {
+                          if (!editForm.amenities.includes(newAmenity.trim())) {
+                            setEditForm({...editForm, amenities: [...editForm.amenities, newAmenity.trim()]});
+                          }
+                          setNewAmenity("");
+                        }
+                      }} />
+                      <button onClick={() => { if (newAmenity.trim() && !editForm.amenities.includes(newAmenity.trim())) { setEditForm({...editForm, amenities: [...editForm.amenities, newAmenity.trim()]}); setNewAmenity(""); }}} style={{ ...S.btn(editForm.color || "#333"), padding:"10px 18px", fontSize:13 }}>+ Add</button>
+                    </div>
+                  </div>
+
+                  {/* Meals */}
+                  <div style={{ marginBottom:24 }}>
+                    <label style={S.lbl}>Included Meals</label>
+                    <div style={{ display:"flex", gap:10, flexWrap:"wrap" }}>
+                      {["Complimentary Breakfast", "Breakfast", "Lunch", "Dinner"].map(meal => {
+                        const included = (editForm.meals || []).includes(meal);
+                        return (
+                          <button key={meal} onClick={() => {
+                            if (included) setEditForm({...editForm, meals: editForm.meals.filter(m => m !== meal)});
+                            else setEditForm({...editForm, meals: [...(editForm.meals || []), meal]});
+                          }} style={{ padding:"8px 16px", borderRadius:8, border:`1.5px solid ${included ? "#059669" : "#e5e5e5"}`, background: included ? "#F0FDF4" : "#fff", color: included ? "#166534" : "#999", fontWeight:700, fontSize:12, cursor:"pointer" }}>
+                            {included ? "✓ " : ""}{meal}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Save */}
+                  <div style={{ display:"flex", gap:12 }}>
+                    <button onClick={() => {
+                      const updated = rooms.map(r => r.id === editForm.id ? {...r, ...editForm} : r);
+                      updateRooms(updated);
+                      setEditingRoom(null);
+                      showToast(`${editForm.name} updated successfully!`);
+                    }} className="shimmer" style={{ ...S.btn("#059669"), flex:1, padding:14, fontSize:15, borderRadius:12 }}>✓ Save Changes</button>
+                    <button onClick={() => setEditingRoom(null)} style={{ ...S.outBtn("#999"), flex:0, padding:"14px 24px", fontSize:15, borderRadius:12 }}>Cancel</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {roomOccupancy.map(room => (
+              <div key={room.id} style={{ ...S.card, padding:24, marginBottom:24 }}>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16, flexWrap:"wrap", gap:12 }}>
+                  <div>
+                    <h3 className="playfair" style={{ margin:"0 0 4px", fontSize:22, color:room.color, fontWeight:800 }}>{room.name}</h3>
+                    <p style={{ margin:0, color:"#888", fontSize:13 }}>{fmtINR(room.price)}/night · {room.total} rooms total</p>
+                  </div>
+                  <div style={{ display:"flex", gap:10, alignItems:"center", flexWrap:"wrap" }}>
+                    <span style={{ background:"#F0FDF4", color:"#166534", padding:"6px 16px", borderRadius:8, fontWeight:800, fontSize:14 }}>✓ {room.available} Available</span>
+                    <span style={{ background:"#FEF2F2", color:"#DC2626", padding:"6px 16px", borderRadius:8, fontWeight:800, fontSize:14 }}>✗ {room.bookedNos.length} Booked</span>
+                    <button onClick={() => { const r = rooms.find(x => x.id === room.id); setEditForm({...r}); setEditingRoom(room.id); setNewRoomNo(""); setNewAmenity(""); }} style={{ ...S.btn(room.color), padding:"7px 18px", fontSize:12, borderRadius:8 }}>✏️ Edit</button>
+                  </div>
+                </div>
+                <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginBottom:16 }}>
+                  {room.roomNos.map(no => {
+                    const isOccupied = room.bookedNos.includes(no);
+                    const booking = isOccupied ? bookings.find(b => b.roomId === room.id && b.roomNo === no && b.status === "confirmed" && b.checkIn <= td && b.checkOut >= td) : null;
+                    return (
+                      <div key={no} style={{ width:110, padding:"10px 12px", borderRadius:10, background: isOccupied ? "#FEF2F2" : "#F0FDF4", border:`1.5px solid ${isOccupied ? "#FECACA" : "#BBF7D0"}`, textAlign:"center" }}>
+                        <div style={{ fontWeight:800, fontSize:16, color: isOccupied ? "#DC2626" : "#166534", marginBottom:4 }}>#${no}</div>
+                        <div style={{ fontSize:10, fontWeight:700, color: isOccupied ? "#DC2626" : "#059669" }}>{isOccupied ? "OCCUPIED" : "AVAILABLE"}</div>
+                        {booking && <div style={{ fontSize:10, color:"#888", marginTop:4, fontWeight:600 }}>{booking.guestName}</div>}
+                      </div>
+                    );
+                  })}
+                </div>
+                {/* Active bookings for this room type */}
+                {(() => {
+                  const activeForRoom = bookings.filter(b => b.roomId === room.id && b.status === "confirmed" && b.checkOut >= td).sort((a, b) => new Date(a.checkIn) - new Date(b.checkIn));
+                  if (activeForRoom.length === 0) return null;
+                  return (
+                    <div>
+                      <div style={{ fontSize:11, fontWeight:700, color:"#999", marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>Current & Upcoming Reservations</div>
+                      <div style={{ display:"grid", gap:8 }}>
+                        {activeForRoom.map(b => (
+                          <div key={b.id} style={{ background:"#f8f6f0", borderRadius:8, padding:"10px 14px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
+                            <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                              <span style={{ fontWeight:700, color: room.color }}>#${b.roomNo}</span>
+                              <span style={{ fontWeight:600, color:"#1a1a2e" }}>{b.guestName}</span>
+                            </div>
+                            <div style={{ fontSize:12, color:"#888" }}>{fmtDate(b.checkIn)} → {fmtDate(b.checkOut)} · <strong style={{ color:"#059669" }}>{fmtINR(b.total)}</strong></div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* ─── CUSTOMERS TAB ─── */}
+        {tab === "customers" && (
+          <div>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24, flexWrap:"wrap", gap:12 }}>
+              <h2 style={{ margin:0, color:"#1a1a2e", fontWeight:800, fontSize:22 }}>All Customers ({customers.length})</h2>
+              <span style={{ background:"#EFF6FF", color:"#2563EB", padding:"6px 16px", borderRadius:8, fontWeight:700, fontSize:13 }}>👥 {users.length} Registered Users</span>
+            </div>
+            <div style={{ ...S.card, overflow:"hidden" }}>
+              <div style={{ overflowX:"auto" }}>
+                <table style={{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
+                  <thead>
+                    <tr style={{ background:"#1a1a2e" }}>
+                      {["#","Guest Name","Email","Contact","Bookings","Total Spent","Type"].map(h =>
+                        <th key={h} style={{ padding:"12px 14px", textAlign:"left", fontWeight:700, color:"#B8860B", fontSize:11, textTransform:"uppercase", letterSpacing:"0.5px" }}>{h}</th>
+                      )}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {customers.map((c, i) => (
+                      <tr key={i} style={{ borderBottom:"1px solid #f0f0f0", background: i%2===0 ? "#fff" : "#fafaf8" }}>
+                        <td style={{ padding:"14px", fontWeight:600, color:"#999" }}>{i+1}</td>
+                        <td style={{ padding:"14px" }}>
+                          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                            <div style={{ background:"linear-gradient(135deg, #B8860B, #D4A843)", width:32, height:32, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:800, fontSize:13, flexShrink:0 }}>{c.name[0].toUpperCase()}</div>
+                            <span style={{ fontWeight:700, color:"#1a1a2e" }}>{c.name}</span>
+                          </div>
+                        </td>
+                        <td style={{ padding:"14px", color:"#555" }}>{c.email}</td>
+                        <td style={{ padding:"14px", color:"#555" }}>{c.contact}</td>
+                        <td style={{ padding:"14px", fontWeight:700, color:"#2563EB" }}>{c.bookingCount}</td>
+                        <td style={{ padding:"14px", fontWeight:800, color:"#059669" }}>{fmtINR(c.totalSpent)}</td>
+                        <td style={{ padding:"14px" }}><span style={{ background: c.isSeed ? "#F3F4F6" : "#F0FDF4", color: c.isSeed ? "#6B7280" : "#166534", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>{c.isSeed ? "Walk-in" : "Registered"}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </div>
+
+      {/* Owner Footer */}
+      <div style={{ background:"#0f0f1e", padding:"20px 24px", textAlign:"center", marginTop:40 }}>
+        <p style={{ color:"#444", fontSize:11 }}>🔒 Owner Admin Panel — {HOTEL} · Confidential Access Only</p>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  AMENITIES PAGE
+// ═══════════════════════════════════════
+function AmenitiesPage() {
+  const [cat, setCat] = useState("Breakfast");
+  const [search, setSearch] = useState("");
+  const menuKeys = Object.keys(MENU);
+
+  const filteredItems = MENU[cat].filter(item =>
+    item.n.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div>
+      <div style={{ background:"#1a1a2e", padding:"52px 24px" }}>
+        <div style={{ maxWidth:1100, margin:"0 auto" }}>
+          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:10 }}>World-Class Facilities</div>
+          <h1 className="playfair" style={{ color:"#fff", fontSize:38, fontWeight:900, margin:"0 0 8px" }}>Hotel Amenities</h1>
+          <p style={{ color:"#888", fontSize:15 }}>Every facility designed for your comfort</p>
+        </div>
+      </div>
+
+      <div style={S.sec}>
+        {/* Amenity Cards */}
+        <div style={{ textAlign:"center", marginBottom:44 }}>
+          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:10 }}>Facilities</div>
+          <h2 className="playfair" style={{ fontSize:34, fontWeight:900, color:"#1a1a2e", margin:0 }}>Exceptional Amenities</h2>
+        </div>
+        <div className="g-amenities" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:24, marginBottom:72 }}>
+          {AMENITY_DATA.map(a => (
+            <div key={a.title} style={{ ...S.card, transition:"transform .2s" }}>
+              <div style={{ height:210, overflow:"hidden" }}>
+                <img src={a.img} alt={a.title} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform .3s" }} />
+              </div>
+              <div style={{ padding:"20px 22px" }}>
+                <h3 style={{ margin:"0 0 10px", fontSize:18, color:"#1a1a2e", fontWeight:800 }}>{a.icon} {a.title}</h3>
+                <p style={{ margin:"0 0 14px", color:"#666", fontSize:13, lineHeight:1.65 }}>{a.desc}</p>
+                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                  <span style={{ background:"#FFFBEB", color:"#92400E", fontSize:10, fontWeight:800, padding:"4px 12px", borderRadius:6 }}>★ {a.tag}</span>
+                  <span style={{ color:"#888", fontSize:12, fontWeight:600 }}>{a.hours}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Menu Section */}
+        <div style={{ textAlign:"center", marginBottom:36 }}>
+          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:10 }}>Dining</div>
+          <h2 className="playfair" style={{ fontSize:34, fontWeight:900, color:"#1a1a2e", margin:0 }}>Restaurant Menu & Prices</h2>
+          <p style={{ color:"#888", marginTop:10, fontSize:14 }}>All prices in INR · GST applicable · {menuKeys.length} categories, 120+ dishes</p>
+        </div>
+        <div style={{ ...S.card, padding:28 }}>
+          {/* Category Tabs */}
+          <div className="menu-tabs" style={{ display:"flex", gap:8, marginBottom:20, flexWrap:"wrap" }}>
+            {menuKeys.map(k =>
+              <button key={k} onClick={() => { setCat(k); setSearch(""); }} style={{ ...(cat===k ? S.btn("#1a1a2e") : S.outBtn("#999")), padding:"8px 18px", fontSize:13, borderRadius:8 }}>
+                {{"Breakfast":"🍳","Lunch":"🍜","Dinner":"🍷","Beverages":"☕","Snacks":"🍟","Desserts":"🍰"}[k]} {k}
+              </button>
+            )}
+          </div>
+          {/* Search */}
+          <div style={{ marginBottom:18, position:"relative" }}>
+            <input value={search} onChange={e => setSearch(e.target.value)} placeholder={`Search ${cat} items...`} style={{ ...S.input, paddingLeft:38 }} />
+            <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#bbb" }}>🔍</span>
+          </div>
+          {/* Items */}
+          <div className="g-menu-items" style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:10 }}>
+            {filteredItems.map(({n,p}) =>
+              <div key={n} style={{ background:"#f8f6f0", borderRadius:10, padding:"14px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", transition:"background .15s" }}>
+                <span style={{ color:"#1a1a2e", fontWeight:600, fontSize:14 }}>{n}</span>
+                <span style={{ color:"#B8860B", fontWeight:800, fontSize:15, marginLeft:10, whiteSpace:"nowrap" }}>{fmtINR(p)}</span>
+              </div>
+            )}
+            {filteredItems.length === 0 && <div style={{color:"#bbb", padding:20, textAlign:"center", gridColumn:"1/-1"}}>No items match "{search}"</div>}
+          </div>
+          <p style={{ color:"#bbb", fontSize:11, marginTop:20 }}>* Complimentary breakfast for Couple Suite, Premium & Presidential guests. Menu subject to seasonal availability.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════
+//  AUTH PAGES
+// ═══════════════════════════════════════
+function SignupPage({ handleSignup, setPage }) {
+  const [f, setF] = useState({ name:"", contact:"", email:"", password:"", confirm:"" });
+  const [err, setErr] = useState("");
+  const set = k => e => setF({...f, [k]: e.target.value });
+
+  function submit() {
+    if (!f.name || !f.contact || !f.email || !f.password) { setErr("All fields are required."); return; }
+    if (!/\S+@\S+\.\S+/.test(f.email)) { setErr("Enter a valid email."); return; }
+    if (f.password.length < 6) { setErr("Password must be at least 6 characters."); return; }
+    if (f.password !== f.confirm) { setErr("Passwords do not match."); return; }
+    setErr("");
+    handleSignup({ name:f.name, contact:f.contact, email:f.email, password:f.password });
+  }
+
+  return (
+    <div style={{ minHeight:"80vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24, background:"var(--bg)" }}>
+      <div className="auth-card" style={{ ...S.card, width:"100%", maxWidth:460, padding:"42px 36px" }}>
+        <div style={{ textAlign:"center", marginBottom:32 }}>
+          <div style={{ background:"#1a1a2e", width:52, height:52, borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 16px", fontSize:22 }}>⭐</div>
+          <h2 className="playfair" style={{ margin:0, fontSize:26, color:"#1a1a2e", fontWeight:900 }}>Create Your Account</h2>
+          <p style={{ color:"#888", fontSize:14, margin:"8px 0 0" }}>Join {HOTEL} family</p>
+        </div>
+        {err && <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:16, fontWeight:600 }}>{err}</div>}
+        {[["Full Name","text","name","Your full name"],["Contact Number","tel","contact","+91 98765 43210"],["Email Address","email","email","you@example.com"],["Password","password","password","Minimum 6 characters"],["Confirm Password","password","confirm","Repeat password"]].map(([l,t,k,ph]) =>
+          <div key={k} style={{ marginBottom:16 }}>
+            <label style={S.lbl}>{l}</label>
+            <input type={t} value={f[k]} onChange={set(k)} placeholder={ph} style={S.input} onKeyDown={e => e.key==="Enter" && submit()} />
+          </div>
+        )}
+        <button onClick={submit} className="shimmer" style={{ ...S.btn("#1a1a2e"), width:"100%", padding:"14px", fontSize:16, marginTop:6, borderRadius:12 }}>Create Account</button>
+        <p style={{ textAlign:"center", marginTop:20, fontSize:14, color:"#888" }}>Already have an account? <span onClick={() => setPage("login")} style={{ color:"#B8860B", cursor:"pointer", fontWeight:700 }}>Sign In</span></p>
       </div>
     </div>
   );
@@ -162,44 +1717,277 @@ function LandingPage({ setPage }) {
 
 function LoginPage({ handleLogin, setPage }) {
   const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState("");
+
+  function submit() {
+    if (!email || !pw) { setErr("Please fill in all fields."); return; }
+    setErr("");
+    handleLogin({ email, password: pw });
+  }
+
   return (
-    <div style={{ padding: 100, textAlign: "center", maxWidth: 400, margin: "0 auto" }}>
-      <h2 className="playfair" style={{ marginBottom: 24 }}>Login</h2>
-      <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Enter your email" style={S.input} />
-      <button onClick={() => handleLogin({ email, name: "Guest" })} style={{ ...S.btn("var(--dark)"), width: "100%", marginTop: 16 }}>Sign In</button>
+    <div style={{ minHeight:"80vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24, background:"var(--bg)" }}>
+      <div className="auth-card" style={{ ...S.card, width:"100%", maxWidth:420, padding:"42px 36px" }}>
+        <div style={{ textAlign:"center", marginBottom:32 }}>
+          <div style={{ background:"#1a1a2e", width:52, height:52, borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 16px", fontSize:22 }}>⭐</div>
+          <h2 className="playfair" style={{ margin:0, fontSize:26, color:"#1a1a2e", fontWeight:900 }}>Welcome Back</h2>
+          <p style={{ color:"#888", fontSize:14, margin:"8px 0 0" }}>Sign in to your account</p>
+        </div>
+        {err && <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:16, fontWeight:600 }}>{err}</div>}
+        <div style={{ marginBottom:18 }}>
+          <label style={S.lbl}>Email Address</label>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" style={S.input} />
+        </div>
+        <div style={{ marginBottom:24 }}>
+          <label style={S.lbl}>Password</label>
+          <input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="••••••••" style={S.input} onKeyDown={e => e.key==="Enter" && submit()} />
+        </div>
+        <button onClick={submit} className="shimmer" style={{ ...S.btn("#1a1a2e"), width:"100%", padding:"14px", fontSize:16, borderRadius:12 }}>Sign In</button>
+        <p style={{ textAlign:"center", marginTop:20, fontSize:14, color:"#888" }}>Don't have an account? <span onClick={() => setPage("signup")} style={{ color:"#B8860B", cursor:"pointer", fontWeight:700 }}>Sign Up</span></p>
+        <div style={{ background:"#f8f6f0", borderRadius:10, padding:"12px 16px", marginTop:18, fontSize:12, color:"#999", textAlign:"center" }}>
+          New here? Sign up to create your guest account — bookings saved automatically.
+        </div>
+        {/* Owner Login Link */}
+        <div onClick={() => setPage("ownerLogin")} style={{ marginTop:18, padding:"14px 18px", borderRadius:10, border:"1.5px dashed #DC2626", background:"#FEF2F2", cursor:"pointer", textAlign:"center", transition:"all .2s" }}>
+          <div style={{ fontSize:13, fontWeight:800, color:"#DC2626" }}>👑 Hotel Owner?</div>
+          <div style={{ fontSize:11, color:"#999", marginTop:2 }}>Access the Owner Admin Dashboard</div>
+        </div>
+      </div>
     </div>
   );
 }
 
-function RoomsPage() {
-  return <div style={{ padding: 100, textAlign: "center" }}><h2 className="playfair">Our Rooms</h2><p>Booking system coming soon!</p></div>;
+// ═══════════════════════════════════════
+//  FOOTER
+// ═══════════════════════════════════════
+function Footer() {
+  return (
+    <div style={{ background:"#0f0f1e", padding:"36px 24px", textAlign:"center" }}>
+      <div className="playfair" style={{ color:"#B8860B", fontWeight:800, fontSize:20, marginBottom:10 }}>{HOTEL}</div>
+      <p style={{ color:"#555", fontSize:12 }}>MG Road, Bengaluru, Karnataka 560001 · +91 80 4000 5000 · reservations@grandmeridian.in</p>
+      <p style={{ color:"#333", fontSize:11, marginTop:10 }}>© 2026 {HOTEL}. All rights reserved. Images via Unsplash.</p>
+    </div>
+  );
 }
 
-function Footer() {
-  return <footer style={{ background: "var(--darker)", color: "#555", padding: 40, textAlign: "center", fontSize: 12 }}>© 2026 THE GRAND MERIDIAN HOTEL</footer>;
+// ═══════════════════════════════════════
+//  MAIN APP
+// ═══════════════════════════════════════
+function OwnerLoginPage({ setPage, handleOwnerLogin }) {
+  const [email, setEmail] = useState("");
+  const [pw, setPw] = useState("");
+  const [err, setErr] = useState("");
+
+  function submit() {
+    if (!email || !pw) { setErr("Please fill in all fields."); return; }
+    if (email !== OWNER_EMAIL || pw !== OWNER_PASSWORD) {
+      setErr("Invalid owner credentials.");
+      return;
+    }
+    setErr("");
+    handleOwnerLogin();
+  }
+
+  return (
+    <div style={{ minHeight:"100vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24, background:"linear-gradient(145deg, #0f0f1e 0%, #1a1a2e 50%, #2a1a1e 100%)" }}>
+      <div className="auth-card" style={{ ...S.card, width:"100%", maxWidth:440, padding:"42px 36px", border:"1px solid rgba(220,38,38,0.15)" }}>
+        <div style={{ textAlign:"center", marginBottom:32 }}>
+          <div style={{ background:"linear-gradient(135deg, #DC2626, #EF4444)", width:60, height:60, borderRadius:16, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 16px", fontSize:26, boxShadow:"0 6px 24px rgba(220,38,38,0.3)" }}>👑</div>
+          <h2 className="playfair" style={{ margin:0, fontSize:28, color:"#1a1a2e", fontWeight:900 }}>Owner Login</h2>
+          <p style={{ color:"#888", fontSize:13, margin:"10px 0 0" }}>Authorized access to hotel management</p>
+        </div>
+        {err && <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:16, fontWeight:600 }}>{err}</div>}
+        <div style={{ marginBottom:18 }}>
+          <label style={S.lbl}>Owner Email</label>
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="owner@hotel.com" style={S.input} />
+        </div>
+        <div style={{ marginBottom:24 }}>
+          <label style={S.lbl}>Password</label>
+          <input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="••••••••" style={S.input} onKeyDown={e => e.key==="Enter" && submit()} />
+        </div>
+        <button onClick={submit} className="shimmer" style={{ ...S.btn("linear-gradient(135deg, #DC2626, #EF4444)"), width:"100%", padding:"14px", fontSize:16, borderRadius:12 }}>Access Admin Panel</button>
+        <p style={{ textAlign:"center", marginTop:20, fontSize:13, color:"#888" }}>
+          <span onClick={() => setPage("login")} style={{ color:"#B8860B", cursor:"pointer", fontWeight:700 }}>← Back to Guest Login</span>
+        </p>
+        <div style={{ background:"#FEF2F2", borderRadius:10, padding:"12px 16px", marginTop:16, fontSize:11, color:"#DC2626", textAlign:"center", fontWeight:600 }}>
+          🔒 This area is restricted to hotel owners only
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function App() {
-  const [page, setPage] = useState("landing");
+  const [page, setPage] = useState("signup");
   const [currentUser, setCurrentUser] = useState(null);
-  const handleLogin = (u) => { setCurrentUser(u); setPage("landing"); };
-  const handleLogout = () => { setCurrentUser(null); setPage("landing"); };
+  const [users, setUsers] = useState([]);
+  const [bookings, setBookings] = useState(SEED_BOOKINGS);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [pendingBooking, setPendingBooking] = useState(null);
+  const [toast, setToast] = useState(null);
+  const [points, setPoints] = useState(0);
+  const [isOwner, setIsOwner] = useState(false);
+  const [rooms, setRooms] = useState(DEFAULT_ROOMS);
+
+  // Persistence
+  useEffect(() => {
+    try {
+      const u = localStorage.getItem("gm_users");
+      if (u) setUsers(JSON.parse(u));
+      const b = localStorage.getItem("gm_bookings");
+      if (b) {
+        const userBookings = JSON.parse(b);
+        setBookings([...SEED_BOOKINGS, ...userBookings]);
+      }
+      const cu = localStorage.getItem("gm_session");
+      if (cu) {
+        const user = JSON.parse(cu);
+        setCurrentUser(user);
+        // Calc points
+        const allB = [...SEED_BOOKINGS, ...(b ? JSON.parse(b) : [])];
+        const myB = allB.filter(bk => bk.userId === user.id);
+        const earned = myB.reduce((acc, bk) => acc + Math.floor(bk.total / 10), 0);
+        const used = user.usedPoints || 0;
+        setPoints(Math.max(0, earned - used));
+      }
+      const ownerSession = localStorage.getItem("gm_owner");
+      if (ownerSession === "true") {
+        setIsOwner(true);
+        setPage("ownerDash");
+      }
+      const savedRooms = localStorage.getItem("gm_rooms");
+      if (savedRooms) {
+        const parsed = JSON.parse(savedRooms);
+        setRooms(parsed);
+        ROOMS = parsed;
+      }
+    } catch {}
+  }, []);
+
+  function saveUsers(nu) { setUsers(nu); localStorage.setItem("gm_users", JSON.stringify(nu)); }
+  function saveBookings(nb) {
+    setBookings(nb);
+    const toSave = nb.filter(b => b.userId !== "_s");
+    localStorage.setItem("gm_bookings", JSON.stringify(toSave));
+  }
+  function updateRooms(nr) { setRooms(nr); ROOMS = nr; localStorage.setItem("gm_rooms", JSON.stringify(nr)); }
+  function setSession(u) { setCurrentUser(u); localStorage.setItem("gm_session", JSON.stringify(u)); }
+  function clearSession() { setCurrentUser(null); localStorage.removeItem("gm_session"); }
+
+  function showToast(msg, type="success") { setToast({msg,type}); setTimeout(() => setToast(null), 3800); }
+
+  const nav = p => { setPage(p); window.scrollTo(0,0); };
+
+  function handleSignup({ name, email, contact, password }) {
+    if (users.find(u => u.email === email)) { showToast("Email already registered!", "error"); return; }
+    const nu = { id:`u_${Date.now()}`, name, email, contact, password, usedPoints:0 };
+    saveUsers([...users, nu]);
+    setSession(nu);
+    setPoints(0);
+    showToast(`Welcome, ${name}! Account created.`);
+    nav("landing");
+  }
+
+  function handleLogin({ email, password }) {
+    const u = users.find(u => u.email === email && u.password === password);
+    if (!u) { showToast("Invalid email or password.", "error"); return; }
+    setSession(u);
+    // Calc points
+    const myB = bookings.filter(bk => bk.userId === u.id);
+    const earned = myB.reduce((acc, bk) => acc + Math.floor(bk.total / 10), 0);
+    setPoints(Math.max(0, earned - (u.usedPoints || 0)));
+    showToast(`Welcome back, ${u.name}!`);
+    nav("landing");
+  }
+
+  function handleLogout() { clearSession(); setPoints(0); nav("landing"); showToast("Logged out successfully."); }
+
+  function handleOwnerLogin() {
+    setIsOwner(true);
+    localStorage.setItem("gm_owner", "true");
+    showToast("Welcome, Owner! Admin panel loaded.");
+    nav("ownerDash");
+  }
+
+  function handleOwnerLogout() {
+    setIsOwner(false);
+    localStorage.removeItem("gm_owner");
+    showToast("Owner logged out.");
+    nav("landing");
+  }
+
+  function handleBook(room) {
+    if (!currentUser) { nav("login"); return; }
+    setSelectedRoom(room);
+    nav("book");
+  }
+
+  function handleConfirmBooking(payMethod, usedCoupon) {
+    if (!pendingBooking) return;
+    const roomNo = getAvailRoomNo(pendingBooking.roomId, pendingBooking.checkIn, pendingBooking.checkOut, bookings);
+    if (!roomNo) { showToast("No rooms available!", "error"); return; }
+
+    const discountedTotal = usedCoupon ? Math.floor(pendingBooking.total / 2) : pendingBooking.total;
+    const nb = {
+      ...pendingBooking, id:`bk_${Date.now()}`, roomNo, userId:currentUser.id,
+      guestName:currentUser.name, status:"confirmed", payMethod,
+      total: discountedTotal, discounted: usedCoupon, bookedAt: new Date().toISOString()
+    };
+    const newBookings = [...bookings, nb];
+    saveBookings(newBookings);
+
+    // Update points
+    const newEarned = Math.floor(discountedTotal / 10);
+    let newUsedPoints = currentUser.usedPoints || 0;
+    if (usedCoupon) newUsedPoints += 3000;
+
+    const updatedUser = { ...currentUser, usedPoints: newUsedPoints };
+    const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
+    saveUsers(updatedUsers);
+    setSession(updatedUser);
+
+    // Recalc points
+    const myB = newBookings.filter(bk => bk.userId === updatedUser.id);
+    const totalEarned = myB.reduce((acc, bk) => acc + Math.floor(bk.total / 10), 0);
+    setPoints(Math.max(0, totalEarned - newUsedPoints));
+
+    setPendingBooking(null);
+    showToast(`Booking confirmed! Room #${roomNo} assigned 🎉`);
+    nav("dashboard");
+  }
+
+  const props = { page, setPage:nav, currentUser, users, bookings, rooms, selectedRoom, setSelectedRoom, pendingBooking, setPendingBooking, handleSignup, handleLogin, handleLogout, handleBook, handleConfirmBooking, showToast, points, isOwner, handleOwnerLogin, handleOwnerLogout };
+
+  // If owner is logged in and on owner page, show owner dashboard
+  if (isOwner && page === "ownerDash") {
+    return (
+      <div style={{ minHeight:"100vh", background:"var(--bg)" }}>
+        {toast && <Toast {...toast} />}
+        <OwnerDashboard bookings={bookings} users={users} rooms={rooms} updateRooms={updateRooms} setPage={nav} handleOwnerLogout={handleOwnerLogout} showToast={showToast} />
+      </div>
+    );
+  }
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar setPage={setPage} currentUser={currentUser} handleLogout={handleLogout} />
-      <main style={{ flex: 1 }}>
-        {page === "landing" && <LandingPage setPage={setPage} />}
-        {page === "rooms" && <RoomsPage />}
-        {page === "login" && <LoginPage handleLogin={handleLogin} setPage={setPage} />}
-      </main>
-      <Footer />
+    <div style={{ minHeight:"100vh", background:"var(--bg)" }}>
+      <Navbar {...props} />
+      {toast && <Toast {...toast} />}
+      {page === "landing" && <LandingPage {...props} />}
+      {page === "login" && <LoginPage {...props} />}
+      {page === "signup" && <SignupPage {...props} />}
+      {page === "ownerLogin" && <OwnerLoginPage setPage={nav} handleOwnerLogin={handleOwnerLogin} />}
+      {page === "rooms" && <RoomsPage {...props} />}
+      {page === "book" && <BookingPage {...props} />}
+      {page === "payment" && <PaymentPage {...props} />}
+      {page === "dashboard" && <DashboardPage {...props} />}
+      {page === "amenities" && <AmenitiesPage {...props} />}
     </div>
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
-    </script>
+</script>
 </body>
 </html>
