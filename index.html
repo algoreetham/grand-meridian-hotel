@@ -222,14 +222,7 @@ const DEFAULT_ROOMS = [
 // Live reference — will be updated by App state
 let ROOMS = DEFAULT_ROOMS;
 
-const SEED_BOOKINGS = [
-  { id:"s1", roomId:"economy", roomNo:"101", checkIn:"2026-04-10", checkOut:"2026-04-20", userId:"_s", guestName:"Ravi Kumar", total:10000, payMethod:"hotel", status:"confirmed" },
-  { id:"s2", roomId:"economy", roomNo:"102", checkIn:"2026-04-12", checkOut:"2026-04-17", userId:"_s", guestName:"Deepak Jain", total:5000, payMethod:"online", status:"confirmed" },
-  { id:"s3", roomId:"couple", roomNo:"201", checkIn:"2026-04-11", checkOut:"2026-04-15", userId:"_s", guestName:"Priya Sharma", total:10000, payMethod:"online", status:"confirmed" },
-  { id:"s4", roomId:"presidential", roomNo:"401", checkIn:"2026-04-15", checkOut:"2026-04-18", userId:"_s", guestName:"Arjun Mehta", total:24000, payMethod:"online", status:"confirmed" },
-  { id:"s5", roomId:"premium", roomNo:"301", checkIn:"2026-04-12", checkOut:"2026-04-16", userId:"_s", guestName:"Sneha Iyer", total:20000, payMethod:"online", status:"confirmed" },
-  { id:"s6", roomId:"couple", roomNo:"203", checkIn:"2026-04-14", checkOut:"2026-04-19", userId:"_s", guestName:"Anjali Rao", total:12500, payMethod:"hotel", status:"confirmed" },
-];
+const SEED_BOOKINGS = [];
 
 const MENU = {
   Breakfast:[
@@ -1097,7 +1090,7 @@ function BookingRow({ b, faded }) {
       <img src={room.img} alt="" style={{ width:88, height:68, objectFit:"cover", borderRadius:10, flexShrink:0 }} />
       <div style={{ flex:1, minWidth:180 }}>
         <div style={{ fontWeight:800, color:"#1a1a2e", fontSize:16 }}>{room.name}</div>
-        <div style={{ color:"#555", fontSize:13, marginTop:4 }}>Room <strong style={{ color:room.color, fontSize:14 }}>#${b.roomNo}</strong> · {fmtDate(b.checkIn)} → {fmtDate(b.checkOut)}</div>
+        <div style={{ color:"#555", fontSize:13, marginTop:4 }}>Room <strong style={{ color:room.color, fontSize:14 }}>#{b.roomNo}</strong> · {fmtDate(b.checkIn)} → {fmtDate(b.checkOut)}</div>
         <div style={{ color:"#999", fontSize:11, marginTop:4 }}>{calcNights(b.checkIn, b.checkOut)} night(s) · {b.guestName}</div>
       </div>
       <div style={{ textAlign:"right" }}>
@@ -1414,7 +1407,7 @@ function OwnerDashboard({ bookings, users, setPage, handleOwnerLogout, rooms, up
                         const isBooked = bookings.some(b => b.roomId === editForm.id && b.roomNo === no && b.status === "confirmed" && b.checkOut >= td);
                         return (
                           <div key={no} style={{ display:"flex", alignItems:"center", gap:4, background: isBooked ? "#FEF2F2" : "#F0FDF4", border:`1px solid ${isBooked ? "#FECACA" : "#BBF7D0"}`, borderRadius:8, padding:"5px 10px" }}>
-                            <span style={{ fontWeight:700, fontSize:13, color: isBooked ? "#DC2626" : "#166534" }}>#${no}</span>
+                            <span style={{ fontWeight:700, fontSize:13, color: isBooked ? "#DC2626" : "#166534" }}>#{no}</span>
                             {!isBooked && <button onClick={() => setEditForm({...editForm, roomNos: editForm.roomNos.filter(n => n !== no)})} style={{ background:"none", border:"none", color:"#DC2626", fontWeight:900, fontSize:14, cursor:"pointer", padding:"0 2px" }}>×</button>}
                             {isBooked && <span style={{ fontSize:9, color:"#DC2626" }}>booked</span>}
                           </div>
@@ -1509,7 +1502,7 @@ function OwnerDashboard({ bookings, users, setPage, handleOwnerLogout, rooms, up
                     const booking = isOccupied ? bookings.find(b => b.roomId === room.id && b.roomNo === no && b.status === "confirmed" && b.checkIn <= td && b.checkOut >= td) : null;
                     return (
                       <div key={no} style={{ width:110, padding:"10px 12px", borderRadius:10, background: isOccupied ? "#FEF2F2" : "#F0FDF4", border:`1.5px solid ${isOccupied ? "#FECACA" : "#BBF7D0"}`, textAlign:"center" }}>
-                        <div style={{ fontWeight:800, fontSize:16, color: isOccupied ? "#DC2626" : "#166534", marginBottom:4 }}>#${no}</div>
+                        <div style={{ fontWeight:800, fontSize:16, color: isOccupied ? "#DC2626" : "#166534", marginBottom:4 }}>#{no}</div>
                         <div style={{ fontSize:10, fontWeight:700, color: isOccupied ? "#DC2626" : "#059669" }}>{isOccupied ? "OCCUPIED" : "AVAILABLE"}</div>
                         {booking && <div style={{ fontSize:10, color:"#888", marginTop:4, fontWeight:600 }}>{booking.guestName}</div>}
                       </div>
@@ -1527,7 +1520,7 @@ function OwnerDashboard({ bookings, users, setPage, handleOwnerLogout, rooms, up
                         {activeForRoom.map(b => (
                           <div key={b.id} style={{ background:"#f8f6f0", borderRadius:8, padding:"10px 14px", display:"flex", justifyContent:"space-between", alignItems:"center", flexWrap:"wrap", gap:8 }}>
                             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                              <span style={{ fontWeight:700, color: room.color }}>#${b.roomNo}</span>
+                              <span style={{ fontWeight:700, color: room.color }}>#{b.roomNo}</span>
                               <span style={{ fontWeight:600, color:"#1a1a2e" }}>{b.guestName}</span>
                             </div>
                             <div style={{ fontSize:12, color:"#888" }}>{fmtDate(b.checkIn)} → {fmtDate(b.checkOut)} · <strong style={{ color:"#059669" }}>{fmtINR(b.total)}</strong></div>
@@ -1682,15 +1675,53 @@ function AmenitiesPage() {
 function SignupPage({ handleSignup, setPage }) {
   const [f, setF] = useState({ name:"", contact:"", email:"", password:"", confirm:"" });
   const [err, setErr] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [generatedOtp, setGeneratedOtp] = useState("");
+  const [enteredOtp, setEnteredOtp] = useState("");
+  const [otpErr, setOtpErr] = useState("");
+  const [timer, setTimer] = useState(0);
   const set = k => e => setF({...f, [k]: e.target.value });
 
-  function submit() {
+  // OTP timer
+  useEffect(() => {
+    if (timer > 0) {
+      const t = setTimeout(() => setTimer(timer - 1), 1000);
+      return () => clearTimeout(t);
+    }
+  }, [timer]);
+
+  function sendOtp() {
     if (!f.name || !f.contact || !f.email || !f.password) { setErr("All fields are required."); return; }
+    if (!/^\+?[0-9]{10,13}$/.test(f.contact.replace(/\s/g, ""))) { setErr("Enter a valid contact number."); return; }
     if (!/\S+@\S+\.\S+/.test(f.email)) { setErr("Enter a valid email."); return; }
     if (f.password.length < 6) { setErr("Password must be at least 6 characters."); return; }
     if (f.password !== f.confirm) { setErr("Passwords do not match."); return; }
     setErr("");
-    handleSignup({ name:f.name, contact:f.contact, email:f.email, password:f.password });
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+    setGeneratedOtp(otp);
+    setOtpSent(true);
+    setTimer(60);
+    setEnteredOtp("");
+    setOtpErr("");
+    console.log("OTP for demo:", otp);
+  }
+
+  function verifyOtp() {
+    if (enteredOtp === generatedOtp) {
+      setOtpErr("");
+      handleSignup({ name:f.name, contact:f.contact, email:f.email, password:f.password });
+    } else {
+      setOtpErr("Invalid OTP. Please try again.");
+    }
+  }
+
+  function resendOtp() {
+    const otp = String(Math.floor(100000 + Math.random() * 900000));
+    setGeneratedOtp(otp);
+    setTimer(60);
+    setEnteredOtp("");
+    setOtpErr("");
+    console.log("New OTP for demo:", otp);
   }
 
   return (
@@ -1702,13 +1733,50 @@ function SignupPage({ handleSignup, setPage }) {
           <p style={{ color:"#888", fontSize:14, margin:"8px 0 0" }}>Join {HOTEL} family</p>
         </div>
         {err && <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:16, fontWeight:600 }}>{err}</div>}
-        {[["Full Name","text","name","Your full name"],["Contact Number","tel","contact","+91 98765 43210"],["Email Address","email","email","you@example.com"],["Password","password","password","Minimum 6 characters"],["Confirm Password","password","confirm","Repeat password"]].map(([l,t,k,ph]) =>
-          <div key={k} style={{ marginBottom:16 }}>
-            <label style={S.lbl}>{l}</label>
-            <input type={t} value={f[k]} onChange={set(k)} placeholder={ph} style={S.input} onKeyDown={e => e.key==="Enter" && submit()} />
+
+        {!otpSent ? (
+          <div>
+            {[["Full Name","text","name","Your full name"],["Contact Number","tel","contact","+91 98765 43210"],["Email Address","email","email","you@example.com"],["Password","password","password","Minimum 6 characters"],["Confirm Password","password","confirm","Repeat password"]].map(([l,t,k,ph]) =>
+              <div key={k} style={{ marginBottom:16 }}>
+                <label style={S.lbl}>{l}</label>
+                <input type={t} value={f[k]} onChange={set(k)} placeholder={ph} style={S.input} onKeyDown={e => e.key==="Enter" && sendOtp()} />
+              </div>
+            )}
+            <button onClick={sendOtp} className="shimmer" style={{ ...S.btn("#1a1a2e"), width:"100%", padding:"14px", fontSize:16, marginTop:6, borderRadius:12 }}>Send OTP & Create Account</button>
+          </div>
+        ) : (
+          <div>
+            {/* OTP Verification */}
+            <div style={{ background:"linear-gradient(135deg, #F0FDF4, #ECFDF5)", borderRadius:14, padding:"24px 20px", textAlign:"center", marginBottom:20, border:"1px solid #BBF7D0" }}>
+              <div style={{ fontSize:32, marginBottom:8 }}>📱</div>
+              <div style={{ fontWeight:800, color:"#166534", fontSize:15, marginBottom:6 }}>OTP Sent!</div>
+              <div style={{ color:"#059669", fontSize:13 }}>A 6-digit verification code has been sent to</div>
+              <div style={{ fontWeight:800, color:"#1a1a2e", fontSize:14, marginTop:4 }}>{f.contact}</div>
+              <div style={{ background:"#FFFBEB", borderRadius:8, padding:"8px 14px", marginTop:12, display:"inline-block" }}>
+                <span style={{ fontSize:11, color:"#92400E", fontWeight:700 }}>💡 Demo Mode: OTP is <strong style={{ color:"#DC2626", fontSize:16, letterSpacing:4 }}>{generatedOtp}</strong></span>
+              </div>
+            </div>
+
+            <div style={{ marginBottom:18 }}>
+              <label style={S.lbl}>Enter 6-Digit OTP</label>
+              <input type="text" value={enteredOtp} onChange={e => setEnteredOtp(e.target.value.replace(/\D/g, "").slice(0, 6))} placeholder="000000" maxLength={6} style={{ ...S.input, fontSize:24, textAlign:"center", letterSpacing:12, fontWeight:800 }} onKeyDown={e => e.key==="Enter" && verifyOtp()} />
+            </div>
+
+            {otpErr && <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:16, fontWeight:600 }}>{otpErr}</div>}
+
+            <button onClick={verifyOtp} className="shimmer" style={{ ...S.btn("#059669"), width:"100%", padding:"14px", fontSize:16, borderRadius:12, marginBottom:12 }}>✓ Verify & Create Account</button>
+
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+              <button onClick={() => setOtpSent(false)} style={{ ...S.outBtn("#999"), padding:"8px 16px", fontSize:12, borderRadius:8 }}>← Back</button>
+              {timer > 0 ? (
+                <span style={{ fontSize:12, color:"#888", fontWeight:600 }}>Resend in {timer}s</span>
+              ) : (
+                <button onClick={resendOtp} style={{ ...S.outBtn("#2563EB"), padding:"8px 16px", fontSize:12, borderRadius:8 }}>🔄 Resend OTP</button>
+              )}
+            </div>
           </div>
         )}
-        <button onClick={submit} className="shimmer" style={{ ...S.btn("#1a1a2e"), width:"100%", padding:"14px", fontSize:16, marginTop:6, borderRadius:12 }}>Create Account</button>
+
         <p style={{ textAlign:"center", marginTop:20, fontSize:14, color:"#888" }}>Already have an account? <span onClick={() => setPage("login")} style={{ color:"#B8860B", cursor:"pointer", fontWeight:700 }}>Sign In</span></p>
       </div>
     </div>
@@ -1829,6 +1897,7 @@ function App() {
   const [points, setPoints] = useState(0);
   const [isOwner, setIsOwner] = useState(false);
   const [rooms, setRooms] = useState(DEFAULT_ROOMS);
+  const [smsNotif, setSmsNotif] = useState(null);
 
   // Persistence
   useEffect(() => {
@@ -1838,14 +1907,14 @@ function App() {
       const b = localStorage.getItem("gm_bookings");
       if (b) {
         const userBookings = JSON.parse(b);
-        setBookings([...SEED_BOOKINGS, ...userBookings]);
+        setBookings([...userBookings]);
       }
       const cu = localStorage.getItem("gm_session");
       if (cu) {
         const user = JSON.parse(cu);
         setCurrentUser(user);
         // Calc points
-        const allB = [...SEED_BOOKINGS, ...(b ? JSON.parse(b) : [])];
+        const allB = [...(b ? JSON.parse(b) : [])];
         const myB = allB.filter(bk => bk.userId === user.id);
         const earned = myB.reduce((acc, bk) => acc + Math.floor(bk.total / 10), 0);
         const used = user.usedPoints || 0;
@@ -1868,8 +1937,7 @@ function App() {
   function saveUsers(nu) { setUsers(nu); localStorage.setItem("gm_users", JSON.stringify(nu)); }
   function saveBookings(nb) {
     setBookings(nb);
-    const toSave = nb.filter(b => b.userId !== "_s");
-    localStorage.setItem("gm_bookings", JSON.stringify(toSave));
+    localStorage.setItem("gm_bookings", JSON.stringify(nb));
   }
   function updateRooms(nr) { setRooms(nr); ROOMS = nr; localStorage.setItem("gm_rooms", JSON.stringify(nr)); }
   function setSession(u) { setCurrentUser(u); localStorage.setItem("gm_session", JSON.stringify(u)); }
@@ -1953,17 +2021,62 @@ function App() {
     setPoints(Math.max(0, totalEarned - newUsedPoints));
 
     setPendingBooking(null);
+    // SMS Notification
+    const room = ROOMS.find(r => r.id === nb.roomId);
+    setSmsNotif({
+      to: currentUser.contact,
+      name: currentUser.name,
+      roomName: room?.name || nb.roomId,
+      roomNo: roomNo,
+      checkIn: nb.checkIn,
+      checkOut: nb.checkOut,
+      total: discountedTotal,
+      payMethod
+    });
     showToast(`Booking confirmed! Room #${roomNo} assigned 🎉`);
     nav("dashboard");
   }
 
   const props = { page, setPage:nav, currentUser, users, bookings, rooms, selectedRoom, setSelectedRoom, pendingBooking, setPendingBooking, handleSignup, handleLogin, handleLogout, handleBook, handleConfirmBooking, showToast, points, isOwner, handleOwnerLogin, handleOwnerLogout };
 
+  // SMS Notification Modal
+  function SmsNotifModal() {
+    if (!smsNotif) return null;
+    return (
+      <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.6)", zIndex:9999, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }} onClick={() => setSmsNotif(null)}>
+        <div onClick={e => e.stopPropagation()} style={{ background:"#fff", borderRadius:20, width:"100%", maxWidth:440, padding:0, overflow:"hidden", boxShadow:"0 20px 60px rgba(0,0,0,0.3)" }}>
+          {/* SMS Header */}
+          <div style={{ background:"linear-gradient(135deg, #059669, #10B981)", padding:"24px 28px", color:"#fff" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:12 }}>
+              <div style={{ width:44, height:44, borderRadius:12, background:"rgba(255,255,255,0.2)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:22 }}>📱</div>
+              <div>
+                <div style={{ fontWeight:800, fontSize:16 }}>SMS Notification Sent!</div>
+                <div style={{ fontSize:12, opacity:0.9 }}>Booking confirmation delivered</div>
+              </div>
+            </div>
+          </div>
+          {/* SMS Body */}
+          <div style={{ padding:"24px 28px" }}>
+            <div style={{ background:"#F0FDF4", border:"1px solid #BBF7D0", borderRadius:12, padding:"18px 16px", marginBottom:18 }}>
+              <div style={{ fontSize:10, fontWeight:700, color:"#059669", marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>Message sent to {smsNotif.to}</div>
+              <div style={{ fontFamily:"monospace", fontSize:13, color:"#1a1a2e", lineHeight:1.8, whiteSpace:"pre-wrap" }}>{`${HOTEL}\n\nDear ${smsNotif.name},\n\nYour booking is confirmed! 🎉\n\n📍 Room: ${smsNotif.roomName}\n🔑 Room No: #${smsNotif.roomNo}\n📅 Check-in: ${fmtDate(smsNotif.checkIn)}\n📅 Check-out: ${fmtDate(smsNotif.checkOut)}\n💰 Total: ${fmtINR(smsNotif.total)}\n💳 Payment: ${smsNotif.payMethod === "online" ? "Paid Online" : "Pay at Hotel"}\n\nThank you for choosing ${HOTEL}!\nWe look forward to your stay.\n\n📞 Contact: +91 80 4000 1234`}</div>
+            </div>
+            <div style={{ background:"#FFFBEB", borderRadius:8, padding:"10px 14px", marginBottom:18, fontSize:11, color:"#92400E", fontWeight:600 }}>
+              💡 In production, this SMS would be delivered via Twilio/MSG91 API to the customer's registered phone number.
+            </div>
+            <button onClick={() => setSmsNotif(null)} className="shimmer" style={{ ...S.btn("#059669"), width:"100%", padding:14, fontSize:15, borderRadius:12 }}>✓ Got it!</button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // If owner is logged in and on owner page, show owner dashboard
   if (isOwner && page === "ownerDash") {
     return (
       <div style={{ minHeight:"100vh", background:"var(--bg)" }}>
         {toast && <Toast {...toast} />}
+        <SmsNotifModal />
         <OwnerDashboard bookings={bookings} users={users} rooms={rooms} updateRooms={updateRooms} setPage={nav} handleOwnerLogout={handleOwnerLogout} showToast={showToast} />
       </div>
     );
@@ -1973,6 +2086,7 @@ function App() {
     <div style={{ minHeight:"100vh", background:"var(--bg)" }}>
       <Navbar {...props} />
       {toast && <Toast {...toast} />}
+      <SmsNotifModal />
       {page === "landing" && <LandingPage {...props} />}
       {page === "login" && <LoginPage {...props} />}
       {page === "signup" && <SignupPage {...props} />}
