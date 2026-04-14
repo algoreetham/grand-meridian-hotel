@@ -1,12 +1,14 @@
-<!DOCTYPE html><html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Grand Meridian — 5-Star Luxury Hotel, Bengaluru</title>
     <meta name="description" content="Experience true luxury at The Grand Meridian. Premium rooms from ₹1,000/night with world-class amenities in Bengaluru.">
-    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin=""></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin=""></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&amp;display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
     <style>
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
       :root {
@@ -75,12 +77,107 @@
       /* Progress bar for loyalty */
       .loyalty-bar { height: 8px; background: #e5e5e5; border-radius: 99px; overflow: hidden; }
       .loyalty-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 99px; transition: width 1s ease; }
+
+      /* Hamburger */
+      .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+      .hamburger span { display: block; width: 22px; height: 2px; background: #fff; margin: 5px 0; border-radius: 2px; transition: all 0.3s; }
+      .mob-menu { display: none; }
+
+      /* ═══════ RESPONSIVE ═══════ */
+      @media (max-width: 768px) {
+        .hamburger { display: block; }
+        .desk-nav { display: none !important; }
+        .mob-menu {
+          display: flex; flex-direction: column; gap: 0;
+          position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
+          background: rgba(26,26,46,0.98); backdrop-filter: blur(16px);
+          padding: 24px; z-index: 99; overflow-y: auto;
+        }
+        .mob-menu a, .mob-menu span {
+          display: block; color: #ccc; font-size: 18px; font-weight: 600;
+          padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
+          cursor: pointer; text-decoration: none;
+        }
+        .mob-menu .mob-btn {
+          margin-top: 16px; padding: 14px; text-align: center;
+          border-radius: 10px; font-weight: 700; font-size: 16px;
+        }
+
+        /* Grid overrides */
+        .g-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+        .g-rooms { grid-template-columns: 1fr !important; }
+        .g-loyalty { grid-template-columns: 1fr !important; }
+        .g-features { grid-template-columns: repeat(2, 1fr) !important; }
+        .g-amenities { grid-template-columns: 1fr !important; }
+        .g-menu-items { grid-template-columns: 1fr !important; }
+        .g-2col { grid-template-columns: 1fr !important; }
+        .g-dash { grid-template-columns: 1fr !important; }
+        .g-pay-methods { grid-template-columns: 1fr !important; }
+        .g-dash-stats { grid-template-columns: repeat(2, 1fr) !important; }
+
+        /* Room page horizontal card → stacked */
+        .room-row { flex-direction: column !important; }
+        .room-row-img { flex: unset !important; width: 100% !important; min-height: 200px !important; max-height: 220px !important; }
+        .room-row-body { padding: 20px 16px !important; }
+        .room-row-header { flex-direction: column !important; }
+        .room-row-price { text-align: left !important; margin-top: 8px; }
+
+        /* Hero */
+        .hero-wrap { height: auto !important; min-height: 480px !important; }
+        .hero-inner { padding: 0 20px !important; }
+        .hero-title { font-size: 32px !important; }
+        .hero-sub { font-size: 14px !important; }
+        .hero-btns { flex-direction: column !important; gap: 10px !important; }
+        .hero-btns button { width: 100%; }
+
+        /* Section padding */
+        .sec-mob { padding: 40px 16px !important; }
+        .sec-heading { font-size: 26px !important; }
+
+        /* Page headers */
+        .page-header h1 { font-size: 26px !important; }
+
+        /* Booking / Payment sidebar → stack below */
+        .book-grid { grid-template-columns: 1fr !important; }
+        .pay-grid { grid-template-columns: 1fr !important; }
+
+        /* Date picker bar */
+        .date-bar { flex-direction: column !important; gap: 10px !important; }
+        .date-bar input { width: 100% !important; }
+
+        /* Menu category tabs scroll */
+        .menu-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap !important; padding-bottom: 8px; }
+        .menu-tabs button { white-space: nowrap; flex-shrink: 0; }
+
+        /* Toast */
+        .toast-enter { left: 12px; right: 12px; max-width: unset !important; }
+
+        /* Footer */
+        .footer-text { font-size: 11px !important; }
+
+        /* Auth pages */
+        .auth-card { padding: 28px 20px !important; }
+
+        /* Navbar height */
+        .nav-inner { height: 60px !important; padding: 0 16px !important; }
+        .nav-logo-text { font-size: 16px !important; }
+        .nav-logo-icon { width: 34px !important; height: 34px !important; font-size: 14px !important; }
+      }
+
+      @media (max-width: 480px) {
+        .g-features { grid-template-columns: 1fr !important; }
+        .g-loyalty-cards { grid-template-columns: 1fr !important; }
+        .g-dash-stats { grid-template-columns: 1fr !important; }
+        .hero-title { font-size: 28px !important; }
+        .room-avail-grid { gap: 4px !important; }
+        .room-avail-grid > div { width: 38px !important; height: 28px !important; font-size: 11px !important; }
+      }
     </style>
 </head>
-<body class="antigravity-scroll-lock">
-<div id="root"><div style="min-height: 100vh; background: var(--bg);"><nav style="position: sticky; top: 0px; z-index: 100; background: rgb(26, 26, 46); box-shadow: none; transition: 0.3s; backdrop-filter: blur(12px);"><div style="max-width: 1200px; margin: 0px auto; padding: 0px 24px; display: flex; align-items: center; justify-content: space-between; height: 68px;"><div style="cursor: pointer; display: flex; align-items: center; gap: 12px;"><div style="background: linear-gradient(135deg, rgb(184, 134, 11), rgb(212, 168, 67)); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: rgba(184, 134, 11, 0.3) 0px 2px 12px;">⭐</div><span class="playfair" style="color: rgb(255, 255, 255); font-weight: 800; font-size: 20px; letter-spacing: 0.2px;">The Grand Meridian</span></div><div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;"><span style="color: rgb(184, 134, 11); cursor: pointer; font-weight: 700; font-size: 14px; transition: color 0.2s; border-bottom: 2px solid rgb(184, 134, 11); padding-bottom: 4px;">Home</span><span style="color: rgb(187, 187, 187); cursor: pointer; font-weight: 500; font-size: 14px; transition: color 0.2s; border-bottom: 2px solid transparent; padding-bottom: 4px;">Rooms</span><span style="color: rgb(187, 187, 187); cursor: pointer; font-weight: 500; font-size: 14px; transition: color 0.2s; border-bottom: 2px solid transparent; padding-bottom: 4px;">Amenities</span><div style="display: flex; align-items: center; gap: 12px; margin-left: 8px;"><span style="color: rgb(187, 187, 187); cursor: pointer; font-size: 14px;">Login</span><button style="background: linear-gradient(135deg, rgb(184, 134, 11), rgb(212, 168, 67)); color: rgb(255, 255, 255); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; padding: 8px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;">Sign Up</button></div></div></div></nav><div><div style="position: relative; height: 620px; overflow: hidden;"><img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&amp;auto=format&amp;fit=crop&amp;q=80" alt="Hotel" style="width: 100%; height: 100%; object-fit: cover;"><div style="position: absolute; inset: 0px; background: linear-gradient(105deg, rgba(26, 26, 46, 0.9) 0%, rgba(26, 26, 46, 0.4) 100%);"></div><div class="sr vis" style="position: absolute; inset: 0px; display: flex; flex-direction: column; justify-content: center; padding: 0px 64px; max-width: 1200px;"><div style="color: rgb(184, 134, 11); font-size: 12px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="width: 40px; height: 1px; background: rgb(184, 134, 11); display: inline-block;"></span>★ 5-Star Luxury Hotel · Bengaluru</div><h1 class="playfair" style="color: rgb(255, 255, 255); font-size: 52px; font-weight: 900; margin: 0px 0px 18px; line-height: 1.12; max-width: 600px;">Experience True<br>Luxury &amp; Comfort</h1><p style="color: rgba(255, 255, 255, 0.8); font-size: 17px; max-width: 500px; margin: 0px 0px 36px; line-height: 1.65;">From ₹1,000/night — World-class amenities, stunning views, and unforgettable Indian hospitality.</p><div style="display: flex; gap: 16px;"><button class="shimmer" style="background: linear-gradient(135deg, rgb(184, 134, 11), rgb(212, 168, 67)); color: rgb(255, 255, 255); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; padding: 16px 36px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;">Browse Rooms</button><button style="background: transparent; color: rgb(255, 255, 255); border: 1.5px solid rgb(255, 255, 255); padding: 15px 34px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.2s;">View Amenities</button></div></div></div><div class="sr" style="background: rgb(26, 26, 46); padding: 26px 24px;"><div style="max-width: 1100px; margin: 0px auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;"><div style="text-align: center;"><div style="color: rgb(184, 134, 11); font-size: 28px; font-weight: 800;">500+</div><div style="color: rgb(136, 136, 136); font-size: 12px; margin-top: 4px; font-weight: 500;">Happy Guests</div></div><div style="text-align: center;"><div style="color: rgb(184, 134, 11); font-size: 28px; font-weight: 800;">4</div><div style="color: rgb(136, 136, 136); font-size: 12px; margin-top: 4px; font-weight: 500;">Room Categories</div></div><div style="text-align: center;"><div style="color: rgb(184, 134, 11); font-size: 28px; font-weight: 800;">24/7</div><div style="color: rgb(136, 136, 136); font-size: 12px; margin-top: 4px; font-weight: 500;">Concierge Service</div></div><div style="text-align: center;"><div style="color: rgb(184, 134, 11); font-size: 28px; font-weight: 800;">★ 4.9</div><div style="color: rgb(136, 136, 136); font-size: 12px; margin-top: 4px; font-weight: 500;">Guest Rating</div></div></div></div><div style="max-width: 1200px; margin: 0px auto; padding: 72px 24px;"><div style="text-align: center; margin-bottom: 52px;"><div style="color: rgb(184, 134, 11); font-size: 12px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px;">Our Accommodations</div><h2 class="playfair" style="font-size: 38px; font-weight: 900; color: rgb(26, 26, 46); margin: 0px;">Choose Your Perfect Room</h2><p style="color: rgb(102, 102, 102); font-size: 15px; margin-top: 10px;">All prices in INR · Taxes included · 3D viewer available</p></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 28px;"><div class="sr sr-d1" style="background: rgb(255, 255, 255); border-radius: 18px; box-shadow: rgba(0, 0, 0, 0.07) 0px 2px 24px; overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; transform: none;"><div style="position: relative;"><div style="position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 0px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.3);"><button style="padding: 4px 12px; font-size: 10px; font-weight: 700; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: rgb(37, 99, 235); color: rgb(255, 255, 255); cursor: pointer;">📷 Photo</button><button style="padding: 4px 12px; font-size: 10px; font-weight: 700; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: rgba(0, 0, 0, 0.5); color: rgb(255, 255, 255); cursor: pointer;">🖥 3D</button></div><div style="position: relative; height: 210px; overflow: hidden;"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&amp;auto=format&amp;fit=crop&amp;q=80" alt="Economy Room" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; transform: scale(1);"><div style="position: absolute; bottom: 0px; left: 0px; right: 0px; height: 80px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));"></div></div></div><div style="padding: 20px 22px 24px;"><h3 class="playfair" style="margin: 0px 0px 8px; font-size: 19px; color: rgb(26, 26, 46); font-weight: 800;">Economy Room</h3><p style="margin: 0px 0px 14px; font-size: 13px; color: rgb(102, 102, 102); line-height: 1.6;">Comfortable and well-appointed rooms ideal for solo travelers. Modern furnishings with all essential…</p><div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px;"><span style="background: rgb(239, 246, 255); color: rgb(37, 99, 235); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Free WiFi</span><span style="background: rgb(239, 246, 255); color: rgb(37, 99, 235); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">32" Smart TV</span><span style="background: rgb(239, 246, 255); color: rgb(37, 99, 235); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Air Conditioning</span><span style="background: rgb(239, 246, 255); color: rgb(37, 99, 235); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Daily Housekeeping</span></div><div style="background: rgb(254, 242, 242); border: 1px solid rgb(254, 202, 202); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px; font-size: 12px; color: rgb(220, 38, 38); font-weight: 700; display: flex; align-items: center; gap: 6px;">🔒 Room 101 is currently booked</div><div style="display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid rgb(240, 240, 240);"><div><div style="font-size: 24px; font-weight: 800; color: rgb(37, 99, 235);">₹1,000</div><div style="font-size: 11px; color: rgb(153, 153, 153);">per night</div></div><button class="shimmer" style="background: rgb(37, 99, 235); color: rgb(255, 255, 255); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;">Book Now →</button></div></div></div><div class="sr sr-d2" style="background: rgb(255, 255, 255); border-radius: 18px; box-shadow: rgba(0, 0, 0, 0.07) 0px 2px 24px; overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; transform: none;"><div style="position: relative;"><div style="position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 0px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.3);"><button style="padding: 4px 12px; font-size: 10px; font-weight: 700; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: rgb(219, 39, 119); color: rgb(255, 255, 255); cursor: pointer;">📷 Photo</button><button style="padding: 4px 12px; font-size: 10px; font-weight: 700; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: rgba(0, 0, 0, 0.5); color: rgb(255, 255, 255); cursor: pointer;">🖥 3D</button></div><div style="position: relative; height: 210px; overflow: hidden;"><img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=900&amp;auto=format&amp;fit=crop&amp;q=80" alt="Couple Suite" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; transform: scale(1);"><div style="position: absolute; top: 12px; right: 12px; background: rgb(219, 39, 119); color: rgb(255, 255, 255); font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 10px; text-transform: uppercase; letter-spacing: 0.5px;">Most Popular</div><div style="position: absolute; bottom: 0px; left: 0px; right: 0px; height: 80px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));"></div></div></div><div style="padding: 20px 22px 24px;"><h3 class="playfair" style="margin: 0px 0px 8px; font-size: 19px; color: rgb(26, 26, 46); font-weight: 800;">Couple Suite</h3><p style="margin: 0px 0px 14px; font-size: 13px; color: rgb(102, 102, 102); line-height: 1.6;">Romantic suites designed for couples with plush king bed, private jacuzzi and stunning city views.…</p><div style="margin-bottom: 12px;"><span style="background: rgb(240, 253, 244); color: rgb(22, 101, 52); font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 6px; margin-right: 6px;">✓ Complimentary Breakfast</span></div><div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px;"><span style="background: rgb(253, 242, 248); color: rgb(219, 39, 119); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Free WiFi</span><span style="background: rgb(253, 242, 248); color: rgb(219, 39, 119); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">King-size Bed</span><span style="background: rgb(253, 242, 248); color: rgb(219, 39, 119); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Private Jacuzzi</span><span style="background: rgb(253, 242, 248); color: rgb(219, 39, 119); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Complimentary Breakfast</span></div><div style="display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid rgb(240, 240, 240);"><div><div style="font-size: 24px; font-weight: 800; color: rgb(219, 39, 119);">₹2,500</div><div style="font-size: 11px; color: rgb(153, 153, 153);">per night</div></div><button class="shimmer" style="background: rgb(219, 39, 119); color: rgb(255, 255, 255); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;">Book Now →</button></div></div></div><div class="sr sr-d3" style="background: rgb(255, 255, 255); border-radius: 18px; box-shadow: rgba(0, 0, 0, 0.07) 0px 2px 24px; overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; transform: none;"><div style="position: relative;"><div style="position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 0px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.3);"><button style="padding: 4px 12px; font-size: 10px; font-weight: 700; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: rgb(124, 58, 237); color: rgb(255, 255, 255); cursor: pointer;">📷 Photo</button><button style="padding: 4px 12px; font-size: 10px; font-weight: 700; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: rgba(0, 0, 0, 0.5); color: rgb(255, 255, 255); cursor: pointer;">🖥 3D</button></div><div style="position: relative; height: 210px; overflow: hidden;"><img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&amp;auto=format&amp;fit=crop&amp;q=80" alt="Premium Room" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; transform: scale(1);"><div style="position: absolute; top: 12px; right: 12px; background: rgb(124, 58, 237); color: rgb(255, 255, 255); font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 10px; text-transform: uppercase; letter-spacing: 0.5px;">Premium</div><div style="position: absolute; bottom: 0px; left: 0px; right: 0px; height: 80px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));"></div></div></div><div style="padding: 20px 22px 24px;"><h3 class="playfair" style="margin: 0px 0px 8px; font-size: 19px; color: rgb(26, 26, 46); font-weight: 800;">Premium Room</h3><p style="margin: 0px 0px 14px; font-size: 13px; color: rgb(102, 102, 102); line-height: 1.6;">Premium experience with exclusive lounge access, premium mini bar and personalized concierge.…</p><div style="margin-bottom: 12px;"><span style="background: rgb(240, 253, 244); color: rgb(22, 101, 52); font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 6px; margin-right: 6px;">✓ Complimentary Breakfast</span></div><div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px;"><span style="background: rgb(245, 243, 255); color: rgb(124, 58, 237); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Free WiFi</span><span style="background: rgb(245, 243, 255); color: rgb(124, 58, 237); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">King-size Bed</span><span style="background: rgb(245, 243, 255); color: rgb(124, 58, 237); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Executive Lounge</span><span style="background: rgb(245, 243, 255); color: rgb(124, 58, 237); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Complimentary Breakfast</span></div><div style="display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid rgb(240, 240, 240);"><div><div style="font-size: 24px; font-weight: 800; color: rgb(124, 58, 237);">₹5,000</div><div style="font-size: 11px; color: rgb(153, 153, 153);">per night</div></div><button class="shimmer" style="background: rgb(124, 58, 237); color: rgb(255, 255, 255); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;">Book Now →</button></div></div></div><div class="sr sr-d4" style="background: rgb(255, 255, 255); border-radius: 18px; box-shadow: rgba(0, 0, 0, 0.07) 0px 2px 24px; overflow: hidden; transition: transform 0.25s, box-shadow 0.25s; transform: none;"><div style="position: relative;"><div style="position: absolute; top: 10px; left: 10px; z-index: 10; display: flex; gap: 0px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.3);"><button style="padding: 4px 12px; font-size: 10px; font-weight: 700; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: rgb(180, 83, 9); color: rgb(255, 255, 255); cursor: pointer;">📷 Photo</button><button style="padding: 4px 12px; font-size: 10px; font-weight: 700; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; background: rgba(0, 0, 0, 0.5); color: rgb(255, 255, 255); cursor: pointer;">🖥 3D</button></div><div style="position: relative; height: 210px; overflow: hidden;"><img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&amp;auto=format&amp;fit=crop&amp;q=80" alt="Presidential Suite" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; transform: scale(1);"><div style="position: absolute; top: 12px; right: 12px; background: rgb(180, 83, 9); color: rgb(255, 255, 255); font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px; box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 10px; text-transform: uppercase; letter-spacing: 0.5px;">Luxury</div><div style="position: absolute; bottom: 0px; left: 0px; right: 0px; height: 80px; background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));"></div></div></div><div style="padding: 20px 22px 24px;"><h3 class="playfair" style="margin: 0px 0px 8px; font-size: 19px; color: rgb(26, 26, 46); font-weight: 800;">Presidential Suite</h3><p style="margin: 0px 0px 14px; font-size: 13px; color: rgb(102, 102, 102); line-height: 1.6;">The pinnacle of luxury with a massive private balcony, panoramic views, dedicated butler, and all-in…</p><div style="margin-bottom: 12px;"><span style="background: rgb(240, 253, 244); color: rgb(22, 101, 52); font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 6px; margin-right: 6px;">✓ Breakfast</span><span style="background: rgb(240, 253, 244); color: rgb(22, 101, 52); font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 6px; margin-right: 6px;">✓ Lunch</span><span style="background: rgb(240, 253, 244); color: rgb(22, 101, 52); font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 6px; margin-right: 6px;">✓ Dinner</span></div><div style="display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px;"><span style="background: rgb(255, 251, 235); color: rgb(180, 83, 9); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Free WiFi</span><span style="background: rgb(255, 251, 235); color: rgb(180, 83, 9); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Huge Private Balcony</span><span style="background: rgb(255, 251, 235); color: rgb(180, 83, 9); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">Butler Service 24/7</span><span style="background: rgb(255, 251, 235); color: rgb(180, 83, 9); font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 600;">All Meals Included</span></div><div style="display: flex; align-items: center; justify-content: space-between; padding-top: 14px; border-top: 1px solid rgb(240, 240, 240);"><div><div style="font-size: 24px; font-weight: 800; color: rgb(180, 83, 9);">₹8,000</div><div style="font-size: 11px; color: rgb(153, 153, 153);">per night</div></div><button class="shimmer" style="background: rgb(180, 83, 9); color: rgb(255, 255, 255); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; padding: 10px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;">Book Now →</button></div></div></div></div></div><div style="background: rgb(26, 26, 46); padding: 72px 24px;"><div style="max-width: 1100px; margin: 0px auto; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;"><div><div style="color: rgb(184, 134, 11); font-size: 12px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px;">Loyalty Rewards</div><h2 class="playfair" style="color: rgb(255, 255, 255); font-size: 34px; font-weight: 900; margin: 0px 0px 18px;">Earn Points.<br><span style="color: rgb(184, 134, 11);">Get 50% Off.</span></h2><p style="color: rgb(136, 136, 136); font-size: 15px; line-height: 1.8; margin-bottom: 28px;">Every ₹10 spent earns you 1 loyalty point. Collect 3,000 points and unlock a 50% discount coupon for any room — valid for one booking.</p><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;"><div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 18px 16px; display: flex; align-items: center; gap: 12px;"><span style="font-size: 24px;">⭐</span><div><div style="color: rgb(255, 255, 255); font-weight: 700; font-size: 14px;">1 Point</div><div style="color: rgb(136, 136, 136); font-size: 11px;">per ₹10 spent</div></div></div><div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 18px 16px; display: flex; align-items: center; gap: 12px;"><span style="font-size: 24px;">🎫</span><div><div style="color: rgb(255, 255, 255); font-weight: 700; font-size: 14px;">50% OFF</div><div style="color: rgb(136, 136, 136); font-size: 11px;">at 3,000 points</div></div></div></div></div><div style="text-align: center;"><img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&amp;auto=format&amp;fit=crop&amp;q=80" alt="Loyalty" style="border-radius: 20px; width: 100%; max-width: 420px; box-shadow: rgba(0, 0, 0, 0.4) 0px 8px 40px;"></div></div></div><div style="max-width: 1200px; margin: 0px auto; padding: 48px 24px;"><div style="text-align: center; margin-bottom: 44px;"><h2 class="playfair" style="color: rgb(26, 26, 46); font-size: 32px; font-weight: 900;">Why Choose The Grand Meridian?</h2></div><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 28px;"><div style="text-align: center; padding: 24px 12px; background: rgb(255, 255, 255); border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 16px; transition: transform 0.2s;"><div style="font-size: 36px; margin-bottom: 14px;">🏊</div><div style="font-weight: 800; font-size: 15px; margin-bottom: 6px; color: rgb(26, 26, 46);">Pool &amp; Spa</div><div style="color: rgb(136, 136, 136); font-size: 13px; line-height: 1.5;">Olympic pool &amp; award-winning spa</div></div><div style="text-align: center; padding: 24px 12px; background: rgb(255, 255, 255); border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 16px; transition: transform 0.2s;"><div style="font-size: 36px; margin-bottom: 14px;">🍽️</div><div style="font-weight: 800; font-size: 15px; margin-bottom: 6px; color: rgb(26, 26, 46);">Fine Dining</div><div style="color: rgb(136, 136, 136); font-size: 13px; line-height: 1.5;">Multi-cuisine open all day</div></div><div style="text-align: center; padding: 24px 12px; background: rgb(255, 255, 255); border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 16px; transition: transform 0.2s;"><div style="font-size: 36px; margin-bottom: 14px;">🏋️</div><div style="font-weight: 800; font-size: 15px; margin-bottom: 6px; color: rgb(26, 26, 46);">Modern Gym</div><div style="color: rgb(136, 136, 136); font-size: 13px; line-height: 1.5;">24/7 state-of-the-art gym</div></div><div style="text-align: center; padding: 24px 12px; background: rgb(255, 255, 255); border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 16px; transition: transform 0.2s;"><div style="font-size: 36px; margin-bottom: 14px;">🔒</div><div style="font-weight: 800; font-size: 15px; margin-bottom: 6px; color: rgb(26, 26, 46);">24/7 Security</div><div style="color: rgb(136, 136, 136); font-size: 13px; line-height: 1.5;">Your safety our top priority</div></div><div style="text-align: center; padding: 24px 12px; background: rgb(255, 255, 255); border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 16px; transition: transform 0.2s;"><div style="font-size: 36px; margin-bottom: 14px;">🚗</div><div style="font-weight: 800; font-size: 15px; margin-bottom: 6px; color: rgb(26, 26, 46);">Valet Parking</div><div style="color: rgb(136, 136, 136); font-size: 13px; line-height: 1.5;">Complimentary for all guests</div></div><div style="text-align: center; padding: 24px 12px; background: rgb(255, 255, 255); border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.04) 0px 2px 16px; transition: transform 0.2s;"><div style="font-size: 36px; margin-bottom: 14px;">✈️</div><div style="font-weight: 800; font-size: 15px; margin-bottom: 6px; color: rgb(26, 26, 46);">Airport Transfer</div><div style="color: rgb(136, 136, 136); font-size: 13px; line-height: 1.5;">For premium bookings</div></div></div></div><div style="background: linear-gradient(135deg, rgb(240, 237, 230), rgb(232, 226, 214)); padding: 56px 24px;"><div style="max-width: 700px; margin: 0px auto; text-align: center;"><h2 class="playfair" style="font-size: 30px; font-weight: 900; color: rgb(26, 26, 46); margin-bottom: 14px;">Ready for an Unforgettable Stay?</h2><p style="color: rgb(102, 102, 102); font-size: 16px; margin-bottom: 28px;">Book directly with us for the best rates — guaranteed.</p><button class="shimmer" style="background: rgb(26, 26, 46); color: rgb(255, 255, 255); border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; padding: 16px 44px; border-radius: 12px; font-weight: 700; font-size: 16px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;">Book Your Room Now</button></div></div><div style="background: rgb(15, 15, 30); padding: 36px 24px; text-align: center;"><div class="playfair" style="color: rgb(184, 134, 11); font-weight: 800; font-size: 20px; margin-bottom: 10px;">The Grand Meridian</div><p style="color: rgb(85, 85, 85); font-size: 12px;">MG Road, Bengaluru, Karnataka 560001 · +91 80 4000 5000 · reservations@grandmeridian.in</p><p style="color: rgb(51, 51, 51); font-size: 11px; margin-top: 10px;">© 2026 The Grand Meridian. All rights reserved. Images via Unsplash.</p></div></div></div></div>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
 
-<script type="text/babel">
 const { useState, useEffect, useRef, useCallback } = React;
 
 // ═══════════════════════════════════════
@@ -182,7 +279,7 @@ const MENU = {
     {n:"Gulab Jamun (2 pcs)",p:120},{n:"Rasmalai",p:150},{n:"Chocolate Brownie",p:220},
     {n:"Ice Cream Sundae",p:250},{n:"Tiramisu",p:320},{n:"Crème Brûlée",p:350},
     {n:"Mango Kulfi",p:130},{n:"Gajar Ka Halwa",p:160},{n:"Jalebi",p:100},
-    {n:"Cheesecake Slice",p:300},{n:"Panna Cotta",p:280},{n:"Apple Pie",p:260},
+    {n:"Cheesecacke Slice",p:300},{n:"Panna Cotta",p:280},{n:"Apple Pie",p:260},
     {n:"Kheer",p:140},{n:"Rabri",p:150},{n:"Fruit Trifle",p:220},
     {n:"Chocolate Lava Cake",p:320},{n:"Banana Split",p:280},{n:"Falooda",p:180},
     {n:"Shahi Tukda",p:170},{n:"Rasgulla (2 pcs)",p:100},{n:"Mysore Pak",p:120},
@@ -227,1065 +324,9 @@ const S = {
   lbl: { fontSize:12, fontWeight:700, color:"#777", marginBottom:6, display:"block", textTransform:"uppercase", letterSpacing:"0.5px" },
 };
 
-// ═══════════════════════════════════════
-//  HOOKS
-// ═══════════════════════════════════════
-function useScrollReveal() {
-  const ref = useRef(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) e.target.classList.add('vis'); }, { threshold: 0.12 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return ref;
-}
-
-// ═══════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════
-function Toast({ msg, type }) {
-  const bg = type === "error" ? "#DC2626" : "#059669";
-  return (
-    <div className="toast-enter" style={{ position:"fixed", top:24, right:24, zIndex:9999, background:bg, color:"#fff", padding:"14px 24px", borderRadius:12, fontWeight:600, boxShadow:"0 6px 30px rgba(0,0,0,0.25)", maxWidth:360, fontSize:15, display:"flex", alignItems:"center", gap:10 }}>
-      <span style={{fontSize:18}}>{type === "error" ? "⚠" : "✓"}</span> {msg}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  3D ROOM VIEWER
-// ═══════════════════════════════════════
-function Room3DViewer({ room }) {
-  const [rotY, setRotY] = useState(-20);
-  const [rotX, setRotX] = useState(10);
-  const dragging = useRef(false);
-  const lastPos = useRef({ x:0, y:0 });
-
-  const onDown = e => {
-    dragging.current = true;
-    const pt = e.touches ? e.touches[0] : e;
-    lastPos.current = { x: pt.clientX, y: pt.clientY };
-  };
-  const onMove = e => {
-    if (!dragging.current) return;
-    const pt = e.touches ? e.touches[0] : e;
-    const dx = pt.clientX - lastPos.current.x;
-    const dy = pt.clientY - lastPos.current.y;
-    setRotY(prev => prev + dx * 0.6);
-    setRotX(prev => Math.max(-30, Math.min(30, prev - dy * 0.4)));
-    lastPos.current = { x: pt.clientX, y: pt.clientY };
-  };
-  const onUp = () => { dragging.current = false; };
-
-  useEffect(() => {
-    window.addEventListener('mouseup', onUp);
-    window.addEventListener('touchend', onUp);
-    return () => { window.removeEventListener('mouseup', onUp); window.removeEventListener('touchend', onUp); };
-  }, []);
-
-  const faces = [
-    { cls: "room3d-face--front", label: "Bedroom View", img: room.img },
-    { cls: "room3d-face--right", label: "Bathroom", img: room.img2 },
-    { cls: "room3d-face--back", label: "Window View", img: room.img3 },
-    { cls: "room3d-face--left", label: "Entrance", img: room.img },
-    { cls: "room3d-face--top", label: "Ceiling", img: null },
-    { cls: "room3d-face--bottom", label: "Floor Plan", img: null },
-  ];
-
-  return (
-    <div className="room3d-wrap" onMouseDown={onDown} onMouseMove={onMove} onTouchStart={onDown} onTouchMove={onMove} style={{ background: room.lightBg }}>
-      <div className="room3d-cube" style={{ transform: `rotateX(${rotX}deg) rotateY(${rotY}deg)` }}>
-        {faces.map((f, i) => (
-          <div key={i} className={`room3d-face ${f.cls}`} style={{ background: f.img ? 'transparent' : room.color }}>
-            {f.img && <img src={f.img} alt={f.label} />}
-            <span className="room3d-label">{f.label}</span>
-          </div>
-        ))}
-      </div>
-      <div style={{ position:"absolute", bottom:8, left:0, right:0, textAlign:"center", fontSize:10, color:"#999", fontWeight:600, pointerEvents:"none" }}>
-        ↔ Drag to rotate 360°
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  NAVBAR
-// ═══════════════════════════════════════
-function Navbar({ page, setPage, currentUser, handleLogout, points }) {
-  const [scrolled, setScrolled] = useState(false);
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", fn);
-    return () => window.removeEventListener("scroll", fn);
-  }, []);
-
-  const links = [["Home","landing"],["Rooms","rooms"],["Amenities","amenities"]];
-  return (
-    <nav style={{ position:"sticky", top:0, zIndex:100, background: scrolled ? "rgba(26,26,46,0.97)" : "#1a1a2e", boxShadow: scrolled ? "0 2px 20px rgba(0,0,0,0.4)" : "none", transition:"all .3s", backdropFilter:"blur(12px)" }}>
-      <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 24px", display:"flex", alignItems:"center", justifyContent:"space-between", height:68 }}>
-        <div onClick={() => setPage("landing")} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:12 }}>
-          <div style={{ background:"linear-gradient(135deg, #B8860B, #D4A843)", width:40, height:40, borderRadius:10, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, boxShadow:"0 2px 12px rgba(184,134,11,0.3)" }}>⭐</div>
-          <span className="playfair" style={{ color:"#fff", fontWeight:800, fontSize:20, letterSpacing:".2px" }}>{HOTEL}</span>
-        </div>
-        <div style={{ display:"flex", alignItems:"center", gap:24, flexWrap:"wrap" }}>
-          {links.map(([l,p]) =>
-            <span key={p} onClick={() => setPage(p)} style={{ color: page===p ? "#B8860B" : "#bbb", cursor:"pointer", fontWeight: page===p ? 700 : 500, fontSize:14, transition:"color .2s", borderBottom: page===p ? "2px solid #B8860B" : "2px solid transparent", paddingBottom:4 }}>{l}</span>
-          )}
-          {currentUser ? (
-            <div style={{ display:"flex", alignItems:"center", gap:12, marginLeft:8 }}>
-              <span onClick={() => setPage("dashboard")} style={{ color: page==="dashboard" ? "#B8860B" : "#bbb", cursor:"pointer", fontSize:14, fontWeight: page==="dashboard" ? 700 : 500 }}>My Bookings</span>
-              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ position:"relative" }}>
-                  <div onClick={() => setPage("dashboard")} style={{ background:"linear-gradient(135deg, #B8860B, #D4A843)", width:38, height:38, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:800, fontSize:15, cursor:"pointer", boxShadow:"0 2px 10px rgba(184,134,11,0.3)" }}>
-                    {currentUser.name[0].toUpperCase()}
-                  </div>
-                  {points >= 3000 && <div style={{ position:"absolute", top:-2, right:-2, width:10, height:10, background:"#059669", borderRadius:"50%", border:"2px solid #1a1a2e" }} />}
-                </div>
-                <div style={{ display:"flex", flexDirection:"column", lineHeight:1.2 }}>
-                  <span style={{ color:"#fff", fontSize:12, fontWeight:600 }}>{currentUser.name.split(" ")[0]}</span>
-                  <span style={{ color:"#B8860B", fontSize:10, fontWeight:800 }}>{points} PTS</span>
-                </div>
-                <button onClick={handleLogout} style={{ ...S.outBtn("#666"), padding:"5px 12px", fontSize:12 }}>Logout</button>
-              </div>
-            </div>
-          ) : (
-            <div style={{ display:"flex", alignItems:"center", gap:12, marginLeft:8 }}>
-              <span onClick={() => setPage("login")} style={{ color:"#bbb", cursor:"pointer", fontSize:14 }}>Login</span>
-              <button onClick={() => setPage("signup")} style={{ ...S.btn("linear-gradient(135deg, #B8860B, #D4A843)", "#fff"), padding:"8px 20px", fontSize:13, borderRadius:8 }}>Sign Up</button>
-            </div>
-          )}
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-// ═══════════════════════════════════════
-//  ROOM CARD (with 3D toggle)
-// ═══════════════════════════════════════
-function RoomCard({ room, onBook, currentUser, setPage, bookings, delay="" }) {
-  const [hov, setHov] = useState(false);
-  const [view3d, setView3d] = useState(false);
-  const ref = useScrollReveal();
-  const is101Booked = room.id === "economy" && bookings.some(b => b.roomNo === "101" && b.status === "confirmed");
-
-  return (
-    <div ref={ref} className={`sr ${delay}`} style={{ ...S.card, transition:"transform .25s, box-shadow .25s", transform: hov ? "translateY(-8px)" : "none", boxShadow: hov ? `0 12px 40px rgba(0,0,0,0.13)` : "0 2px 24px rgba(0,0,0,0.07)" }}
-      onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
-
-      {/* Photo / 3D Toggle */}
-      <div style={{ position:"relative" }}>
-        <div style={{ position:"absolute", top:10, left:10, zIndex:10, display:"flex", gap:0, borderRadius:8, overflow:"hidden", border:"1px solid rgba(255,255,255,0.3)" }}>
-          <button onClick={() => setView3d(false)} style={{ padding:"4px 12px", fontSize:10, fontWeight:700, border:"none", background: !view3d ? room.color : "rgba(0,0,0,0.5)", color:"#fff", cursor:"pointer" }}>📷 Photo</button>
-          <button onClick={() => setView3d(true)} style={{ padding:"4px 12px", fontSize:10, fontWeight:700, border:"none", background: view3d ? room.color : "rgba(0,0,0,0.5)", color:"#fff", cursor:"pointer" }}>🖥 3D</button>
-        </div>
-        {view3d ? (
-          <Room3DViewer room={room} />
-        ) : (
-          <div style={{ position:"relative", height:210, overflow:"hidden" }}>
-            <img src={room.img} alt={room.name} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform .4s", transform: hov ? "scale(1.05)" : "scale(1)" }} />
-            {room.badge && <div style={{ position:"absolute", top:12, right:12, background:room.color, color:"#fff", fontSize:10, fontWeight:800, padding:"4px 12px", borderRadius:20, boxShadow:"0 2px 10px rgba(0,0,0,0.2)", textTransform:"uppercase", letterSpacing:"0.5px" }}>{room.badge}</div>}
-            <div style={{ position:"absolute", bottom:0, left:0, right:0, height:80, background:"linear-gradient(transparent,rgba(0,0,0,0.6))" }} />
-          </div>
-        )}
-      </div>
-
-      <div style={{ padding:"20px 22px 24px" }}>
-        <h3 className="playfair" style={{ margin:"0 0 8px", fontSize:19, color:"#1a1a2e", fontWeight:800 }}>{room.name}</h3>
-        <p style={{ margin:"0 0 14px", fontSize:13, color:"#666", lineHeight:1.6 }}>{room.desc.slice(0,100)}…</p>
-        {room.meals.length > 0 && <div style={{ marginBottom:12 }}>{room.meals.map(m => <span key={m} style={{ background:"#F0FDF4", color:"#166534", fontSize:10, fontWeight:800, padding:"3px 9px", borderRadius:6, marginRight:6 }}>✓ {m}</span>)}</div>}
-        <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:14 }}>
-          {room.amenities.slice(0,4).map(a => <span key={a} style={{ background:room.lightBg, color:room.color, fontSize:10, padding:"3px 8px", borderRadius:6, fontWeight:600 }}>{a}</span>)}
-        </div>
-        {is101Booked && (
-          <div style={{ background:"#FEF2F2", border:"1px solid #FECACA", borderRadius:8, padding:"8px 12px", marginBottom:12, fontSize:12, color:"#DC2626", fontWeight:700, display:"flex", alignItems:"center", gap:6 }}>
-            🔒 Room 101 is currently booked
-          </div>
-        )}
-        <div style={{ display:"flex", alignInstems:"center", justifyContent:"space-between", paddingTop:14, borderTop:"1px solid #f0f0f0" }}>
-          <div><div style={{ fontSize:24, fontWeight:800, color:room.color }}>{fmtINR(room.price)}</div><div style={{ fontSize:11, color:"#999" }}>per night</div></div>
-          <button onClick={currentUser ? onBook : () => setPage("login")} className="shimmer" style={{ ...S.btn(room.color), padding:"10px 20px", fontSize:13, borderRadius:8 }}>Book Now →</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  LANDING PAGE
-// ═══════════════════════════════════════
-function LandingPage(props) {
-  const { setPage, handleBook, currentUser, bookings } = props;
-  const heroRef = useScrollReveal();
-  const statsRef = useScrollReveal();
-
-  return (
-    <div>
-      {/* Hero */}
-      <div style={{ position:"relative", height:620, overflow:"hidden" }}>
-        <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1600&amp;auto=format&amp;fit=crop&amp;q=80" alt="Hotel" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
-        <div style={{ position:"absolute", inset:0, background:"linear-gradient(105deg,rgba(26,26,46,0.9) 0%,rgba(26,26,46,0.4) 100%)" }} />
-        <div ref={heroRef} className="sr vis" style={{ position:"absolute", inset:0, display:"flex", flexDirection:"column", justifyContent:"center", padding:"0 64px", maxWidth:1200 }}>
-          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:4, textTransform:"uppercase", marginBottom:16, display:"flex", alignItems:"center", gap:10 }}>
-            <span style={{ width:40, height:1, background:"#B8860B", display:"inline-block" }} />
-            ★ 5-Star Luxury Hotel · Bengaluru
-          </div>
-          <h1 className="playfair" style={{ color:"#fff", fontSize:52, fontWeight:900, margin:"0 0 18px", lineHeight:1.12, maxWidth:600 }}>Experience True<br/>Luxury & Comfort</h1>
-          <p style={{ color:"rgba(255,255,255,0.8)", fontSize:17, maxWidth:500, margin:"0 0 36px", lineHeight:1.65 }}>From ₹1,000/night — World-class amenities, stunning views, and unforgettable Indian hospitality.</p>
-          <div style={{ display:"flex", gap:16 }}>
-            <button onClick={() => setPage("rooms")} className="shimmer" style={{ ...S.btn("linear-gradient(135deg, #B8860B, #D4A843)"), fontSize:16, padding:"16px 36px", borderRadius:12 }}>Browse Rooms</button>
-            <button onClick={() => setPage("amenities")} style={{ ...S.outBtn("#fff"), fontSize:16, padding:"15px 34px", borderRadius:12 }}>View Amenities</button>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats */}
-      <div ref={statsRef} className="sr" style={{ background:"#1a1a2e", padding:"26px 24px" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto", display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:24 }}>
-          {[["500+","Happy Guests"],["4","Room Categories"],["24/7","Concierge Service"],["★ 4.9","Guest Rating"]].map(([v,l]) =>
-            <div key={l} style={{ textAlign:"center" }}>
-              <div style={{ color:"#B8860B", fontSize:28, fontWeight:800 }}>{v}</div>
-              <div style={{ color:"#888", fontSize:12, marginTop:4, fontWeight:500 }}>{l}</div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Room Cards */}
-      <div style={S.sec}>
-        <div style={{ textAlign:"center", marginBottom:52 }}>
-          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:12 }}>Our Accommodations</div>
-          <h2 className="playfair" style={{ fontSize:38, fontWeight:900, color:"#1a1a2e", margin:0 }}>Choose Your Perfect Room</h2>
-          <p style={{ color:"#666", fontSize:15, marginTop:10 }}>All prices in INR · Taxes included · 3D viewer available</p>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(270px,1fr))", gap:28 }}>
-          {ROOMS.map((room, i) => <RoomCard key={room.id} room={room} onBook={() => handleBook(room)} currentUser={currentUser} setPage={setPage} bookings={bookings} delay={`sr-d${i+1}`} />)}
-        </div>
-      </div>
-
-      {/* Loyalty Section */}
-      <div style={{ background:"#1a1a2e", padding:"72px 24px" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto", display:"grid", gridTemplateColumns:"1fr 1fr", gap:48, alignItems:"center" }}>
-          <div>
-            <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:12 }}>Loyalty Rewards</div>
-            <h2 className="playfair" style={{ color:"#fff", fontSize:34, fontWeight:900, margin:"0 0 18px" }}>Earn Points.<br/><span style={{color:"#B8860B"}}>Get 50% Off.</span></h2>
-            <p style={{ color:"#888", fontSize:15, lineHeight:1.8, marginBottom:28 }}>Every ₹10 spent earns you 1 loyalty point. Collect 3,000 points and unlock a 50% discount coupon for any room — valid for one booking.</p>
-            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
-              <div style={{ background:"rgba(255,255,255,0.05)", borderRadius:12, padding:"18px 16px", display:"flex", alignItems:"center", gap:12 }}>
-                <span style={{ fontSize:24 }}>⭐</span>
-                <div><div style={{color:"#fff", fontWeight:700, fontSize:14}}>1 Point</div><div style={{color:"#888", fontSize:11}}>per ₹10 spent</div></div>
-              </div>
-              <div style={{ background:"rgba(255,255,255,0.05)", borderRadius:12, padding:"18px 16px", display:"flex", alignItems:"center", gap:12 }}>
-                <span style={{ fontSize:24 }}>🎫</span>
-                <div><div style={{color:"#fff", fontWeight:700, fontSize:14}}>50% OFF</div><div style={{color:"#888", fontSize:11}}>at 3,000 points</div></div>
-              </div>
-            </div>
-          </div>
-          <div style={{ textAlign:"center" }}>
-            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&amp;auto=format&amp;fit=crop&amp;q=80" alt="Loyalty" style={{ borderRadius:20, width:"100%", maxWidth:420, boxShadow:"0 8px 40px rgba(0,0,0,0.4)" }} />
-          </div>
-        </div>
-      </div>
-
-      {/* Features */}
-      <div style={{ ...S.sec, paddingTop:48, paddingBottom:48 }}>
-        <div style={{ textAlign:"center", marginBottom:44 }}>
-          <h2 className="playfair" style={{ color:"#1a1a2e", fontSize:32, fontWeight:900 }}>Why Choose {HOTEL}?</h2>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))", gap:28 }}>
-          {[{i:"🏊",t:"Pool & Spa",d:"Olympic pool & award-winning spa"},{i:"🍽️",t:"Fine Dining",d:"Multi-cuisine open all day"},{i:"🏋️",t:"Modern Gym",d:"24/7 state-of-the-art gym"},{i:"🔒",t:"24/7 Security",d:"Your safety our top priority"},{i:"🚗",t:"Valet Parking",d:"Complimentary for all guests"},{i:"✈️",t:"Airport Transfer",d:"For premium bookings"}].map(({i,t,d}) =>
-            <div key={t} style={{ textAlign:"center", padding:"24px 12px", background:"#fff", borderRadius:16, boxShadow:"0 2px 16px rgba(0,0,0,0.04)", transition:"transform .2s" }}>
-              <div style={{ fontSize:36, marginBottom:14 }}>{i}</div>
-              <div style={{ fontWeight:800, fontSize:15, marginBottom:6, color:"#1a1a2e" }}>{t}</div>
-              <div style={{ color:"#888", fontSize:13, lineHeight:1.5 }}>{d}</div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* CTA */}
-      <div style={{ background:"linear-gradient(135deg, #f0ede6, #e8e2d6)", padding:"56px 24px" }}>
-        <div style={{ maxWidth:700, margin:"0 auto", textAlign:"center" }}>
-          <h2 className="playfair" style={{ fontSize:30, fontWeight:900, color:"#1a1a2e", marginBottom:14 }}>Ready for an Unforgettable Stay?</h2>
-          <p style={{ color:"#666", fontSize:16, marginBottom:28 }}>Book directly with us for the best rates — guaranteed.</p>
-          <button onClick={() => setPage("rooms")} className="shimmer" style={{ ...S.btn("#1a1a2e"), fontSize:16, padding:"16px 44px", borderRadius:12 }}>Book Your Room Now</button>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <Footer />
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  ROOMS PAGE
-// ═══════════════════════════════════════
-function RoomsPage({ setPage, handleBook, currentUser, bookings }) {
-  const [ci, setCi] = useState(todayStr());
-  const [co, setCo] = useState(tomorrowStr());
-
-  return (
-    <div>
-      <div style={{ background:"#1a1a2e", padding:"52px 24px 36px" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <h1 className="playfair" style={{ color:"#fff", fontSize:38, fontWeight:900, margin:"0 0 8px" }}>All Room Categories</h1>
-          <p style={{ color:"#888", fontSize:15 }}>Select dates to check real-time availability</p>
-        </div>
-      </div>
-      <div style={{ background:"#fff", borderBottom:"1px solid #eee", padding:"20px 24px", position:"sticky", top:68, zIndex:50, boxShadow:"0 2px 10px rgba(0,0,0,0.05)" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto", display:"flex", gap:18, flexWrap:"wrap", alignItems:"flex-end" }}>
-          <div><label style={S.lbl}>Check-in</label><input type="date" value={ci} min={todayStr()} onChange={e => setCi(e.target.value)} style={{ ...S.input, width:180 }} /></div>
-          <div><label style={S.lbl}>Check-out</label><input type="date" value={co} min={ci||todayStr()} onChange={e => setCo(e.target.value)} style={{ ...S.input, width:180 }} /></div>
-          {ci && co && <div style={{ color:"#555", fontSize:14, paddingBottom:12, fontWeight:500 }}>📅 {calcNights(ci,co)} night(s) · {fmtDate(ci)} → {fmtDate(co)}</div>}
-        </div>
-      </div>
-      <div style={{ ...S.sec, paddingTop:36 }}>
-        {ROOMS.map(room => {
-          const bookedNos = ci && co ? getBookedRoomNos(room.id, ci, co, bookings) : [];
-          const avail = ci && co ? getAvailRoomNo(room.id, ci, co, bookings) : null;
-          const checked = ci && co;
-          const n = calcNights(ci, co);
-
-          return (
-            <div key={room.id} style={{ ...S.card, marginBottom:36, display:"flex", flexWrap:"wrap" }}>
-              <div style={{ flex:"0 0 380px", minWidth:260, position:"relative", minHeight:280 }}>
-                <img src={room.img} alt={room.name} style={{ width:"100%", height:"100%", objectFit:"cover", minHeight:280 }} />
-                {room.badge && <div style={{ position:"absolute", top:16, left:16, background:room.color, color:"#fff", fontSize:11, fontWeight:800, padding:"5px 14px", borderRadius:20, textTransform:"uppercase" }}>{room.badge}</div>}
-                {checked && <div style={{ position:"absolute", bottom:16, left:16, background: avail ? "#059669" : "#DC2626", color:"#fff", fontSize:12, fontWeight:700, padding:"6px 14px", borderRadius:8 }}>{avail ? `✓ Rooms Available` : "✗ Fully Booked"}</div>}
-              </div>
-              <div style={{ flex:1, padding:"30px 34px", minWidth:280 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:12, marginBottom:12 }}>
-                  <div>
-                    <h2 className="playfair" style={{ margin:"0 0 10px", fontSize:28, color:"#1a1a2e", fontWeight:800 }}>{room.name}</h2>
-                    <p style={{ margin:"0 0 16px", color:"#666", lineHeight:1.65, maxWidth:480, fontSize:14 }}>{room.desc}</p>
-                  </div>
-                  <div style={{ textAlign:"right" }}>
-                    <div style={{ fontSize:32, fontWeight:800, color:room.color }}>{fmtINR(room.price)}</div>
-                    <div style={{ fontSize:12, color:"#999" }}>per night · taxes incl.</div>
-                    {checked && <div style={{ fontSize:14, fontWeight:700, color:room.color, marginTop:6 }}>Total: {fmtINR(room.price * n)}</div>}
-                  </div>
-                </div>
-                <div style={{ display:"flex", flexWrap:"wrap", gap:8, marginBottom:16 }}>
-                  {room.amenities.map(a => <span key={a} style={{ background:room.lightBg, color:room.color, fontSize:11, fontWeight:600, padding:"4px 10px", borderRadius:6 }}>✓ {a}</span>)}
-                </div>
-                {room.meals.length > 0 && <div style={{ marginBottom:16 }}>{room.meals.map(m => <span key={m} style={{ background:"#F0FDF4", color:"#166534", fontSize:11, fontWeight:800, padding:"5px 12px", borderRadius:6, marginRight:8 }}>🍳 {m} Included</span>)}</div>}
-
-                {/* Room Number Availability Grid */}
-                <div style={{ marginBottom:16 }}>
-                  <div style={{ fontSize:11, fontWeight:700, color:"#999", marginBottom:8, textTransform:"uppercase", letterSpacing:1 }}>Room Availability</div>
-                  <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
-                    {room.roomNos.map(no => {
-                      const isBooked = bookedNos.includes(no);
-                      return (
-                        <div key={no} style={{ width:44, height:32, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, background: isBooked ? "#FEE2E2" : "#F0FDF4", color: isBooked ? "#DC2626" : "#166534", border: `1px solid ${isBooked ? "#FECACA" : "#BBF7D0"}` }}>
-                          {no}
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <div style={{ display:"flex", gap:14, marginTop:8, fontSize:10, color:"#999" }}>
-                    <span>🟢 Available</span><span>🔴 Booked</span>
-                  </div>
-                </div>
-
-                <div style={{ display:"flex", alignItems:"center", gap:14, flexWrap:"wrap" }}>
-                  {checked ? (
-                    avail ? <button onClick={currentUser ? () => handleBook(room) : () => setPage("login")} className="shimmer" style={{...S.btn(room.color)}}>Book Now →</button> :
-                    <div style={{ color:"#DC2626", fontWeight:700, fontSize:14 }}>✗ No rooms available for selected dates</div>
-                  ) : (
-                    <button onClick={currentUser ? () => handleBook(room) : () => setPage("login")} className="shimmer" style={{...S.btn(room.color)}}>Book Now →</button>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  BOOKING PAGE
-// ═══════════════════════════════════════
-function BookingPage({ selectedRoom, setPage, setPendingBooking, bookings, currentUser }) {
-  const [ci, setCi] = useState(todayStr());
-  const [co, setCo] = useState(tomorrowStr());
-  const [msg, setMsg] = useState("");
-  if (!selectedRoom) { setPage("rooms"); return null; }
-  const r = selectedRoom;
-  const n = calcNights(ci, co);
-  const total = r.price * n;
-  const avail = ci && co ? getAvailRoomNo(r.id, ci, co, bookings) : null;
-
-  function proceed() {
-    if (!ci || !co) { setMsg("Please select dates."); return; }
-    if (new Date(co) <= new Date(ci)) { setMsg("Check-out must be after check-in."); return; }
-    if (!avail) { setMsg("No rooms available. Try different dates."); return; }
-    setPendingBooking({ roomId:r.id, roomNo:avail, checkIn:ci, checkOut:co, total, nights:n });
-    setPage("payment");
-  }
-
-  return (
-    <div style={{ background:"var(--bg)", minHeight:"80vh", padding:"44px 24px" }}>
-      <div style={{ maxWidth:960, margin:"0 auto" }}>
-        <span onClick={() => setPage("rooms")} style={{ color:"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>← Back to Rooms</span>
-        <h1 className="playfair" style={{ margin:"10px 0 0", fontSize:32, color:"#1a1a2e", fontWeight:900 }}>Book {r.name}</h1>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 340px", gap:28, marginTop:24 }}>
-          <div>
-            <div style={{ ...S.card, padding:28, marginBottom:22 }}>
-              <img src={r.img} alt={r.name} style={{ width:"100%", height:220, objectFit:"cover", borderRadius:12, marginBottom:20 }} />
-              <h2 className="playfair" style={{ margin:"0 0 8px", color:"#1a1a2e", fontSize:24, fontWeight:800 }}>{r.name}</h2>
-              <p style={{ color:"#666", fontSize:14, margin:"0 0 16px", lineHeight:1.6 }}>{r.desc}</p>
-              <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginBottom:16 }}>
-                {r.amenities.map(a => <span key={a} style={{ background:r.lightBg, color:r.color, fontSize:11, padding:"3px 9px", borderRadius:6, fontWeight:600 }}>✓ {a}</span>)}
-              </div>
-              {r.meals.length > 0 && <div style={{ background:"#F0FDF4", padding:"10px 14px", borderRadius:8, color:"#166534", fontSize:13, fontWeight:700 }}>🍳 Includes: {r.meals.join(", ")}</div>}
-            </div>
-            <div style={{ ...S.card, padding:24 }}>
-              <h3 style={{ margin:"0 0 20px", color:"#1a1a2e", fontSize:18, fontWeight:800 }}>Select Your Dates</h3>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:18 }}>
-                <div><label style={S.lbl}>Check-in Date</label><input type="date" value={ci} min={todayStr()} onChange={e => setCi(e.target.value)} style={S.input} /></div>
-                <div><label style={S.lbl}>Check-out Date</label><input type="date" value={co} min={ci||todayStr()} onChange={e => setCo(e.target.value)} style={S.input} /></div>
-              </div>
-              {msg && <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:14, fontWeight:600 }}>{msg}</div>}
-              {ci && co && (
-                <div style={{ background: avail ? "#F0FDF4" : "#FEF2F2", color: avail ? "#166534" : "#DC2626", padding:"14px 18px", borderRadius:10, fontWeight:700, fontSize:15, display:"flex", alignItems:"center", gap:8 }}>
-                  {avail ? `✓ Room #${avail} is available! (Auto-assigned lowest available)` : "✗ No rooms available — try different dates."}
-                </div>
-              )}
-            </div>
-          </div>
-          <div>
-            <div style={{ ...S.card, padding:24, marginBottom:18 }}>
-              <h3 style={{ margin:"0 0 18px", color:"#1a1a2e", fontSize:17, fontWeight:800 }}>Booking Summary</h3>
-              {[["Room Type",r.name],["Assigned Room", avail ? `#${avail}` : "—"],["Check-in",fmtDate(ci)],["Check-out",fmtDate(co)],["Duration",`${n} night(s)`],["Rate / night",fmtINR(r.price)]].map(([k,v]) =>
-                <div key={k} style={{ display:"flex", justifyContent:"space-between", marginBottom:11, fontSize:14 }}>
-                  <span style={{ color:"#888" }}>{k}</span><span style={{ fontWeight:600 }}>{v}</span>
-                </div>
-              )}
-              {r.meals.length > 0 && <div style={{ background:"#F0FDF4", color:"#166534", fontSize:11, padding:"7px 12px", borderRadius:6, marginBottom:12, fontWeight:700 }}>Includes: {r.meals.join(", ")}</div>}
-              <div style={{ borderTop:"1px solid #eee", paddingTop:14, display:"flex", justifyContent:"space-between", fontSize:22, fontWeight:800, color:"#1a1a2e" }}>
-                <span>Total</span><span style={{ color:r.color }}>{fmtINR(total)}</span>
-              </div>
-            </div>
-            <div style={{ ...S.card, padding:18, marginBottom:18, fontSize:14, color:"#555" }}>
-              <div style={{ fontWeight:800, color:"#1a1a2e", marginBottom:10, fontSize:15 }}>Guest Details</div>
-              <div style={{ marginBottom:6 }}>👤 {currentUser?.name}</div>
-              <div style={{ marginBottom:6 }}>✉️ {currentUser?.email}</div>
-              <div>📞 {currentUser?.contact}</div>
-            </div>
-            <button onClick={proceed} className="shimmer" style={{ ...S.btn(r.color), width:"100%", padding:"15px", fontSize:16, borderRadius:12 }}>Proceed to Payment →</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  PAYMENT PAGE
-// ═══════════════════════════════════════
-function PaymentPage({ pendingBooking, selectedRoom, handleConfirmBooking, setPage, points }) {
-  const [method, setMethod] = useState("");
-  const [cn, setCn] = useState("");
-  const [cvv, setCvv] = useState("");
-  const [exp, setExp] = useState("");
-  const [name, setName] = useState("");
-  const [upi, setUpi] = useState("");
-  const [tab, setTab] = useState("card");
-  const [proc, setProc] = useState(false);
-  const [useCoupon, setUseCoupon] = useState(false);
-
-  if (!pendingBooking || !selectedRoom) return null;
-  const r = selectedRoom;
-  const canUseCoupon = points >= 3000;
-  const discountAmt = useCoupon && canUseCoupon ? Math.floor(pendingBooking.total / 2) : 0;
-  const finalTotal = pendingBooking.total - discountAmt;
-
-  function pay() {
-    if (!method) return;
-    if (method === "online") {
-      if (tab === "card" && (!cn || !cvv || !exp || !name)) return;
-      if (tab === "upi" && !upi) return;
-    }
-    setProc(true);
-    setTimeout(() => { handleConfirmBooking(method, useCoupon && canUseCoupon); setProc(false); }, 1800);
-  }
-
-  return (
-    <div style={{ background:"var(--bg)", minHeight:"80vh", padding:"44px 24px" }}>
-      <div style={{ maxWidth:840, margin:"0 auto" }}>
-        <span onClick={() => setPage("book")} style={{ color:"#888", cursor:"pointer", fontSize:13, fontWeight:600 }}>← Back to Booking</span>
-        <h1 className="playfair" style={{ margin:"10px 0 28px", fontSize:32, color:"#1a1a2e", fontWeight:900 }}>Secure Payment</h1>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 320px", gap:28 }}>
-          <div>
-            {/* Payment Methods */}
-            <div style={{ ...S.card, padding:26, marginBottom:18 }}>
-              <h3 style={{ margin:"0 0 18px", color:"#1a1a2e", fontSize:17, fontWeight:800 }}>Payment Method</h3>
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:24 }}>
-                {[["online","Pay Online","💳","Card / UPI"],["hotel","Pay at Hotel","🏨","Cash or Card"]].map(([v,l,ic,sub]) =>
-                  <div key={v} onClick={() => setMethod(v)} style={{ border:`2px solid ${method===v ? r.color : "#e5e5e5"}`, borderRadius:14, padding:"18px 14px", cursor:"pointer", background: method===v ? r.lightBg : "#fafafa", transition:"all .2s", textAlign:"center" }}>
-                    <div style={{ fontSize:28, marginBottom:8 }}>{ic}</div>
-                    <div style={{ fontWeight:700, color: method===v ? r.color : "#333", fontSize:15 }}>{l}</div>
-                    <div style={{ fontSize:11, color:"#999", marginTop:4 }}>{sub}</div>
-                  </div>
-                )}
-              </div>
-
-              {/* Loyalty Coupon */}
-              {canUseCoupon && (
-                <div onClick={() => setUseCoupon(!useCoupon)} style={{ border:`2px solid ${useCoupon ? "#059669" : "#e5e5e5"}`, borderRadius:14, padding:"16px 18px", cursor:"pointer", background: useCoupon ? "#F0FDF4" : "#fafafa", transition:"all .2s", marginBottom:24, display:"flex", alignItems:"center", gap:14 }}>
-                  <div style={{ width:24, height:24, borderRadius:6, border:`2px solid ${useCoupon ? "#059669" : "#ccc"}`, background: useCoupon ? "#059669" : "transparent", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
-                    {useCoupon && <span style={{color:"#fff", fontWeight:800, fontSize:14}}>✓</span>}
-                  </div>
-                  <div style={{ flex:1 }}>
-                    <div style={{ fontWeight:700, color: useCoupon ? "#059669" : "#333", fontSize:14 }}>🎫 Apply 50% Loyalty Discount</div>
-                    <div style={{ fontSize:12, color:"#888", marginTop:2 }}>Use 3,000 points for {fmtINR(Math.floor(pendingBooking.total/2))} off (one-time use)</div>
-                  </div>
-                  <div style={{ fontWeight:800, fontSize:18, color:"#059669" }}>-{fmtINR(Math.floor(pendingBooking.total/2))}</div>
-                </div>
-              )}
-
-              {method === "online" && (
-                <div>
-                  <div style={{ display:"flex", gap:0, marginBottom:22, borderRadius:10, overflow:"hidden", border:"1px solid #e5e5e5" }}>
-                    {[["card","💳 Card"],["upi","📱 UPI"]].map(([t,l]) =>
-                      <button key={t} onClick={() => setTab(t)} style={{ flex:1, padding:"10px", border:"none", background: tab===t ? "#1a1a2e" : "#fff", color: tab===t ? "#fff" : "#333", fontWeight:700, cursor:"pointer", fontSize:14 }}>{l}</button>
-                    )}
-                  </div>
-                  {tab === "card" && (
-                    <div>
-                      <div style={{marginBottom:14}}><label style={S.lbl}>Cardholder Name</label><input value={name} onChange={e => setName(e.target.value)} placeholder="As on card" style={S.input} /></div>
-                      <div style={{marginBottom:14}}><label style={S.lbl}>Card Number</label><input value={cn} onChange={e => setCn(e.target.value.replace(/\D/g,"").slice(0,16))} placeholder="1234 5678 9012 3456" style={S.input} /></div>
-                      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12 }}>
-                        <div><label style={S.lbl}>Expiry (MM/YY)</label><input value={exp} onChange={e => setExp(e.target.value)} placeholder="12/28" style={S.input} /></div>
-                        <div><label style={S.lbl}>CVV</label><input value={cvv} onChange={e => setCvv(e.target.value.replace(/\D/g,"").slice(0,3))} placeholder="•••" type="password" style={S.input} /></div>
-                      </div>
-                    </div>
-                  )}
-                  {tab === "upi" && (
-                    <div><label style={S.lbl}>UPI ID</label><input value={upi} onChange={e => setUpi(e.target.value)} placeholder="yourname@upi" style={S.input} /></div>
-                  )}
-                  <div style={{ background:"#F0FDF4", border:"1px solid #BBF7D0", borderRadius:10, padding:"12px 16px", fontSize:13, color:"#166534", marginTop:16, display:"flex", alignItems:"center", gap:8 }}>
-                    🔒 256-bit SSL encrypted · PCI DSS compliant
-                  </div>
-                </div>
-              )}
-              {method === "hotel" && (
-                <div style={{ background:"#FFF7ED", border:"1px solid #FED7AA", borderRadius:12, padding:20, fontSize:14 }}>
-                  <div style={{ fontWeight:800, color:"#C2410C", marginBottom:12, fontSize:16 }}>Pay at Check-in</div>
-                  <div style={{ color:"#7C2D12", lineHeight:2.1 }}>
-                    ✓ Full payment at hotel check-in<br/>
-                    ✓ Cash, Card, UPI accepted<br/>
-                    ✓ Arrive by 2:00 PM on check-in<br/>
-                    ⚠ Booking released if no arrival by 6 PM
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-          <div>
-            <div style={{ ...S.card, padding:24 }}>
-              <h3 style={{ margin:"0 0 16px", color:"#1a1a2e", fontSize:17, fontWeight:800 }}>Order Summary</h3>
-              <img src={r.img} alt="" style={{ width:"100%", height:130, objectFit:"cover", borderRadius:10, marginBottom:16 }} />
-              <div style={{ fontSize:16, fontWeight:800, color:"#1a1a2e", marginBottom:14 }}>{r.name}</div>
-              {[["Room No",`#${pendingBooking.roomNo}`],["Check-in",fmtDate(pendingBooking.checkIn)],["Check-out",fmtDate(pendingBooking.checkOut)],["Nights",pendingBooking.nights],["Rate",fmtINR(r.price)+"/night"]].map(([k,v]) =>
-                <div key={k} style={{ display:"flex", justifyContent:"space-between", fontSize:13, marginBottom:9 }}>
-                  <span style={{ color:"#888" }}>{k}</span><span style={{ fontWeight:600 }}>{v}</span>
-                </div>
-              )}
-              {r.meals.length > 0 && <div style={{ background:"#F0FDF4", color:"#166534", fontSize:11, padding:"7px 10px", borderRadius:6, marginBottom:10, fontWeight:700 }}>🍳 {r.meals.join(" + ")} included</div>}
-
-              {useCoupon && canUseCoupon && (
-                <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, marginBottom:9, color:"#059669", fontWeight:700 }}>
-                  <span>🎫 Loyalty Discount</span><span>-{fmtINR(discountAmt)}</span>
-                </div>
-              )}
-
-              <div style={{ borderTop:"1px solid #eee", paddingTop:14, marginTop:6 }}>
-                {useCoupon && canUseCoupon && (
-                  <div style={{ display:"flex", justifyContent:"space-between", fontSize:13, marginBottom:6, color:"#999", textDecoration:"line-through" }}>
-                    <span>Original</span><span>{fmtINR(pendingBooking.total)}</span>
-                  </div>
-                )}
-                <div style={{ display:"flex", justifyContent:"space-between", fontSize:20, fontWeight:800 }}>
-                  <span>Total</span><span style={{ color:r.color }}>{fmtINR(finalTotal)}</span>
-                </div>
-              </div>
-
-              <button onClick={pay} disabled={!method || proc} className="shimmer" style={{ ...S.btn(method ? r.color : "#ccc"), width:"100%", padding:"14px", fontSize:15, marginTop:18, borderRadius:12, opacity: proc ? 0.7 : 1, cursor: method ? "pointer" : "not-allowed" }}>
-                {proc ? "Processing…" : method === "hotel" ? "Confirm Booking" : `Pay ${fmtINR(finalTotal)}`}
-              </button>
-              {!method && <p style={{ textAlign:"center", color:"#bbb", fontSize:12, marginTop:8 }}>Select a payment method above</p>}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  DASHBOARD
-// ═══════════════════════════════════════
-function DashboardPage({ currentUser, bookings, setPage, points }) {
-  if (!currentUser) { setPage("login"); return null; }
-  const my = bookings.filter(b => b.userId === currentUser.id);
-  const td = todayStr();
-  const upcoming = my.filter(b => b.checkOut >= td);
-  const past = my.filter(b => b.checkOut < td);
-  const is101Booked = bookings.some(b => b.roomNo === "101" && b.status === "confirmed");
-  const ptsPercent = Math.min(100, (points / 3000) * 100);
-
-  return (
-    <div style={{ background:"var(--bg)", minHeight:"80vh" }}>
-      <div style={{ background:"#1a1a2e", padding:"44px 24px 40px" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <div style={{ display:"flex", alignInstems:"center", gap:18, marginBottom:28 }}>
-            <div style={{ background:"linear-gradient(135deg, #B8860B, #D4A843)", width:60, height:60, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontWeight:900, fontSize:24, boxShadow:"0 4px 20px rgba(184,134,11,0.3)" }}>
-              {currentUser.name[0].toUpperCase()}
-            </div>
-            <div>
-              <div style={{ color:"#B8860B", fontSize:11, fontWeight:800, letterSpacing:2, textTransform:"uppercase" }}>Welcome back</div>
-              <h1 className="playfair" style={{ color:"#fff", fontSize:30, fontWeight:900, margin:0 }}>{currentUser.name}</h1>
-            </div>
-          </div>
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:16 }}>
-            {[["Total Bookings",my.length,"📋"],["Upcoming",upcoming.length,"📅"],["Completed",past.length,"✓"],["Points",`${points}`,`⭐`]].map(([l,v,i]) =>
-              <div key={l} style={{ background:"rgba(255,255,255,0.06)", borderRadius:14, padding:"18px 20px", border:"1px solid rgba(255,255,255,0.06)" }}>
-                <div style={{ color:"#B8860B", fontSize:26, fontWeight:800, display:"flex", alignItems:"center", gap:8 }}><span style={{fontSize:16}}>{i}</span>{v}</div>
-                <div style={{ color:"#888", fontSize:12, marginTop:4, fontWeight:500 }}>{l}</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <div style={{ maxWidth:1100, margin:"0 auto", padding:"36px 24px" }}>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 340px", gap:28 }}>
-          <div>
-            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:24 }}>
-              <h2 className="playfair" style={{ margin:0, fontSize:24, color:"#1a1a2e", fontWeight:800 }}>My Bookings</h2>
-              <button onClick={() => setPage("rooms")} style={{...S.btn("#1a1a2e"), borderRadius:8, padding:"9px 18px", fontSize:13}}>+ New Booking</button>
-            </div>
-            {my.length === 0 ? (
-              <div style={{ ...S.card, padding:56, textAlign:"center" }}>
-                <div style={{ fontSize:56, marginBottom:18 }}>🏨</div>
-                <h3 style={{ color:"#1a1a2e", marginBottom:8, fontWeight:800 }}>No bookings yet</h3>
-                <p style={{ color:"#888", marginBottom:22 }}>Your booking history will appear here</p>
-                <button onClick={() => setPage("rooms")} style={{...S.btn("#B8860B"), borderRadius:8}}>Browse Rooms</button>
-              </div>
-            ) : (
-              <div>
-                {upcoming.length > 0 && (
-                  <div>
-                    <div style={{ fontSize:13, fontWeight:800, color:"#059669", marginBottom:14 }}><span style={{ background:"#DCFCE7", padding:"3px 12px", borderRadius:20 }}>Upcoming · {upcoming.length}</span></div>
-                    {upcoming.map(b => <BookingRow key={b.id} b={b} />)}
-                  </div>
-                )}
-                {past.length > 0 && (
-                  <div>
-                    <div style={{ fontSize:13, fontWeight:800, color:"#888", marginTop:28, marginBottom:14 }}><span style={{ background:"#F3F4F6", padding:"3px 12px", borderRadius:20 }}>Past Stays · {past.length}</span></div>
-                    {past.map(b => <BookingRow key={b.id} b={b} faded />)}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <div>
-            {/* Loyalty */}
-            <div style={{ ...S.card, padding:24, marginBottom:20 }}>
-              <h3 style={{ margin:"0 0 18px", color:"#1a1a2e", fontWeight:800, fontSize:17 }}>Loyalty Rewards</h3>
-              <div style={{ marginBottom:18 }}>
-                <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, fontWeight:700, color:"#888", marginBottom:8 }}>
-                  <span>Progress to 50% Discount</span><span>{Math.round(ptsPercent)}%</span>
-                </div>
-                <div className="loyalty-bar"><div className="loyalty-fill" style={{ width: `${ptsPercent}%` }} /></div>
-                <div style={{ fontSize:12, color:"#888", marginTop:8 }}>{points} / 3,000 points</div>
-              </div>
-              {points >= 3000 ? (
-                <div style={{ background:"#F0FDF4", border:"1px solid #BBF7D0", borderRadius:10, padding:"14px 16px", display:"flex", alignItems:"center", gap:12 }}>
-                  <span style={{fontSize:28}}>🎫</span>
-                  <div>
-                    <div style={{ fontWeight:800, color:"#059669", fontSize:14 }}>50% Discount Ready!</div>
-                    <div style={{ fontSize:11, color:"#166534" }}>Apply on your next booking (1 room only)</div>
-                  </div>
-                </div>
-              ) : (
-                <div style={{ fontSize:13, color:"#888" }}>Earn {3000 - points} more points for a 50% coupon</div>
-              )}
-            </div>
-
-            {/* Room 101 Status */}
-            <div style={{ ...S.card, padding:24, marginBottom:20 }}>
-              <h3 style={{ margin:"0 0 14px", color:"#1a1a2e", fontWeight:800, fontSize:17 }}>Room 101 Status</h3>
-              <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                <div style={{ width:12, height:12, borderRadius:"50%", background: is101Booked ? "#DC2626" : "#059669", boxShadow: is101Booked ? "0 0 8px rgba(220,38,38,0.4)" : "0 0 8px rgba(5,150,105,0.4)" }} />
-                <div>
-                  <div style={{ fontWeight:700, fontSize:14, color: is101Booked ? "#DC2626" : "#059669" }}>
-                    {is101Booked ? "Currently Booked" : "Available"}
-                  </div>
-                  <div style={{ fontSize:12, color:"#999" }}>
-                    {is101Booked ? "Room 101 is occupied by another guest" : "Room 101 is open for booking"}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Profile */}
-            <div style={{ ...S.card, padding:24 }}>
-              <h3 style={{ margin:"0 0 18px", color:"#1a1a2e", fontWeight:800, fontSize:17 }}>Profile</h3>
-              <div style={{ display:"grid", gap:12, fontSize:14 }}>
-                {[["Name",currentUser.name],["Email",currentUser.email],["Contact",currentUser.contact],["Status", points >= 3000 ? "🥇 Gold Member" : my.length >= 3 ? "🥈 Silver Member" : "🥉 Bronze Member"]].map(([k,v]) =>
-                  <div key={k} style={{ background:"#f8f6f0", padding:"13px 16px", borderRadius:10 }}>
-                    <div style={{ color:"#999", fontSize:11, marginBottom:3, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.5px" }}>{k}</div>
-                    <div style={{ fontWeight:700, color:"#1a1a2e" }}>{v}</div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function BookingRow({ b, faded }) {
-  const room = ROOMS.find(r => r.id === b.roomId);
-  if (!room) return null;
-  const isUp = b.checkOut >= todayStr();
-  return (
-    <div style={{ ...S.card, padding:"18px 22px", marginBottom:12, display:"flex", alignItems:"center", gap:16, opacity: faded ? 0.6 : 1, flexWrap:"wrap", transition:"transform .15s" }}>
-      <img src={room.img} alt="" style={{ width:88, height:68, objectFit:"cover", borderRadius:10, flexShrink:0 }} />
-      <div style={{ flex:1, minWidth:180 }}>
-        <div style={{ fontWeight:800, color:"#1a1a2e", fontSize:16 }}>{room.name}</div>
-        <div style={{ color:"#555", fontSize:13, marginTop:4 }}>Room <strong style={{ color:room.color, fontSize:14 }}>#{b.roomNo}</strong> · {fmtDate(b.checkIn)} → {fmtDate(b.checkOut)}</div>
-        <div style={{ color:"#999", fontSize:11, marginTop:4 }}>{calcNights(b.checkIn, b.checkOut)} night(s) · {b.guestName}</div>
-      </div>
-      <div style={{ textAlign:"right" }}>
-        <div style={{ fontWeight:800, fontSize:18, color:room.color }}>{fmtINR(b.total)}</div>
-        <div style={{ display:"flex", gap:6, marginTop:8, justifyContent:"flex-end", flexWrap:"wrap" }}>
-          <span style={{ background: isUp ? "#F0FDF4" : "#F9FAFB", color: isUp ? "#166534" : "#6B7280", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>{isUp ? "Upcoming" : "Completed"}</span>
-          <span style={{ background: b.payMethod==="online" ? "#EFF6FF" : "#FFFBEB", color: b.payMethod==="online" ? "#1D4ED8" : "#92400E", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>{b.payMethod==="online" ? "Paid" : "At Hotel"}</span>
-          {b.discounted && <span style={{ background:"#F0FDF4", color:"#059669", fontSize:10, padding:"3px 10px", borderRadius:20, fontWeight:800 }}>50% OFF</span>}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  AMENITIES PAGE
-// ═══════════════════════════════════════
-function AmenitiesPage() {
-  const [cat, setCat] = useState("Breakfast");
-  const [search, setSearch] = useState("");
-  const menuKeys = Object.keys(MENU);
-
-  const filteredItems = MENU[cat].filter(item =>
-    item.n.toLowerCase().includes(search.toLowerCase())
-  );
-
-  return (
-    <div>
-      <div style={{ background:"#1a1a2e", padding:"52px 24px" }}>
-        <div style={{ maxWidth:1100, margin:"0 auto" }}>
-          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:10 }}>World-Class Facilities</div>
-          <h1 className="playfair" style={{ color:"#fff", fontSize:38, fontWeight:900, margin:"0 0 8px" }}>Hotel Amenities</h1>
-          <p style={{ color:"#888", fontSize:15 }}>Every facility designed for your comfort</p>
-        </div>
-      </div>
-
-      <div style={S.sec}>
-        {/* Amenity Cards */}
-        <div style={{ textAlign:"center", marginBottom:44 }}>
-          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:10 }}>Facilities</div>
-          <h2 className="playfair" style={{ fontSize:34, fontWeight:900, color:"#1a1a2e", margin:0 }}>Exceptional Amenities</h2>
-        </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(260px,1fr))", gap:24, marginBottom:72 }}>
-          {AMENITY_DATA.map(a => (
-            <div key={a.title} style={{ ...S.card, transition:"transform .2s" }}>
-              <div style={{ height:210, overflow:"hidden" }}>
-                <img src={a.img} alt={a.title} style={{ width:"100%", height:"100%", objectFit:"cover", transition:"transform .3s" }} />
-              </div>
-              <div style={{ padding:"20px 22px" }}>
-                <h3 style={{ margin:"0 0 10px", fontSize:18, color:"#1a1a2e", fontWeight:800 }}>{a.icon} {a.title}</h3>
-                <p style={{ margin:"0 0 14px", color:"#666", fontSize:13, lineHeight:1.65 }}>{a.desc}</p>
-                <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
-                  <span style={{ background:"#FFFBEB", color:"#92400E", fontSize:10, fontWeight:800, padding:"4px 12px", borderRadius:6 }}>★ {a.tag}</span>
-                  <span style={{ color:"#888", fontSize:12, fontWeight:600 }}>{a.hours}</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Menu Section */}
-        <div style={{ textAlign:"center", marginBottom:36 }}>
-          <div style={{ color:"#B8860B", fontSize:12, fontWeight:800, letterSpacing:3, textTransform:"uppercase", marginBottom:10 }}>Dining</div>
-          <h2 className="playfair" style={{ fontSize:34, fontWeight:900, color:"#1a1a2e", margin:0 }}>Restaurant Menu & Prices</h2>
-          <p style={{ color:"#888", marginTop:10, fontSize:14 }}>All prices in INR · GST applicable · {menuKeys.length} categories, 120+ dishes</p>
-        </div>
-        <div style={{ ...S.card, padding:28 }}>
-          {/* Category Tabs */}
-          <div style={{ display:"flex", gap:8, marginBottom:20, flexWrap:"wrap" }}>
-            {menuKeys.map(k =>
-              <button key={k} onClick={() => { setCat(k); setSearch(""); }} style={{ ...(cat===k ? S.btn("#1a1a2e") : S.outBtn("#999")), padding:"8px 18px", fontSize:13, borderRadius:8 }}>
-                {{"Breakfast":"🍳","Lunch":"🍜","Dinner":"🍷","Beverages":"☕","Snacks":"🍟","Desserts":"🍰"}[k]} {k}
-              </button>
-            )}
-          </div>
-          {/* Search */}
-          <div style={{ marginBottom:18, position:"relative" }}>
-            <input value={search} onChange={e => setSearch(e.target.value)} placeholder={`Search ${cat} items...`} style={{ ...S.input, paddingLeft:38 }} />
-            <span style={{ position:"absolute", left:14, top:"50%", transform:"translateY(-50%)", fontSize:14, color:"#bbb" }}>🔍</span>
-          </div>
-          {/* Items */}
-          <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(260px,1fr))", gap:10 }}>
-            {filteredItems.map(({n,p}) =>
-              <div key={n} style={{ background:"#f8f6f0", borderRadius:10, padding:"14px 18px", display:"flex", justifyContent:"space-between", alignItems:"center", transition:"background .15s" }}>
-                <span style={{ color:"#1a1a2e", fontWeight:600, fontSize:14 }}>{n}</span>
-                <span style={{ color:"#B8860B", fontWeight:800, fontSize:15, marginLeft:10, whiteSpace:"nowrap" }}>{fmtINR(p)}</span>
-              </div>
-            )}
-            {filteredItems.length === 0 && <div style={{color:"#bbb", padding:20, textAlign:"center", gridColumn:"1/-1"}}>No items match "{search}"</div>}
-          </div>
-          <p style={{ color:"#bbb", fontSize:11, marginTop:20 }}>* Complimentary breakfast for Couple Suite, Premium & Presidential guests. Menu subject to seasonal availability.</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  AUTH PAGES
-// ═══════════════════════════════════════
-function SignupPage({ handleSignup, setPage }) {
-  const [f, setF] = useState({ name:"", contact:"", email:"", password:"", confirm:"" });
-  const [err, setErr] = useState("");
-  const set = k => e => setF({...f, [k]: e.target.value });
-
-  function submit() {
-    if (!f.name || !f.contact || !f.email || !f.password) { setErr("All fields are required."); return; }
-    if (!/\S+@\S+\.\S+/.test(f.email)) { setErr("Enter a valid email."); return; }
-    if (f.password.length < 6) { setErr("Password must be at least 6 characters."); return; }
-    if (f.password !== f.confirm) { setErr("Passwords do not match."); return; }
-    setErr("");
-    handleSignup({ name:f.name, contact:f.contact, email:f.email, password:f.password });
-  }
-
-  return (
-    <div style={{ minHeight:"80vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24, background:"var(--bg)" }}>
-      <div style={{ ...S.card, width:"100%", maxWidth:460, padding:"42px 36px" }}>
-        <div style={{ textAlign:"center", marginBottom:32 }}>
-          <div style={{ background:"#1a1a2e", width:52, height:52, borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 16px", fontSize:22 }}>⭐</div>
-          <h2 className="playfair" style={{ margin:0, fontSize:26, color:"#1a1a2e", fontWeight:900 }}>Create Your Account</h2>
-          <p style={{ color:"#888", fontSize:14, margin:"8px 0 0" }}>Join {HOTEL} family</p>
-        </div>
-        {err && <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:16, fontWeight:600 }}>{err}</div>}
-        {[["Full Name","text","name","Your full name"],["Contact Number","tel","contact","+91 98765 43210"],["Email Address","email","email","you@example.com"],["Password","password","password","Minimum 6 characters"],["Confirm Password","password","confirm","Repeat password"]].map(([l,t,k,ph]) =>
-          <div key={k} style={{ marginBottom:16 }}>
-            <label style={S.lbl}>{l}</label>
-            <input type={t} value={f[k]} onChange={set(k)} placeholder={ph} style={S.input} onKeyDown={e => e.key==="Enter" && submit()} />
-          </div>
-        )}
-        <button onClick={submit} className="shimmer" style={{ ...S.btn("#1a1a2e"), width:"100%", padding:"14px", fontSize:16, marginTop:6, borderRadius:12 }}>Create Account</button>
-        <p style={{ textAlign:"center", marginTop:20, fontSize:14, color:"#888" }}>Already have an account? <span onClick={() => setPage("login")} style={{ color:"#B8860B", cursor:"pointer", fontWeight:700 }}>Sign In</span></p>
-      </div>
-    </div>
-  );
-}
-
-function LoginPage({ handleLogin, setPage }) {
-  const [email, setEmail] = useState("");
-  const [pw, setPw] = useState("");
-  const [err, setErr] = useState("");
-
-  function submit() {
-    if (!email || !pw) { setErr("Please fill in all fields."); return; }
-    setErr("");
-    handleLogin({ email, password: pw });
-  }
-
-  return (
-    <div style={{ minHeight:"80vh", display:"flex", alignItems:"center", justifyContent:"center", padding:24, background:"var(--bg)" }}>
-      <div style={{ ...S.card, width:"100%", maxWidth:420, padding:"42px 36px" }}>
-        <div style={{ textAlign:"center", marginBottom:32 }}>
-          <div style={{ background:"#1a1a2e", width:52, height:52, borderRadius:14, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 16px", fontSize:22 }}>⭐</div>
-          <h2 className="playfair" style={{ margin:0, fontSize:26, color:"#1a1a2e", fontWeight:900 }}>Welcome Back</h2>
-          <p style={{ color:"#888", fontSize:14, margin:"8px 0 0" }}>Sign in to your account</p>
-        </div>
-        {err && <div style={{ background:"#FEF2F2", color:"#DC2626", padding:"10px 14px", borderRadius:8, fontSize:13, marginBottom:16, fontWeight:600 }}>{err}</div>}
-        <div style={{ marginBottom:18 }}>
-          <label style={S.lbl}>Email Address</label>
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" style={S.input} />
-        </div>
-        <div style={{ marginBottom:24 }}>
-          <label style={S.lbl}>Password</label>
-          <input type="password" value={pw} onChange={e => setPw(e.target.value)} placeholder="••••••••" style={S.input} onKeyDown={e => e.key==="Enter" && submit()} />
-        </div>
-        <button onClick={submit} className="shimmer" style={{ ...S.btn("#1a1a2e"), width:"100%", padding:"14px", fontSize:16, borderRadius:12 }}>Sign In</button>
-        <p style={{ textAlign:"center", marginTop:20, fontSize:14, color:"#888" }}>Don't have an account? <span onClick={() => setPage("signup")} style={{ color:"#B8860B", cursor:"pointer", fontWeight:700 }}>Sign Up</span></p>
-        <div style={{ background:"#f8f6f0", borderRadius:10, padding:"12px 16px", marginTop:18, fontSize:12, color:"#999", textAlign:"center" }}>
-          New here? Sign up to create your guest account — bookings saved automatically.
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  FOOTER
-// ═══════════════════════════════════════
-function Footer() {
-  return (
-    <div style={{ background:"#0f0f1e", padding:"36px 24px", textAlign:"center" }}>
-      <div className="playfair" style={{ color:"#B8860B", fontWeight:800, fontSize:20, marginBottom:10 }}>{HOTEL}</div>
-      <p style={{ color:"#555", fontSize:12 }}>MG Road, Bengaluru, Karnataka 560001 · +91 80 4000 5000 · reservations@grandmeridian.in</p>
-      <p style={{ color:"#333", fontSize:11, marginTop:10 }}>© 2026 {HOTEL}. All rights reserved. Images via Unsplash.</p>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════
-//  MAIN APP
-// ═══════════════════════════════════════
-function App() {
-  const [page, setPage] = useState("landing");
-  const [currentUser, setCurrentUser] = useState(null);
-  const [users, setUsers] = useState([]);
-  const [bookings, setBookings] = useState(SEED_BOOKINGS);
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [pendingBooking, setPendingBooking] = useState(null);
-  const [toast, setToast] = useState(null);
-  const [points, setPoints] = useState(0);
-
-  // Persistence
-  useEffect(() => {
-    try {
-      const u = localStorage.getItem("gm_users");
-      if (u) setUsers(JSON.parse(u));
-      const b = localStorage.getItem("gm_bookings");
-      if (b) {
-        const userBookings = JSON.parse(b);
-        setBookings([...SEED_BOOKINGS, ...userBookings]);
-      }
-      const cu = localStorage.getItem("gm_session");
-      if (cu) {
-        const user = JSON.parse(cu);
-        setCurrentUser(user);
-        // Calc points
-        const allB = [...SEED_BOOKINGS, ...(b ? JSON.parse(b) : [])];
-        const myB = allB.filter(bk => bk.userId === user.id);
-        const earned = myB.reduce((acc, bk) => acc + Math.floor(bk.total / 10), 0);
-        const used = user.usedPoints || 0;
-        setPoints(Math.max(0, earned - used));
-      }
-    } catch {}
-  }, []);
-
-  function saveUsers(nu) { setUsers(nu); localStorage.setItem("gm_users", JSON.stringify(nu)); }
-  function saveBookings(nb) {
-    setBookings(nb);
-    const toSave = nb.filter(b => b.userId !== "_s");
-    localStorage.setItem("gm_bookings", JSON.stringify(toSave));
-  }
-  function setSession(u) { setCurrentUser(u); localStorage.setItem("gm_session", JSON.stringify(u)); }
-  function clearSession() { setCurrentUser(null); localStorage.removeItem("gm_session"); }
-
-  function showToast(msg, type="success") { setToast({msg,type}); setTimeout(() => setToast(null), 3800); }
-
-  const nav = p => { setPage(p); window.scrollTo(0,0); };
-
-  function handleSignup({ name, email, contact, password }) {
-    if (users.find(u => u.email === email)) { showToast("Email already registered!", "error"); return; }
-    const nu = { id:`u_${Date.now()}`, name, email, contact, password, usedPoints:0 };
-    saveUsers([...users, nu]);
-    setSession(nu);
-    setPoints(0);
-    showToast(`Welcome, ${name}! Account created.`);
-    nav("landing");
-  }
-
-  function handleLogin({ email, password }) {
-    const u = users.find(u => u.email === email && u.password === password);
-    if (!u) { showToast("Invalid email or password.", "error"); return; }
-    setSession(u);
-    // Calc points
-    const myB = bookings.filter(bk => bk.userId === u.id);
-    const earned = myB.reduce((acc, bk) => acc + Math.floor(bk.total / 10), 0);
-    setPoints(Math.max(0, earned - (u.usedPoints || 0)));
-    showToast(`Welcome back, ${u.name}!`);
-    nav("landing");
-  }
-
-  function handleLogout() { clearSession(); setPoints(0); nav("landing"); showToast("Logged out successfully."); }
-
-  function handleBook(room) {
-    if (!currentUser) { nav("login"); return; }
-    setSelectedRoom(room);
-    nav("book");
-  }
-
-  function handleConfirmBooking(payMethod, usedCoupon) {
-    if (!pendingBooking) return;
-    const roomNo = getAvailRoomNo(pendingBooking.roomId, pendingBooking.checkIn, pendingBooking.checkOut, bookings);
-    if (!roomNo) { showToast("No rooms available!", "error"); return; }
-
-    const discountedTotal = usedCoupon ? Math.floor(pendingBooking.total / 2) : pendingBooking.total;
-    const nb = {
-      ...pendingBooking, id:`bk_${Date.now()}`, roomNo, userId:currentUser.id,
-      guestName:currentUser.name, status:"confirmed", payMethod,
-      total: discountedTotal, discounted: usedCoupon, bookedAt: new Date().toISOString()
-    };
-    const newBookings = [...bookings, nb];
-    saveBookings(newBookings);
-
-    // Update points
-    const newEarned = Math.floor(discountedTotal / 10);
-    let newUsedPoints = currentUser.usedPoints || 0;
-    if (usedCoupon) newUsedPoints += 3000;
-
-    const updatedUser = { ...currentUser, usedPoints: newUsedPoints };
-    const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
-    saveUsers(updatedUsers);
-    setSession(updatedUser);
-
-    // Recalc points
-    const myB = newBookings.filter(bk => bk.userId === updatedUser.id);
-    const totalEarned = myB.reduce((acc, bk) => acc + Math.floor(bk.total / 10), 0);
-    setPoints(Math.max(0, totalEarned - newUsedPoints));
-
-    setPendingBooking(null);
-    showToast(`Booking confirmed! Room #${roomNo} assigned 🎉`);
-    nav("dashboard");
-  }
-
-  const props = { page, setPage:nav, currentUser, users, bookings, selectedRoom, setSelectedRoom, pendingBooking, setPendingBooking, handleSignup, handleLogin, handleLogout, handleBook, handleConfirmBooking, showToast, points };
-
-  return (
-    <div style={{ minHeight:"100vh", background:"var(--bg)" }}>
-      <Navbar {...props} />
-      {toast && <Toast {...toast} />}
-      {page === "landing" && <LandingPage {...props} />}
-      {page === "login" && <LoginPage {...props} />}
-      {page === "signup" && <SignupPage {...props} />}
-      {page === "rooms" && <RoomsPage {...props} />}
-      {page === "book" && <BookingPage {...props} />}
-      {page === "payment" && <PaymentPage {...props} />}
-      {page === "dashboard" && <DashboardPage {...props} />}
-      {page === "amenities" && <AmenitiesPage {...props} />}
-    </div>
-  );
-}
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
-</script>
-</body></html>`
+
+    </script>
+</body>
+</html>
