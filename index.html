@@ -34,295 +34,47 @@
       body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
       .playfair { font-family: 'Playfair Display', serif; }
       button { cursor: pointer; border: none; font-family: inherit; }
-      input, select { font-family: inherit; }
-      img { display: block; }
-
-      /* Scroll Reveal */
-      .sr { opacity: 0; transform: translateY(28px); transition: opacity 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1); }
-      .sr.vis { opacity: 1; transform: translateY(0); }
-      .sr-d1 { transition-delay: 0.1s; }
-      .sr-d2 { transition-delay: 0.2s; }
-      .sr-d3 { transition-delay: 0.3s; }
-      .sr-d4 { transition-delay: 0.4s; }
-
-      /* 3D Room Viewer */
-      .room3d-wrap { perspective: 800px; width: 100%; height: 210px; overflow: hidden; cursor: grab; user-select: none; }
-      .room3d-wrap:active { cursor: grabbing; }
-      .room3d-cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.1s linear; }
-      .room3d-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; padding: 16px; text-align: center; border-radius: 0; }
-      .room3d-face img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
-      .room3d-face .room3d-label { position: relative; z-index: 2; background: rgba(0,0,0,0.55); padding: 6px 14px; border-radius: 6px; font-size: 11px; }
-      .room3d-face--front  { transform: rotateY(0deg) translateZ(150px); }
-      .room3d-face--right  { transform: rotateY(90deg) translateZ(150px); }
-      .room3d-face--back   { transform: rotateY(180deg) translateZ(150px); }
-      .room3d-face--left   { transform: rotateY(-90deg) translateZ(150px); }
-      .room3d-face--top    { transform: rotateX(90deg) translateZ(105px); }
-      .room3d-face--bottom { transform: rotateX(-90deg) translateZ(105px); }
-
-      /* Toast */
-      .toast-enter { animation: toastIn 0.4s ease; }
-      @keyframes toastIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
-
-      /* Scrollbar */
-      ::-webkit-scrollbar { width: 7px; }
-      ::-webkit-scrollbar-track { background: var(--bg); }
-      ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
-
-      /* Shimmer on hover */
-      .shimmer { position: relative; overflow: hidden; }
-      .shimmer::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); transition: left 0.5s; }
-      .shimmer:hover::after { left: 100%; }
-
-      /* Progress bar for loyalty */
-      .loyalty-bar { height: 8px; background: #e5e5e5; border-radius: 99px; overflow: hidden; }
-      .loyalty-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light)); border-radius: 99px; transition: width 1s ease; }
-
-      /* Hamburger */
-      .hamburger { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
-      .hamburger span { display: block; width: 22px; height: 2px; background: #fff; margin: 5px 0; border-radius: 2px; transition: all 0.3s; }
-      .mob-menu { display: none; }
-
-      /* ═══════ RESPONSIVE ═══════ */
-      @media (max-width: 768px) {
-        .hamburger { display: block; }
-        .desk-nav { display: none !important; }
-        .mob-menu {
-          display: flex; flex-direction: column; gap: 0;
-          position: fixed; top: 60px; left: 0; right: 0; bottom: 0;
-          background: rgba(26,26,46,0.98); backdrop-filter: blur(16px);
-          padding: 24px; z-index: 99; overflow-y: auto;
-        }
-        .mob-menu a, .mob-menu span {
-          display: block; color: #ccc; font-size: 18px; font-weight: 600;
-          padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
-          cursor: pointer; text-decoration: none;
-        }
-        .mob-menu .mob-btn {
-          margin-top: 16px; padding: 14px; text-align: center;
-          border-radius: 10px; font-weight: 700; font-size: 16px;
-        }
-
-        /* Grid overrides */
-        .g-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
-        .g-rooms { grid-template-columns: 1fr !important; }
-        .g-loyalty { grid-template-columns: 1fr !important; }
-        .g-features { grid-template-columns: repeat(2, 1fr) !important; }
-        .g-amenities { grid-template-columns: 1fr !important; }
-        .g-menu-items { grid-template-columns: 1fr !important; }
-        .g-2col { grid-template-columns: 1fr !important; }
-        .g-dash { grid-template-columns: 1fr !important; }
-        .g-pay-methods { grid-template-columns: 1fr !important; }
-        .g-dash-stats { grid-template-columns: repeat(2, 1fr) !important; }
-
-        /* Room page horizontal card → stacked */
-        .room-row { flex-direction: column !important; }
-        .room-row-img { flex: unset !important; width: 100% !important; min-height: 200px !important; max-height: 220px !important; }
-        .room-row-body { padding: 20px 16px !important; }
-        .room-row-header { flex-direction: column !important; }
-        .room-row-price { text-align: left !important; margin-top: 8px; }
-
-        /* Hero */
-        .hero-wrap { height: auto !important; min-height: 480px !important; }
-        .hero-inner { padding: 0 20px !important; }
-        .hero-title { font-size: 32px !important; }
-        .hero-sub { font-size: 14px !important; }
-        .hero-btns { flex-direction: column !important; gap: 10px !important; }
-        .hero-btns button { width: 100%; }
-
-        /* Section padding */
-        .sec-mob { padding: 40px 16px !important; }
-        .sec-heading { font-size: 26px !important; }
-
-        /* Page headers */
-        .page-header h1 { font-size: 26px !important; }
-
-        /* Booking / Payment sidebar → stack below */
-        .book-grid { grid-template-columns: 1fr !important; }
-        .pay-grid { grid-template-columns: 1fr !important; }
-
-        /* Date picker bar */
-        .date-bar { flex-direction: column !important; gap: 10px !important; }
-        .date-bar input { width: 100% !important; }
-
-        /* Menu category tabs scroll */
-        .menu-tabs { overflow-x: auto; -webkit-overflow-scrolling: touch; flex-wrap: nowrap !important; padding-bottom: 8px; }
-        .menu-tabs button { white-space: nowrap; flex-shrink: 0; }
-
-        /* Toast */
-        .toast-enter { left: 12px; right: 12px; max-width: unset !important; }
-
-        /* Footer */
-        .footer-text { font-size: 11px !important; }
-
-        /* Auth pages */
-        .auth-card { padding: 28px 20px !important; }
-
-        /* Navbar height */
-        .nav-inner { height: 60px !important; padding: 0 16px !important; }
-        .nav-logo-text { font-size: 16px !important; }
-        .nav-logo-icon { width: 34px !important; height: 34px !important; font-size: 14px !important; }
-      }
-
-      @media (max-width: 480px) {
-        .g-features { grid-template-columns: 1fr !important; }
-        .g-loyalty-cards { grid-template-columns: 1fr !important; }
-        .g-dash-stats { grid-template-columns: 1fr !important; }
-        .hero-title { font-size: 28px !important; }
-        .room-avail-grid { gap: 4px !important; }
-        .room-avail-grid > div { width: 38px !important; height: 28px !important; font-size: 11px !important; }
-      }
-    </style>
-</head>
-<body>
-    <div id="root"></div>
-    <script type="text/babel">
-
-const { useState, useEffect, useRef, useCallback } = React;
-
 // ═══════════════════════════════════════
-//  CONSTANTS & DATA
+//  MAIN APP
 // ═══════════════════════════════════════
-const HOTEL = "The Grand Meridian";
+function App() {
+  const [page, setPage] = React.useState("landing");
+  const [currentUser, setCurrentUser] = React.useState(null);
+  const [bookings, setBookings] = React.useState(SEED_BOOKINGS);
+  const [selectedRoom, setSelectedRoom] = React.useState(null);
+  const [pendingBooking, setPendingBooking] = React.useState(null);
+  const [points, setPoints] = React.useState(0);
 
-const ROOMS = [
-  { id:"economy", name:"Economy Room", price:1000, color:"#2563EB", lightBg:"#EFF6FF",
-    roomNos:["101","102","103","104","105","106","107","108","109","110"],
-    img:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&auto=format&fit=crop&q=80",
-    img2:"https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=900&auto=format&fit=crop&q=80",
-    img3:"https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=900&auto=format&fit=crop&q=80",
-    amenities:["Free WiFi","32\" Smart TV","Air Conditioning","Daily Housekeeping","Work Desk","Electronic Safe"],
-    meals:[], badge:null,
-    desc:"Comfortable and well-appointed rooms ideal for solo travelers. Modern furnishings with all essential amenities for a perfect stay." },
-  { id:"couple", name:"Couple Suite", price:2500, color:"#DB2777", lightBg:"#FDF2F8",
-    roomNos:["201","202","203","204","205","206","207","208","209","210"],
-    img:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=900&auto=format&fit=crop&q=80",
-    img2:"https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&auto=format&fit=crop&q=80",
-    img3:"https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=900&auto=format&fit=crop&q=80",
-    amenities:["Free WiFi","King-size Bed","Private Jacuzzi","Complimentary Breakfast","Room Service 24/7","Champagne Welcome","City View"],
-    meals:["Complimentary Breakfast"], badge:"Most Popular",
-    desc:"Romantic suites designed for couples with plush king bed, private jacuzzi and stunning city views." },
-  { id:"premium", name:"Premium Room", price:5000, color:"#7C3AED", lightBg:"#F5F3FF",
-    roomNos:["301","302","303","304","305","306","307","308","309","310"],
-    img:"https://images.unsplash.com/photo-1590490360182-c33d57733427?w=900&auto=format&fit=crop&q=80",
-    img2:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&auto=format&fit=crop&q=80",
-    img3:"https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=900&auto=format&fit=crop&q=80",
-    amenities:["Free WiFi","King-size Bed","Executive Lounge","Complimentary Breakfast","Premium Mini Bar","Evening Turndown","Concierge","Bathrobe & Slippers"],
-    meals:["Complimentary Breakfast"], badge:"Premium",
-    desc:"Premium experience with exclusive lounge access, premium mini bar and personalized concierge." },
-  { id:"presidential", name:"Presidential Suite", price:8000, color:"#B45309", lightBg:"#FFFBEB",
-    roomNos:["401","402","403","404","405"],
-    img:"https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=900&auto=format&fit=crop&q=80",
-    img2:"https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=900&auto=format&fit=crop&q=80",
-    img3:"https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=900&auto=format&fit=crop&q=80",
-    amenities:["Free WiFi","Huge Private Balcony","Butler Service 24/7","All Meals Included","Private Pool Access","Spa Access","Airport Transfer","Premium Bar","Separate Living Room"],
-    meals:["Breakfast","Lunch","Dinner"], badge:"Luxury",
-    desc:"The pinnacle of luxury with a massive private balcony, panoramic views, dedicated butler, and all-inclusive dining." },
-];
+  const nav = p => { setPage(p); window.scrollTo(0,0); };
 
-const SEED_BOOKINGS = [
-  { id:"s1", roomId:"economy", roomNo:"101", checkIn:"2026-04-10", checkOut:"2026-04-20", userId:"_s", guestName:"Ravi Kumar", total:10000, payMethod:"hotel", status:"confirmed" },
-  { id:"s2", roomId:"economy", roomNo:"102", checkIn:"2026-04-12", checkOut:"2026-04-17", userId:"_s", guestName:"Deepak Jain", total:5000, payMethod:"online", status:"confirmed" },
-  { id:"s3", roomId:"couple", roomNo:"201", checkIn:"2026-04-11", checkOut:"2026-04-15", userId:"_s", guestName:"Priya Sharma", total:10000, payMethod:"online", status:"confirmed" },
-  { id:"s4", roomId:"presidential", roomNo:"401", checkIn:"2026-04-15", checkOut:"2026-04-18", userId:"_s", guestName:"Arjun Mehta", total:24000, payMethod:"online", status:"confirmed" },
-  { id:"s5", roomId:"premium", roomNo:"301", checkIn:"2026-04-12", checkOut:"2026-04-16", userId:"_s", guestName:"Sneha Iyer", total:20000, payMethod:"online", status:"confirmed" },
-  { id:"s6", roomId:"couple", roomNo:"203", checkIn:"2026-04-14", checkOut:"2026-04-19", userId:"_s", guestName:"Anjali Rao", total:12500, payMethod:"hotel", status:"confirmed" },
-];
+  function handleSignup(u) { setCurrentUser(u); nav("landing"); }
+  function handleLogin(u) { setCurrentUser({ ...u, name: "Guest" }); nav("landing"); }
+  function handleLogout() { setCurrentUser(null); nav("landing"); }
+  function handleBook(r) { setSelectedRoom(r); nav("book"); }
+  function handleConfirmBooking(method, disc) {
+    const nb = { ...pendingBooking, id:Date.now(), userId:currentUser?.email, guestName:currentUser?.name, payMethod:method };
+    setBookings([...bookings, nb]);
+    setPendingBooking(null);
+    nav("dashboard");
+  }
 
-const MENU = {
-  Breakfast:[
-    {n:"Continental Breakfast",p:350},{n:"Full English Breakfast",p:450},{n:"Masala Dosa & Sambar",p:180},
-    {n:"Idli Sambar (4 pcs)",p:150},{n:"Fresh Fruit Bowl",p:200},{n:"Pancakes with Maple Syrup",p:280},
-    {n:"Poha with Sev",p:120},{n:"Upma with Chutney",p:110},{n:"Aloo Paratha Set",p:190},
-    {n:"Egg Benedict",p:320},{n:"French Toast",p:250},{n:"Waffles with Berries",p:300},
-    {n:"Croissant & Butter",p:160},{n:"Muesli Bowl",p:220},{n:"Smoothie Bowl",p:280},
-    {n:"Bread Omelette",p:130},{n:"Puri Bhaji",p:170},{n:"Chole Bhature",p:200},
-    {n:"Cornflakes with Milk",p:100},{n:"Sabudana Khichdi",p:140},{n:"Mixed Sprouts Salad",p:160},
-  ],
-  Lunch:[
-    {n:"Butter Chicken with Naan",p:420},{n:"Dal Makhani & Jeera Rice",p:320},{n:"Grilled Salmon Fillet",p:680},
-    {n:"Caesar Salad",p:280},{n:"Club Sandwich",p:350},{n:"Pasta Arrabbiata",p:380},
-    {n:"Veg Thali",p:250},{n:"Non-Veg Thali",p:350},{n:"Biryani (Veg)",p:300},
-    {n:"Chicken Biryani",p:380},{n:"Mutton Biryani",p:450},{n:"Fish Curry with Rice",p:400},
-    {n:"Paneer Tikka Wrap",p:280},{n:"Chicken Shawarma",p:320},{n:"Mushroom Risotto",p:420},
-    {n:"Tom Yum Soup",p:280},{n:"Sweet Corn Soup",p:180},{n:"Greek Salad",p:260},
-    {n:"Rajma Chawal",p:220},{n:"Kadhi Chawal",p:200},{n:"Prawn Curry",p:520},
-  ],
-  Dinner:[
-    {n:"Tandoori Mixed Platter",p:850},{n:"Lamb Rogan Josh",p:680},{n:"Grilled Lobster",p:1200},
-    {n:"Mushroom Risotto",p:480},{n:"BBQ Pork Ribs",p:780},{n:"Paneer Tikka Masala",p:420},
-    {n:"Butter Garlic Prawns",p:680},{n:"Chicken Stroganoff",p:520},{n:"Lamb Chops",p:920},
-    {n:"Fish & Chips",p:380},{n:"Spaghetti Carbonara",p:420},{n:"Steak au Poivre",p:1100},
-    {n:"Palak Paneer",p:320},{n:"Malai Kofta",p:340},{n:"Chicken Korma",p:440},
-    {n:"Duck Confit",p:980},{n:"Seafood Paella",p:880},{n:"Vegetable Lasagna",p:380},
-    {n:"Thai Green Curry",p:420},{n:"Naan Bread Basket",p:120},{n:"Garlic Rice",p:160},
-  ],
-  Beverages:[
-    {n:"Fresh Seasonal Juice",p:180},{n:"Masala Chai",p:80},{n:"Cappuccino / Latte",p:220},
-    {n:"Signature Mocktail",p:250},{n:"Sparkling Water",p:60},{n:"Soft Drinks",p:100},
-    {n:"Green Tea",p:120},{n:"Hot Chocolate",p:200},{n:"Mango Lassi",p:150},
-    {n:"Buttermilk",p:80},{n:"Filter Coffee",p:120},{n:"Espresso Shot",p:160},
-    {n:"Milkshake (Chocolate)",p:200},{n:"Milkshake (Strawberry)",p:200},{n:"Cold Coffee",p:180},
-    {n:"Iced Tea (Peach)",p:160},{n:"Lemonade",p:100},{n:"Coconut Water",p:80},
-    {n:"Virgin Mojito",p:220},{n:"Blue Lagoon",p:250},{n:"Pina Colada",p:280},
-  ],
-  Snacks:[
-    {n:"French Fries",p:180},{n:"Onion Rings",p:160},{n:"Chicken Wings (6)",p:320},
-    {n:"Veg Spring Rolls",p:200},{n:"Samosa (2 pcs)",p:80},{n:"Paneer Tikka",p:280},
-    {n:"Nachos with Salsa",p:250},{n:"Bruschetta",p:220},{n:"Garlic Bread",p:160},
-    {n:"Fish Fingers",p:300},{n:"Cheese Balls",p:200},{n:"Momos (Steamed)",p:180},
-    {n:"Chicken Nuggets",p:260},{n:"Pav Bhaji",p:180},{n:"Dahi Puri",p:120},
-    {n:"Bhel Puri",p:100},{n:"Vada Pav",p:80},{n:"Hakka Noodles",p:220},
-    {n:"Fried Rice",p:200},{n:"Manchurian (Dry)",p:240},{n:"Potato Wedges",p:180},
-  ],
-  Desserts:[
-    {n:"Gulab Jamun (2 pcs)",p:120},{n:"Rasmalai",p:150},{n:"Chocolate Brownie",p:220},
-    {n:"Ice Cream Sundae",p:250},{n:"Tiramisu",p:320},{n:"Crème Brûlée",p:350},
-    {n:"Mango Kulfi",p:130},{n:"Gajar Ka Halwa",p:160},{n:"Jalebi",p:100},
-    {n:"Cheesecacke Slice",p:300},{n:"Panna Cotta",p:280},{n:"Apple Pie",p:260},
-    {n:"Kheer",p:140},{n:"Rabri",p:150},{n:"Fruit Trifle",p:220},
-    {n:"Chocolate Lava Cake",p:320},{n:"Banana Split",p:280},{n:"Falooda",p:180},
-    {n:"Shahi Tukda",p:170},{n:"Rasgulla (2 pcs)",p:100},{n:"Mysore Pak",p:120},
-  ],
-};
+  const props = { page, setPage:nav, currentUser, bookings, selectedRoom, pendingBooking, setPendingBooking, handleSignup, handleLogin, handleLogout, handleBook, handleConfirmBooking, points };
 
-const AMENITY_DATA = [
-  { icon:"🏊", title:"Swimming Pool", img:"https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&auto=format&fit=crop&q=80", desc:"Olympic-size heated pool with dedicated lanes, loungers, and a separate splash zone for kids. Open 6 AM – 10 PM daily.", tag:"Complimentary · Premium & Presidential", hours:"6 AM – 10 PM" },
-  { icon:"🏋️", title:"Fitness Center", img:"https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=600&auto=format&fit=crop&q=80", desc:"State-of-the-art gym with Technogym equipment, treadmills, free weights, and on-request personal trainers.", tag:"Open 24/7 · All guests", hours:"24 Hours" },
-  { icon:"💆", title:"Spa & Wellness", img:"https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&auto=format&fit=crop&q=80", desc:"Award-winning spa offering traditional Ayurvedic treatments, deep tissue massages, and luxury beauty therapies.", tag:"Advance booking recommended", hours:"9 AM – 9 PM" },
-  { icon:"🍽️", title:"The Meridian Table", img:"https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&auto=format&fit=crop&q=80", desc:"Our signature multi-cuisine restaurant serving exquisite North Indian, South Indian, and international cuisine.", tag:"Open to all", hours:"7 AM – 11 PM" },
-];
-
-// ═══════════════════════════════════════
-//  UTILITIES
-// ═══════════════════════════════════════
-const fmtINR = n => "₹" + Number(n).toLocaleString("en-IN");
-const fmtDate = d => d ? new Date(d+"T00:00:00").toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}) : "—";
-const calcNights = (ci,co) => { const d = Math.round((new Date(co)-new Date(ci))/864e5); return d > 0 ? d : 1; };
-const todayStr = () => new Date().toISOString().split("T")[0];
-const tomorrowStr = () => { const d = new Date(); d.setDate(d.getDate()+1); return d.toISOString().split("T")[0]; };
-const overlap = (aIn,aOut,bIn,bOut) => aIn < bOut && aOut > bIn;
-
-function getBookedRoomNos(roomId, ci, co, bookings) {
-  return bookings.filter(b => b.roomId === roomId && b.status === "confirmed" && overlap(ci, co, b.checkIn, b.checkOut)).map(b => b.roomNo);
+  return (
+    <div style={{ minHeight:"100vh" }}>
+      <Navbar {...props} />
+      {page === "landing" && <LandingPage {...props} />}
+      {page === "login" && <LoginPage {...props} />}
+      {page === "signup" && <SignupPage {...props} />}
+      {page === "rooms" && <RoomsPage {...props} />}
+      {page === "book" && <BookingPage {...props} />}
+      {page === "payment" && <PaymentPage {...props} />}
+      {page === "dashboard" && <DashboardPage {...props} />}
+      {page === "amenities" && <AmenitiesPage {...props} />}
+      <Footer />
+    </div>
+  );
 }
-function getAvailRoomNo(roomId, ci, co, bookings) {
-  const room = ROOMS.find(r => r.id === roomId);
-  const busy = getBookedRoomNos(roomId, ci, co, bookings);
-  return room.roomNos.find(no => !busy.includes(no)) || null;
-}
-
-// ═══════════════════════════════════════
-//  STYLES
-// ═══════════════════════════════════════
-const S = {
-  btn: (bg, c="#fff") => ({ background:bg, color:c, border:"none", padding:"12px 26px", borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer", transition:"all .2s", display:"inline-flex", alignItems:"center", gap:8, justifyContent:"center" }),
-  outBtn: c => ({ background:"transparent", color:c, border:`1.5px solid ${c}`, padding:"11px 24px", borderRadius:10, fontWeight:700, fontSize:15, cursor:"pointer", transition:"all .2s" }),
-  input: { width:"100%", padding:"12px 16px", borderRadius:10, border:"1.5px solid #e0e0e0", fontSize:15, outline:"none", boxSizing:"border-box", background:"#fff", color:"#222", fontFamily:"inherit", transition:"border-color .2s" },
-  card: { background:"#fff", borderRadius:18, boxShadow:"0 2px 24px rgba(0,0,0,0.07)", overflow:"hidden" },
-  sec: { maxWidth:1200, margin:"0 auto", padding:"72px 24px" },
-  lbl: { fontSize:12, fontWeight:700, color:"#777", marginBottom:6, display:"block", textTransform:"uppercase", letterSpacing:"0.5px" },
-};
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
